@@ -1,0 +1,138 @@
+@font-face {
+    font-family: Poppins;
+    src: url("../font/Poppins-Regular.ttf");
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Poppins;
+    /* border: 1px solid red; */
+}
+
+a {
+    text-decoration: none;
+}
+
+.hide {
+    display: none !important;
+}
+
+.rotate-right {
+    transition: transform .2s ease-in-out;
+    transform: rotate(45deg) translateX(3px) translateY(2px);
+}
+
+.rotate-left {
+    transition: transform .2s ease-in-out;
+    transform: rotate(-45deg) translateX(3px) translateY(-2px);
+}
+
+.navbar {
+    width: 100%;
+    height: 5rem;
+    display: grid;
+    grid-template-areas: "brand menu download";
+    padding: 1rem 2rem 1rem 2rem;
+}
+
+.brand {
+    grid-area: brand;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+}
+
+.brand-logo {
+    width: 1.5rem;
+}
+
+.menu {
+    grid-area: menu;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.menu-button {
+    display: none;
+}
+
+.menu-button > * {
+    width: 25px;
+    height: 3px;
+    background-color: black;
+    margin: 3px 0 3px 0;
+    border-radius: 2px;
+}
+
+.menu-link {
+    display: inline-block;
+}
+
+.nav-link {
+    margin: 0rem 1rem 0rem 1rem;
+}
+
+.download {
+    grid-area: download;
+    display: flex;
+    justify-content: end;
+    align-items: center;
+}
+
+.download-button {
+    background-color: #FF5B00;
+    padding: .5rem 1rem .5rem 1rem;
+    border-radius: 2rem;
+    color: white;
+}
+
+.download-button::after {
+    content: " Download";
+}
+
+@media only screen and (max-width: 768px) {
+    .navbar {
+        grid-template-areas: "menu brand download";
+    }
+
+    .download-button::after {
+        content: "";
+    }
+
+    .menu-button {
+        display: inline-block;
+        position: fixed;
+        z-index: 999;
+    }
+
+    .nav-link {
+        padding: 1rem 0 1rem 0;
+    }
+
+    .menu-link {
+        width: 50%;
+        height: 100vh;
+        position: absolute;
+        left: 0;
+        top: 0;
+        background-color: white;
+        display: flex;
+        flex-direction: column;
+        padding: 5rem 1rem 2rem 1rem;
+    }
+
+    .brand {
+        justify-content: center;
+    }
+    
+    .menu {
+        justify-content: start;
+    }
+    
+    .download {
+        justify-content: end;
+    }
+}
