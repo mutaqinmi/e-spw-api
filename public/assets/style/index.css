@@ -11,6 +11,14 @@
     /* border: 1px solid red; */
 }
 
+body {
+    height: 5000px;
+}
+
+::-webkit-scrollbar {
+    display: none;
+}
+
 a {
     text-decoration: none;
 }
@@ -20,23 +28,30 @@ a {
 }
 
 .rotate-right {
+    background-color: #ff5b00 !important;
     transition: transform .2s ease-in-out;
     transform: rotate(45deg) translateX(3px) translateY(2px);
 }
 
 .rotate-left {
+    background-color: #ff5b00 !important;
     transition: transform .2s ease-in-out;
     transform: rotate(-45deg) translateX(3px) translateY(-2px);
+}
+
+.active {
+    border-bottom: 2px solid #ffffff;
+    font-weight: 900;
 }
 
 .navbar {
     width: 100%;
     height: 5rem;
+    position: fixed;
+    top: 0;
     display: grid;
     grid-template-areas: "brand menu download";
     padding: 1rem 2rem 1rem 2rem;
-    background-color: white;
-    box-shadow: 0px 0px 10px grey;
 }
 
 .brand {
@@ -64,9 +79,10 @@ a {
 .menu-button > * {
     width: 25px;
     height: 3px;
-    background-color: black;
+    background-color: #ffffff;
     margin: 3px 0 3px 0;
     border-radius: 2px;
+    transition: transform .2s ease-in-out;
 }
 
 .menu-link {
@@ -75,17 +91,11 @@ a {
 
 .nav-link {
     margin: 0rem 1rem 0rem 1rem;
+    color: #ffffff;
 }
 
-.sub-menu {
-    margin: 0 0 1rem 1rem;
-}
-
-.sub-menu-box {
-    position: absolute;
-    top: 5rem;
-    padding: 1rem;
-    border: 1px solid red;
+.nav-link:hover {
+    font-weight: 900;
 }
 
 .download {
@@ -96,17 +106,78 @@ a {
 }
 
 .download-button {
-    background-color: #FF5B00;
+    background-color: #ffffff;
     padding: .5rem 1rem .5rem 1rem;
     border-radius: 2rem;
-    color: white;
+    color: #ff5b00;
+    border: 1px solid #ffffff;
+    transition: background-color .25s ease-in-out;
+}
+
+.download-button-colored {
+    background-color: #ff5b00 !important;
+    padding: .5rem 1rem .5rem 1rem;
+    border-radius: 2rem;
+    color: #ffffff !important;
+    border: 1px solid #ff5b00 !important;
+    transition: background-color .25s ease-in-out;
 }
 
 .download-button::after {
     content: " Download";
 }
 
+.download-button:hover {
+    background-color: transparent;
+    border: 1px solid #ffffff;
+    color: white;
+}
+
+.download-button-colored:hover {
+    background-color: transparent !important;
+    border: 1px solid #ff5b00 !important;
+    color: #ff5b00 !important;
+}
+
+.header {
+    width: 100%;
+    height: 100vh;
+    background-color: #ff5b00;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.header-title {
+    width: 40%;
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+}
+
+.header-title > h1 {
+    font-size: 40px;
+    font-weight: 900;
+}
+
+.header-download-button {
+    margin-top: 2rem;
+}
+
+.header-image > img {
+    height: 30rem;
+}
+
 @media only screen and (max-width: 768px) {
+    p, span, a {
+        font-size: 14px;
+    }
+
+    .active {
+        border-bottom: none;
+    }
+
     .navbar {
         grid-template-areas: "menu brand download";
         grid-template-columns: 1fr 1fr 1fr;
@@ -114,6 +185,10 @@ a {
 
     .download-button::after {
         content: "";
+    }
+
+    .header-download-button::after {
+        content: " Download" !important;
     }
 
     .menu-button {
@@ -124,6 +199,18 @@ a {
 
     .nav-link {
         padding: 1rem 0 1rem 0;
+        color: #ff5b00 !important;
+        border-radius: 10px;
+        transition: padding .25s ease-in-out, background-color .25s ease-in-out;
+        border: none !important;
+    }
+
+    .nav-link:hover {
+        border-bottom: none;
+        background-color: #ff5b00;
+        color: #ffffff !important;
+        padding: 1rem !important;
+        border-radius: 10px;
     }
 
     .menu-link {
@@ -138,12 +225,6 @@ a {
         padding: 5rem 1rem 2rem 1rem;
     }
 
-    .menu::after {
-        width: 10rem;
-        height: 10rem;
-        background-color: black;
-    }
-
     .brand {
         justify-content: center;
     }
@@ -154,5 +235,24 @@ a {
     
     .download {
         justify-content: end;
+    }
+
+    .header {
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .header-title {
+        width: 80%;
+        margin-bottom: 2rem;
+    }
+
+    .header-title > h1 {
+        font-size: 30px;
+    }
+
+    .header-image > img {
+        margin-bottom: -15rem;
     }
 }

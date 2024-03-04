@@ -11,5 +11,5 @@ app.register(require("@fastify/static"), {
 })
 
 app.listen({port: process.env.PORT, host: process.env.HOST}, () => {
-    console.log(`Server running at http://localhost:${app.server.address().port}`)
+    console.log(`Server running at http://localhost:${app.server.address().port}`);
 })
