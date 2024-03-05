@@ -4,7 +4,7 @@
   "description": "E - SPW Web Version",
   "main": "app.js",
   "scripts": {
-    "test": "node --env-file .env app"
+    "test": "node --env-file .env --watch app"
   },
   "repository": {
     "type": "git",
@@ -23,6 +23,7 @@
     "@fastify/formbody": "^7.4.0",
     "@fastify/multipart": "^8.1.0",
     "@fastify/static": "^7.0.1",
+    "chart.js": "^4.4.2",
     "fastify": "^4.26.1"
   }
 }

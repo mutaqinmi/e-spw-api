@@ -34,6 +34,13 @@ $(() => {
         garis3.toggleClass("rotate-left");
     })
 
+    const crc1 = $(".crc1");
+    const crc2 = $(".crc2");
+    const crc3 = $(".crc3");
+    const currentCircleTop1 = parseFloat(crc1.css("top").split("px").slice(0, 1).join());
+    const currentCircleBottom2 = parseFloat(crc2.css("bottom").split("px").slice(0, 1).join());
+    const currentCircleTop3 = parseFloat(crc3.css("top").split("px").slice(0, 1).join());
+
     $(window).scroll(() => {
         const scroll = $(window).scrollTop();
         const header = $(".header").innerHeight() - 80;
@@ -63,6 +70,16 @@ $(() => {
             })
 
             downloadButton.addClass("download-button-colored");
+
+            crc1.css({
+                "top": (currentCircleTop1 - (scroll / 10)) + "px",
+            })
+            crc2.css({
+                "bottom": (currentCircleBottom2 - (scroll / 0.75)) + "px",
+            })
+            crc3.css({
+                "top": (currentCircleTop3 - (scroll / 2)) + "px",
+            })
         } else {
             navbar.css({
                 "backgroundColor": "transparent",
@@ -80,6 +97,16 @@ $(() => {
             })
             
             downloadButton.removeClass("download-button-colored");
+            
+            crc1.css({
+                "top": (currentCircleTop1 + (scroll / 10)) + "px",
+            })
+            crc2.css({
+                "bottom": (currentCircleBottom2 + (scroll / 0.75)) + "px",
+            })
+            crc3.css({
+                "top": (currentCircleTop3 + (scroll / 2)) + "px",
+            })
         }
     })
 })
