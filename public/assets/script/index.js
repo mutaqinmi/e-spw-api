@@ -57,7 +57,7 @@ $(() => {
             navbar.css({
                 "backgroundColor": "#ffffff",
             })
-            brandImage.attr("src", "assets/image/espw-colored.png")
+            brandImage.attr("src", "assets/icon/espw-colored.png")
             menuButton.css({
                 "backgroundColor": "#ff5b00",
             })
@@ -84,7 +84,7 @@ $(() => {
             navbar.css({
                 "backgroundColor": "transparent",
             })
-            brandImage.attr("src", "assets/image/espw-white.png")
+            brandImage.attr("src", "assets/icon/espw-white.png")
             menuButton.css({
                 "backgroundColor": "#ffffff",
             })

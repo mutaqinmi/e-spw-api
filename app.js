@@ -10,6 +10,27 @@ app.register(require("@fastify/static"), {
     prefix: "/",
 })
 
+//* ---------------------------- Application Programming Interface (API) ----------------------------
+app.post('/login', async (req, res) => {
+    const nomorInduk = req.body.nomorInduk;
+    const password = req.body.password;
+
+    const nip = '12225173';
+    const pw = '12345'
+    
+    if(nomorInduk === nip){
+        if(password === pw){
+            res.redirect(301, '/guru');
+        }
+    }
+
+    res.status(400).send({
+        message: 'NIP/NUPTK atau Password salah!',
+        status: 400
+    })
+})
+
+//* -------------------------------------------- Server ---------------------------------------------
 app.listen({port: process.env.PORT, host: process.env.HOST}, () => {
     console.log(`Server running at http://localhost:${app.server.address().port}`);
 })

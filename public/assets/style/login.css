@@ -27,19 +27,21 @@ a {
 }
 
 .form {
-    width: 60%;
+    width: 70%;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0px 0px 10px grey;
 }
 
 .image {
     height: 100%;
-    background-color: #ff5b00;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
 .image > img {
-    width: 8rem;
+    width: 35rem;
 }
 
 .login-page {
@@ -74,7 +76,7 @@ a {
     position: relative;
 }
 
-#nomor-induk,
+#nomorInduk,
 #password {
     width: 100%;
     padding: .5rem;
@@ -122,15 +124,15 @@ a {
     width: 100%;
     padding: .5rem;
     border-radius: 5px;
-    background-color: #ff5b00;
+    background-color: #fd8d14;
     color: #ffffff;
-    border: 1px solid #ff5b00;
+    border: 1px solid #fd8d14;
     transition: background-color .25s ease-in-out, color .25s ease-in-out;
 }
 
 .login-button:hover {
     background-color: transparent;
-    color: #ff5b00;
+    color: #fd8d14;
 }
 
 .back-button {
@@ -145,15 +147,15 @@ a {
     height: 2rem;
     padding: 1rem;
     border-radius: 100%;
-    background-color: #ffffff;
-    color: #ff5b00;
-    border: 1px solid #ffffff;
+    background-color: #fd8d14;
+    color: #ffffff;
+    border: 1px solid #fd8d14;
     transition: background-color .25s ease-in-out, color .25s ease-in-out;
 }
 
 .back-button:hover {
     background-color: transparent;
-    color: #ffffff;
+    color: #fd8d14;
 }
 
 .remember-me {
@@ -168,7 +170,7 @@ a {
 }
 
 #remember-me {
-    accent-color: #ff5b00;
+    accent-color: #fd8d14;
 }
 
 @media only screen and (max-width: 768px) {
@@ -186,16 +188,5 @@ a {
 
     .form {
         width: 80%;
-    }
-
-    .back-button {
-        background-color: #ff5b00;
-        color: #ffffff;
-        border: 1px solid #ff5b00;
-    }
-
-    .back-button:hover {
-        background-color: transparent;
-        color: #ff5b00;
     }
 }
