@@ -8,28 +8,28 @@
         <meta property="og:title" content="E - SPW">
         <meta property="og:description" content="Aplikasi Jual Beli Produk PKK Online">
         <meta property="og:type" content="website">
-        <meta property="og:image" content="../../assets/icon/espw-colored.png">
-        <link rel="shortcut icon" href="../../assets/icon/espw-colored.png" type="image/x-icon">
-        <link rel="stylesheet" href="../../assets/style/global.css">
-        <link rel="stylesheet" href="../../assets/style/kelas.css">
+        <meta property="og:image" content="assets/icons/espw-colored.png">
+        <link rel="shortcut icon" href="/assets/icons/espw-colored.png" type="image/x-icon">
+        <link rel="stylesheet" href="/assets/style/global.css">
+        <link rel="stylesheet" href="/assets/style/kelas.css">
         <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.0.3/src/regular/style.css">
-        <script src="../../assets/script/jquery.js"></script>
+        <script src="/assets/script/jquery.js"></script>
         <title>E - SPW | Guru PKK</title>
     </head>
     <body>
         <nav class="sidenav">
             <div class="sidenav-brand">
                 <a href="/" class="sidenav-brand-image">
-                    <img src="../../assets/icon/espw-colored.png" alt="Logo">
+                    <img src="/assets/icons/espw-colored.png" alt="Logo">
                     <span class="nav-title sidenav-brand-title">E - SPW</span>
                 </a>
             </div>
             <div class="menu-link">
-                <a class="nav-link" href="/guru/">
+                <a class="nav-link" href="/guru">
                     <i class="ph ph-house icon-link"></i>
                     <span class="nav-title">Beranda</span>
                 </a>
-                <a class="nav-link active" href="/guru/kelas/">
+                <a class="nav-link active" href="/guru/kelas">
                     <i class="ph ph-chalkboard-teacher icon-link"></i>
                     <span class="nav-title">Kelas</span>
                 </a>
@@ -38,6 +38,7 @@
         <nav class="top-nav">
             <form method="post" class="search-form">
                 <input type="text" name="search" id="search" placeholder="Telusuri kelas, kelompok, atau siswa ...">
+                <i class="ph ph-magnifying-glass search-icon"></i>
             </form>
             <a href="" class="profile-button">
                 <i class="ph ph-user-circle"></i>
@@ -54,7 +55,7 @@
                 </div>
             </div>
             <div class="class-list">
-                <div class="class" style="border-left: .5rem solid red;">
+                <a href="/" class="class" style="border-left: .5rem solid red;">
                     <div class="class-info">
                         <div class="title-info">
                             <h1>XI TJKT 1</h1>
@@ -68,8 +69,8 @@
                     <div class="class-image">
                         <i class="ph ph-chalkboard-teacher"></i>
                     </div>
-                </div>
-                <div class="class" style="border-left: .5rem solid red;">
+                </a>
+                <a href="/" class="class" style="border-left: .5rem solid red;">
                     <div class="class-info">
                         <div class="title-info">
                             <h1>XI TJKT 2</h1>
@@ -83,8 +84,8 @@
                     <div class="class-image">
                         <i class="ph ph-chalkboard-teacher"></i>
                     </div>
-                </div>
-                <div class="class" style="border-left: .5rem solid rgb(126, 0, 0);">
+                </a>
+                <a href="/" class="class" style="border-left: .5rem solid rgb(126, 0, 0);">
                     <div class="class-info">
                         <div class="title-info">
                             <h1>XI PPLG</h1>
@@ -98,9 +99,9 @@
                     <div class="class-image">
                         <i class="ph ph-chalkboard-teacher"></i>
                     </div>
-                </div>
+                </a>
             </div>
         </div>
-        <script src="../../assets/script/guru-index.js"></script>
+        <script src="/assets/script/guru.js"></script>
     </body>
 </html>

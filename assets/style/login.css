@@ -1,16 +1,3 @@
-@font-face {
-    font-family: Poppins;
-    src: url("../font/Poppins-Regular.ttf");
-}
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: Poppins;
-    /* border: 1px solid red; */
-}
-
 a {
     text-decoration: none;
 }
@@ -131,29 +118,6 @@ a {
 }
 
 .login-button:hover {
-    background-color: transparent;
-    color: #fd8d14;
-}
-
-.back-button {
-    position: absolute;
-    top: 1rem;
-    left: 2rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: .5rem;
-    width: 2rem;
-    height: 2rem;
-    padding: 1rem;
-    border-radius: 100%;
-    background-color: #fd8d14;
-    color: #ffffff;
-    border: 1px solid #fd8d14;
-    transition: background-color .25s ease-in-out, color .25s ease-in-out;
-}
-
-.back-button:hover {
     background-color: transparent;
     color: #fd8d14;
 }

@@ -6,8 +6,14 @@ app.register(require("@fastify/multipart"));
 
 //* ------------------------------------- Static Files Handling -------------------------------------
 app.register(require("@fastify/static"), {
-    root: path.resolve(process.cwd(), "public"),
-    prefix: "/",
+    root: path.join(__dirname, "views"),
+    prefix: "/"
+})
+
+app.register(require("@fastify/static"), {
+    root: path.join(__dirname, "assets"),
+    prefix: "/assets/",
+    decorateReply: false,
 })
 
 //* ---------------------------- Application Programming Interface (API) ----------------------------
@@ -27,6 +33,18 @@ app.post('/login', async (req, res) => {
     res.status(400).send({
         message: 'NIP/NUPTK atau Password salah!',
         status: 400
+    })
+})
+
+app.get("/data", async (req, res) => {
+    const data = [{
+        "jumlah_kelas": 3,
+        "jumlah_kelompok": 18,
+        "jumlah_siswa": 2680
+    }]
+    
+    res.send({
+        dataBase: data,
     })
 })
 

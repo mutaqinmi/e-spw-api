@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="id">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <meta name="keywords" content="espw, E-SPW, E - SPW, SPW, spw, e-spw, e - spw">
+        <meta name="description" content="Aplikasi Jual Beli Produk PKK Online">
+        <meta property="og:title" content="E - SPW">
+        <meta property="og:description" content="Aplikasi Jual Beli Produk PKK Online">
+        <meta property="og:type" content="website">
+        <meta property="og:image" content="assets/icons/espw-colored.png">
+        <link rel="shortcut icon" href="assets/icons/espw-colored.png" type="image/x-icon">
+        <link rel="stylesheet" href="assets/style/global.css">
+        <link rel="stylesheet" href="assets/style/beranda.css">
+        <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.0.3/src/regular/style.css">
+        <script src="assets/script/jquery.js"></script>
+        <title>E - SPW</title>
+    </head>
+    <body>
+        <nav class="navbar">
+            <div class="brand">
+                <a href="/"><img src="assets/icons/espw-white.png" alt="Logo" class="brand-logo"></a>
+            </div>
+            <div class="menu">
+                <div class="menu-button">
+                    <div class="garis1"></div>
+                    <div class="garis2"></div>
+                    <div class="garis3"></div>
+                </div>
+                <div class="menu-link hide">
+                    <a class="nav-link active" href="/">Beranda</a>
+                    <a class="nav-link" href="">Tentang</a>
+                    <a class="nav-link" href="">Fitur</a>
+                    <a class="nav-link" href="">FAQ</a>
+                    <a class="nav-link" href="login">Guru PKK</a>
+                </div>
+            </div>
+            <div class="download">
+                <a href="" download="" class="download-button"><i class="ph ph-download-simple"></i></a>
+            </div>
+        </nav>
+
+        <div class="header">
+            <div class="circle crc1"></div>
+            <div class="circle crc2"></div>
+            <div class="circle crc3"></div>
+            <div class="header-title">
+                <h1>Beli apa aja<br>bisa dimana aja</h1>
+                <p>Dapatkan produk yang kamu inginkan dengan kemudahan berbelanja online hanya di E - SPW</p>
+                <div class="download">
+                    <a href="" class="download-button header-download-button"><i class="ph ph-download-simple"></i></a>
+                </div>
+            </div>
+            <div class="header-image">
+                <img src="assets/images/frame.png" alt="Phone">
+            </div>
+        </div>
+        
+        <script>
+            $(() => {
+                const bodyWidth = window.matchMedia("(max-width: 768px)").matches;
+                const menuButton = $(".menu-button");
+                const menuLink = $(".menu-link");
+                const garis1 = $(".garis1");
+                const garis2 = $(".garis2");
+                const garis3 = $(".garis3");
+                
+                if(!bodyWidth){
+                    menuLink.removeClass("hide");
+                    garis2.removeClass("hide")
+                    garis1.removeClass("rotate-right")
+                    garis3.removeClass("rotate-left")
+                } else {
+                    menuLink.addClass("hide");
+                }
+
+                $(window).on("resize", () => {
+                    const bodyWidth = window.matchMedia("(max-width: 768px)").matches;
+                    if(!bodyWidth){
+                        menuLink.removeClass("hide");
+                        garis2.removeClass("hide")
+                        garis1.removeClass("rotate-right")
+                        garis3.removeClass("rotate-left")
+                    } else {
+                        menuLink.addClass("hide");
+                    }
+                })
+
+                menuButton.on("click", () => {
+                    menuLink.toggleClass("hide");
+                    garis2.toggleClass("hide");
+                    garis1.toggleClass("rotate-right");
+                    garis3.toggleClass("rotate-left");
+                })
+
+                const crc1 = $(".crc1");
+                const crc2 = $(".crc2");
+                const crc3 = $(".crc3");
+                const currentCircleTop1 = parseFloat(crc1.css("top").split("px").slice(0, 1).join());
+                const currentCircleBottom2 = parseFloat(crc2.css("bottom").split("px").slice(0, 1).join());
+                const currentCircleTop3 = parseFloat(crc3.css("top").split("px").slice(0, 1).join());
+
+                $(window).scroll(() => {
+                    const scroll = $(window).scrollTop();
+                    const header = $(".header").innerHeight() - 80;
+
+                    const navbar = $(".navbar");
+                    const brandImage = $(".brand > a > img");
+                    const menuButton = $(".menu-button > *");
+                    const navLink = $(".nav-link");
+                    const active = $(".active");
+
+                    const downloadButton = $(".download > a");
+
+                    if(header <= scroll){
+                        navbar.css({
+                            "backgroundColor": "#ffffff",
+                        })
+                        brandImage.attr("src", "assets/icons/espw-colored.png")
+                        menuButton.css({
+                            "backgroundColor": "#ff5b00",
+                        })
+
+                        navLink.css({
+                            "color": "#ff5b00"
+                        })
+                        active.css({
+                            "borderBottom": "2px solid #ff5b00"
+                        })
+
+                        downloadButton.addClass("download-button-colored");
+
+                        crc1.css({
+                            "top": (currentCircleTop1 - (scroll / 10)) + "px",
+                        })
+                        crc2.css({
+                            "bottom": (currentCircleBottom2 - (scroll / 0.75)) + "px",
+                        })
+                        crc3.css({
+                            "top": (currentCircleTop3 - (scroll / 2)) + "px",
+                        })
+                    } else {
+                        navbar.css({
+                            "backgroundColor": "transparent",
+                        })
+                        brandImage.attr("src", "assets/icons/espw-white.png")
+                        menuButton.css({
+                            "backgroundColor": "#ffffff",
+                        })
+                        
+                        navLink.css({
+                            "color": "#ffffff"
+                        })
+                        active.css({
+                            "borderBottom": "2px solid #ffffff"
+                        })
+                        
+                        downloadButton.removeClass("download-button-colored");
+                        
+                        crc1.css({
+                            "top": (currentCircleTop1 + (scroll / 10)) + "px",
+                        })
+                        crc2.css({
+                            "bottom": (currentCircleBottom2 + (scroll / 0.75)) + "px",
+                        })
+                        crc3.css({
+                            "top": (currentCircleTop3 + (scroll / 2)) + "px",
+                        })
+                    }
+                })
+            })
+        </script>
+    </body>
+</html>

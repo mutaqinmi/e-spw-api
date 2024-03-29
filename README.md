@@ -1,6 +1,6 @@
 <div align="center">
-    <a href="https://github.com/mutaqinmi/e-spw">
-        <img src="assets/icon/espw-white.png" alt="E - SPW" width="80" height="80">
+    <a href="https://github.com/mutaqinmi/e-spw-web">
+        <img src="assets/icons/espw-white.png" alt="E - SPW" width="80" height="80">
     </a>
 </div>
 
