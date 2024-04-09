@@ -17,7 +17,7 @@ app.register(require("@fastify/static"), {
 })
 
 //* ---------------------------- Application Programming Interface (API) ----------------------------
-app.post('/login', async (req, res) => {
+app.post('/login-guru', async (req, res) => {
     const nomorInduk = req.body.nomorInduk;
     const password = req.body.password;
 
@@ -36,19 +36,20 @@ app.post('/login', async (req, res) => {
     })
 })
 
-app.get("/data", async (req, res) => {
-    const data = [{
-        "jumlah_kelas": 3,
-        "jumlah_kelompok": 18,
-        "jumlah_siswa": 2680
-    }]
-    
-    res.send({
-        dataBase: data,
-    })
+app.post('/api/login', async (req, res) => {
+    var userNIS, userPassword;
+
+    const nis = '12225173';
+    const password = '12345';
+
+    if(userNIS === nis){
+        if(userPassword === password){
+            res.send(200)
+        }
+    }
 })
 
 //* -------------------------------------------- Server ---------------------------------------------
 app.listen({port: process.env.PORT, host: process.env.HOST}, () => {
-    console.log(`Server running at http://localhost:${app.server.address().port}`);
+    console.log(`Server running at port ${app.server.address().port}`);
 })
