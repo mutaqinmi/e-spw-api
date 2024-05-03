@@ -43,6 +43,7 @@ app.post('/login-guru', async (req, res) => {
 //* ---------------------------- Application Programming Interface (API) ----------------------------
 //* -------------------------------------------- Mobile ---------------------------------------------
 app.post('/api/login', controller.login);
+app.post('/api/logout', controller.logout);
 app.get('/api/banner', controller.todayBaner);
 app.get('/api/shop', controller.shop);
 app.get('/api/products', controller.products);
@@ -60,7 +61,7 @@ app.get('/api/rate/:nis', controller.userRateHistory);
 app.get('/api/favorite/:nis', controller.favorites);
 app.patch('/api/user/:nis/change-password', controller.changePassword);
 app.get('/api/user/:nis/address', controller.addresses);
-app.post('/api/user/:nis/add-address', controller.addAddress);
+app.post('/api/user/:nis/add-address', controller.addAdress);
 app.patch('/api/user/:nis/edit-address', controller.editAddress);
 app.delete('/api/user/:nis/delete-address', controller.deleteAddress);
 

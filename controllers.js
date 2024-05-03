@@ -14,9 +14,35 @@ const login = async (req, res) => {
 
     try {
         const dataSiswa = await models.getDataSiswa(nis);
-        return res.status(200).send({
-            data: dataSiswa
+        if(dataSiswa.rowCount === 1){
+            const token = generateToken(
+                dataSiswa.rows[0]
+            );
+            models.addToken(dataSiswa.rows[0]['nis'], token);
+            return res.status(200).send({
+                data: dataSiswa.rows[0],
+                token: token
+            })
+        }
+
+        return res.status(400).send({
+            message: 'NIS tidak ditemukan!'
         })
+    } catch (error) {
+        return res.status(400).send({
+            message: error
+        })
+    }
+}
+
+const logout = async (req, res) => {
+    const token = req.body.token;
+    try {
+        const verify = verifyToken(token);
+        await models.deleteToken(verify.nis);
+        return res.status(200).send({
+            message: 'Success!'
+        });
     } catch (error) {
         return res.status(400).send({
             message: error
@@ -332,6 +358,7 @@ const deleteAddress = async (req, res) => {
 
 module.exports = {
     login,
+    logout,
     todayBaner,
     shop,
     products,
