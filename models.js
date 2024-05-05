@@ -19,6 +19,11 @@ const deleteToken = async (nis) => {
     return result;
 }
 
+const getToken = async (nis) => {
+    const result = await client.query(`SELECT * FROM token WHERE nis = '${nis}'`);
+    return result;
+}
+
 const getDataSiswa = async (nis) => {
     const result = await client.query(`SELECT * FROM siswa WHERE nis = '${nis}'`);
     return result;
@@ -30,35 +35,42 @@ const getTodayBanner = async () => {
 }
 
 const getShop = async () => {
-    const result = await client.query(`SELECT * FROM kelompok ORDER BY is_open`);
+    const result = await client.query(`SELECT * FROM toko LEFT JOIN kelas ON toko.id_kelas = kelas.id_kelas ORDER BY is_open`);
     return result;
 }
 
 const getTodayProducts = async () => {
-    const result = await client.query(`SELECT * FROM kelompok WHERE is_open = 'true' LEFT JOIN ON produk`);
+    const result = await client.query(`SELECT * FROM toko LEFT JOIN produk ON produk.toko = toko.id_toko WHERE is_open = true`);
     return result;
 }
 
 const searchProduct = async (keywords) => {
-    const result = await client.query(`SELECT * FROM produk WHERE nama_produk LIKE %${keywords}%`);
+    const result = await client.query(`SELECT * FROM produk LEFT JOIN toko ON produk.toko = toko.id_toko WHERE LOWER(nama_produk) LIKE '%${keywords}%'`);
     return result;
 }
 
 const searchShop = async (keywords) => {
-    const result = await client.query(`SELECT * FROM kelompok WHERE nama_kelompok LIKE %${keywords}%`);
+    const result = await client.query(`SELECT * FROM toko LEFT JOIN kelas ON toko.id_kelas = kelas.id_kelas WHERE LOWER(nama_toko) LIKE '%${keywords}%'`);
     return result;
 }
 
-const getShopDetails = async (id_kelompok) => {
-    const result = await client.query(`SELECT * FROM kelompok WHERE id_kelompok = '${id_kelompok}'`);
+const getShopById = async (id_toko) => {
+    const result = await client.query(`SELECT * FROM toko LEFT JOIN produk ON produk.toko = toko.id_toko WHERE id_toko = '${id_toko}'`);
     return result;
 }
+
+
+//TODO: mendapatkan produk berdasarkan id
+// const getProductById = async (id_toko) => {
+//     const result = await client.query(`SELECT * FROM produk WHERE toko = '${id_toko}'`);
+//     return
+// }
 
 //! Belum disesuaikan dengan database
 //TODO: menyesuaikan query dengan kolom pada database
 
-const addToCart = async (id_produk, nis) => {
-    const result = await client.query(`INSERT INTO keranjang() VALUES ('${id_produk}', '${nis}')`);
+const addToCart = async (id_produk, nis, qty) => {
+    const result = await client.query(`INSERT INTO keranjang(nis, produk, qty) VALUES ('${nis}', '${id_produk}', ${qty})`);
     return result;
 }
 
@@ -68,12 +80,17 @@ const addToFavorite = async (id_kelompok, nis) => {
 }
 
 const getCart = async (nis) => {
-    const result = await client.query(`SELECT * FROM keranjang WHERE nis = '${nis}'`);
+    const result = await client.query(`SELECT * FROM keranjang LEFT JOIN produk ON keranjang.produk = produk.id_produk LEFT JOIN toko ON produk.toko = toko.id_toko WHERE nis = '${nis}'`);
     return result;
 }
 
-const deleteFromCart = async (id_produk, nis) => {
-    const result = await client.query(`DELETE FROM keranjang WHERE id_produk = '${id_produk}' AND nis = '${nis}'`);
+const deleteFromCart = async (id_keranjang, nis) => {
+    const result = await client.query(`DELETE FROM keranjang WHERE id_keranjang = '${id_keranjang}' AND nis = '${nis}'`);
+    return result;
+}
+
+const updateCartQty = async (qty, id_keranjang, nis) => {
+    const result = await client.query(`UPDATE keranjang SET qty = ${qty} WHERE id_keranjang = '${id_keranjang}' AND nis = '${nis}'`);
     return result;
 }
 
@@ -135,17 +152,19 @@ const deleteAddress = async (id_address) => {
 module.exports = {
     addToken,
     deleteToken,
+    getToken,
     getDataSiswa,
     getTodayBanner,
     getShop,
     getTodayProducts,
     searchProduct,
     searchShop,
-    getShopDetails,
+    getShopById,
     addToCart,
     addToFavorite,
     getCart,
     deleteFromCart,
+    updateCartQty,
     getOrders,
     getNotifications,
     getChat,
