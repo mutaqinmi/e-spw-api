@@ -37,17 +37,23 @@ export const login = async (req: FastifyRequest, res: FastifyReply) => {
 }
 
 export const logout = async (req: FastifyRequest, res: FastifyReply) => {
-    const body = req.body as { token: string };
-    const token = body.token;
+    const headers = req.headers as { authorization: string };
+    const token = headers.authorization?.split(' ')[1];
 
     try {
         const verify = verifyToken(token);
         const data = verify as { nis: number };
 
-        await models.deleteToken(data.nis);
-        return res.status(200).send({
-            message: 'Success!'
-        });
+        if(verify){
+            await models.deleteToken(data.nis);
+            return res.status(200).send({
+                message: 'Success!'
+            });
+        }
+
+        return res.status(401).send({
+            message: 'Unauthorized!'
+        })
     } catch (error) {
         console.log(error);
         return res.status(400).send({
