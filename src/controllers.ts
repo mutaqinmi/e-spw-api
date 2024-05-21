@@ -50,10 +50,6 @@ export const logout = async (req: FastifyRequest, res: FastifyReply) => {
                 message: 'Success!'
             });
         }
-
-        return res.status(401).send({
-            message: 'Unauthorized!'
-        })
     } catch (error) {
         console.log(error);
         return res.status(400).send({
@@ -77,11 +73,17 @@ export const logout = async (req: FastifyRequest, res: FastifyReply) => {
 // }
 
 export const shop = async (req: FastifyRequest, res: FastifyReply) => {
+    const headers = req.headers as { authorization: string };
+    const token = headers.authorization?.split(' ')[1];
+
     try {
-        const dataToko = await models.getToko();
-        return res.status(200).send({
-            data: dataToko
-        })
+        const verify = verifyToken(token);
+        if(verify){
+            const dataToko = await models.getToko();
+            return res.status(200).send({
+                data: dataToko
+            })
+        }
     } catch (error) {
         console.log(error);
         return res.status(400).send({
@@ -91,11 +93,17 @@ export const shop = async (req: FastifyRequest, res: FastifyReply) => {
 }
 
 export const products = async (req: FastifyRequest, res: FastifyReply) => {
+    const headers = req.headers as { authorization: string };
+    const token = headers.authorization?.split(' ')[1];
+
     try {
-        const dataProduk = await models.getProduk();
-        return res.status(200).send({
-            data: dataProduk
-        })
+        const verify = verifyToken(token);
+        if(verify){
+            const dataProduk = await models.getProduk();
+            return res.status(200).send({
+                data: dataProduk
+            })
+        }
     } catch (error) {
         console.log(error);
         return res.status(400).send({
@@ -105,16 +113,21 @@ export const products = async (req: FastifyRequest, res: FastifyReply) => {
 }
 
 export const search = async (req: FastifyRequest, res: FastifyReply) => {
+    const headers = req.headers as { authorization: string };
+    const token = headers.authorization?.split(' ')[1];
     const body = req.body as { query: string };
     const query = body.query;
 
     try {
-        const searchProductResult = await models.cariProduk(query);
-        const searchShopResult = await models.cariToko(query);
-        return res.status(200).send({
-            dataProduk: searchProductResult,
-            dataToko: searchShopResult
-        })
+        const verify = verifyToken(token);
+        if(verify){
+            const searchProductResult = await models.cariProduk(query);
+            const searchShopResult = await models.cariToko(query);
+            return res.status(200).send({
+                dataProduk: searchProductResult,
+                dataToko: searchShopResult
+            })
+        }
     } catch (error) {
         console.log(error);
         return res.status(400).send({
@@ -124,14 +137,19 @@ export const search = async (req: FastifyRequest, res: FastifyReply) => {
 }
 
 export const shopById = async (req: FastifyRequest, res: FastifyReply) => {
+    const headers = req.headers as { authorization: string };
+    const token = headers.authorization?.split(' ')[1];
     const params = req.params as { id: string };
     const id_toko = params.id;
 
     try {
-        const dataToko = await models.getTokoById(id_toko);
-        return res.status(200).send({
-            data: dataToko
-        })
+        const verify = verifyToken(token);
+        if(verify){
+            const dataToko = await models.getTokoById(id_toko);
+            return res.status(200).send({
+                data: dataToko
+            })
+        }
     } catch (error) {
         console.log(error);
         return res.status(400).send({
@@ -141,19 +159,22 @@ export const shopById = async (req: FastifyRequest, res: FastifyReply) => {
 }
 
 export const addToCart = async (req: FastifyRequest, res: FastifyReply) => {
+    const headers = req.headers as { authorization: string };
+    const token = headers.authorization?.split(' ')[1];
     const body = req.body as { id: string; qty: number; token: string; }
     const id_produk = body.id;
     const qty = body.qty;
-    const token = body.token;
     
     try {
         const verify = verifyToken(token);
         const data = verify as { nis: number };
         
-        await models.addToCart(id_produk, data.nis, qty);
-        return res.status(200).send({
-            message: 'Success!'
-        })
+        if(verify){
+            await models.addToCart(id_produk, data.nis, qty);
+            return res.status(200).send({
+                message: 'Success!'
+            })
+        }
     } catch (error) {
         console.log(error);
         return res.status(400).send({
@@ -163,16 +184,20 @@ export const addToCart = async (req: FastifyRequest, res: FastifyReply) => {
 }
 
 export const addToFavorite = async (req: FastifyRequest, res: FastifyReply) => {
-    const query = req.query as { id: string; nis: number; };
-
+    const headers = req.headers as { authorization: string };
+    const token = headers.authorization?.split(' ')[1];
+    const query = req.query as { id: string; };
     const id_kelompok = query.id;
-    const nis = query.nis;
 
     try {
-        await models.addToFavorite(id_kelompok, nis);
-        return res.status(200).send({
-            message: 'Success!'
-        })
+        const verify = verifyToken(token);
+        const data = verify as { nis: number };
+        if(verify){
+            await models.addToFavorite(id_kelompok, data.nis);
+            return res.status(200).send({
+                message: 'Success!'
+            })
+        }
     } catch (error) {
         console.log(error);
         return res.status(400).send({
@@ -182,16 +207,18 @@ export const addToFavorite = async (req: FastifyRequest, res: FastifyReply) => {
 }
 
 export const carts = async (req: FastifyRequest, res: FastifyReply) => {
-    const body = req.body as { token: string; };
-    const token = body.token;
+    const headers = req.headers as { authorization: string };
+    const token = headers.authorization?.split(' ')[1];
 
     try {
         const verify = verifyToken(token);
         const data = verify as { nis: number };
-        const dataKeranjang = await models.getKeranjang(data.nis);
-        return res.status(200).send({
-            data: dataKeranjang
-        })
+        if(verify){
+            const dataKeranjang = await models.getKeranjang(data.nis);
+            return res.status(200).send({
+                data: dataKeranjang
+            })
+        }
     } catch (error) {
         console.log(error);
         return res.status(400).send({
@@ -201,17 +228,20 @@ export const carts = async (req: FastifyRequest, res: FastifyReply) => {
 }
 
 export const deleteFromCart = async (req: FastifyRequest, res: FastifyReply) => {
-    const body = req.body as { id: number; token: string; };
+    const headers = req.headers as { authorization: string };
+    const token = headers.authorization?.split(' ')[1];
+    const body = req.body as { id: number; };
     const id_keranjang = body.id;
-    const token = body.token;
 
     try {
         const verify = verifyToken(token);
         const data = verify as { nis: number };
-        await models.deleteFromKeranjang(id_keranjang, data.nis);
-        return res.status(200).send({
-            message: 'Success!'
-        })
+        if(verify){
+            await models.deleteFromKeranjang(id_keranjang, data.nis);
+            return res.status(200).send({
+                message: 'Success!'
+            })
+        }
     } catch (error) {
         console.log(error);
         return res.status(400).send({
@@ -221,18 +251,21 @@ export const deleteFromCart = async (req: FastifyRequest, res: FastifyReply) => 
 }
 
 export const updateCart = async (req: FastifyRequest, res: FastifyReply) => {
-    const body = req.body as { id: number; qty: number; token: string; };
+    const headers = req.headers as { authorization: string };
+    const token = headers.authorization?.split(' ')[1];
+    const body = req.body as { id: number; qty: number;};
     const id_keranjang = body.id;
     const qty = body.qty;
-    const token = body.token;
 
     try {
         const verify = verifyToken(token);
         const data = verify as { nis: number };
-        await models.updateJumlahKeranjang(qty, id_keranjang, data.nis);
-        return res.status(200).send({
-            message: 'Success!'
-        })
+        if(verify){
+            await models.updateJumlahKeranjang(qty, id_keranjang, data.nis);
+            return res.status(200).send({
+                message: 'Success!'
+            })
+        }
     } catch (error) {
         console.log(error);
         return res.status(400).send({
@@ -242,15 +275,20 @@ export const updateCart = async (req: FastifyRequest, res: FastifyReply) => {
 }
 
 export const orders = async (req: FastifyRequest, res: FastifyReply) => {
-    const query = req.query as { nis: number; status: string };
-    const nis = query.nis;
+    const headers = req.headers as { authorization: string };
+    const token = headers.authorization?.split(' ')[1];
+    const query = req.query as { status: string };
     const status_pesanan = query.status;
 
     try {
-        const dataPesanan = await models.getPesanan(nis, status_pesanan);
-        return res.status(200).send({
-            data: dataPesanan
-        })
+        const verify = verifyToken(token);
+        const data = verify as { nis: number };
+        if(verify){
+            const dataPesanan = await models.getPesanan(data.nis, status_pesanan);
+            return res.status(200).send({
+                data: dataPesanan
+            })
+        }
     } catch (error) {
         console.log(error);
         return res.status(400).send({
@@ -260,15 +298,20 @@ export const orders = async (req: FastifyRequest, res: FastifyReply) => {
 }
 
 export const notifications = async (req: FastifyRequest, res: FastifyReply) => {
-    const query = req.query as { nis: number; type: string };
-    const nis = query.nis;
+    const headers = req.headers as { authorization: string };
+    const token = headers.authorization?.split(' ')[1];
+    const query = req.query as { type: string };
     const type = query.type;
 
     try {
-        const dataNotifikasi = await models.getNotifikasi(nis, type);
-        return res.status(200).send({
-            data: dataNotifikasi
-        })
+        const verify = verifyToken(token);
+        const data = verify as { nis: number };
+        if(verify){
+            const dataNotifikasi = await models.getNotifikasi(data.nis, type);
+            return res.status(200).send({
+                data: dataNotifikasi
+            })
+        }
     } catch (error) {
         console.log(error);
         return res.status(400).send({
@@ -312,14 +355,18 @@ export const notifications = async (req: FastifyRequest, res: FastifyReply) => {
 // }
 
 export const userRateHistory = async (req: FastifyRequest, res: FastifyReply) => {
-    const params = req.params as { nis: number };
-    const nis = params.nis;
+    const headers = req.headers as { authorization: string };
+    const token = headers.authorization?.split(' ')[1];
 
     try {
-        const dataRating = await models.getRiwayatUlasan(nis);
-        return res.status(200).send({
-            data: dataRating
-        })
+        const verify = verifyToken(token);
+        const data = verify as { nis: number };
+        if(verify){
+            const dataRating = await models.getRiwayatUlasan(data.nis);
+            return res.status(200).send({
+                data: dataRating
+            })
+        }
     } catch (error) {
         console.log(error);
         return res.status(400).send({
@@ -329,14 +376,18 @@ export const userRateHistory = async (req: FastifyRequest, res: FastifyReply) =>
 }
 
 export const favorites = async (req: FastifyRequest, res: FastifyReply) => {
-    const params = req.params as { nis: number };
-    const nis = params.nis;
+    const headers = req.headers as { authorization: string };
+    const token = headers.authorization?.split(' ')[1];
     
     try {
-        const dataFavorit = await models.getFavorit(nis);
-        return res.status(200).send({
-            data: dataFavorit
-        })
+        const verify = verifyToken(token);
+        const data = verify as { nis: number };
+        if(verify){
+            const dataFavorit = await models.getFavorit(data.nis);
+            return res.status(200).send({
+                data: dataFavorit
+            })
+        }
     } catch (error) {
         console.log(error);
         return res.status(400).send({
@@ -346,16 +397,20 @@ export const favorites = async (req: FastifyRequest, res: FastifyReply) => {
 }
 
 export const changePassword = async (req: FastifyRequest, res: FastifyReply) => {
-    const params = req.params as { nis: number; password: string };
-    const body = req.body as { nis: number; password: string };
-    const nis = params.nis;
+    const headers = req.headers as { authorization: string };
+    const token = headers.authorization?.split(' ')[1];
+    const body = req.body as { password: string };
     const newPassword = body.password;
 
     try {
-        await models.changePassword(nis, newPassword);
-        return res.status(200).send({
-            message: 'Success!'
-        })
+        const verify = verifyToken(token);
+        const data = verify as { nis: number };
+        if(verify){
+            await models.changePassword(data.nis, newPassword);
+            return res.status(200).send({
+                message: 'Success!'
+            })
+        }
     } catch (error) {
         console.log(error);
         return res.status(400).send({
@@ -365,14 +420,18 @@ export const changePassword = async (req: FastifyRequest, res: FastifyReply) => 
 }
 
 export const addresses = async (req: FastifyRequest, res: FastifyReply) => {
-    const params = req.params as { nis: number };
-    const nis = params.nis;
+    const headers = req.headers as { authorization: string };
+    const token = headers.authorization?.split(' ')[1];
 
     try {
-        const dataAlamat = await models.getAlamat(nis);
-        return res.status(200).send({
-            data: dataAlamat
-        })
+        const verify = verifyToken(token);
+        const data = verify as { nis: number };
+        if(verify){
+            const dataAlamat = await models.getAlamat(data.nis);
+            return res.status(200).send({
+                data: dataAlamat
+            })
+        }
     } catch (error) {
         console.log(error);
         return res.status(400).send({
@@ -382,16 +441,20 @@ export const addresses = async (req: FastifyRequest, res: FastifyReply) => {
 }
 
 export const addAdress = async (req: FastifyRequest, res: FastifyReply) => {
-    const params = req.params as { nis: number };
+    const headers = req.headers as { authorization: string };
+    const token = headers.authorization?.split(' ')[1];
     const body = req.body as { address: string };
-    const nis = params.nis;
     const address = body.address;
 
     try {
-        await models.addAlamat(nis, address);
-        return res.status(200).send({
-            message: 'Success!'
-        })
+        const verify = verifyToken(token);
+        const data = verify as { nis: number };
+        if(verify){
+            await models.addAlamat(data.nis, address);
+            return res.status(200).send({
+                message: 'Success!'
+            })
+        }
     } catch (error) {
         console.log(error);
         return res.status(400).send({
@@ -401,18 +464,21 @@ export const addAdress = async (req: FastifyRequest, res: FastifyReply) => {
 }
 
 export const editAddress = async (req: FastifyRequest, res: FastifyReply) => {
-    const params = req.params as { nis: number };
+    const headers = req.headers as { authorization: string };
+    const token = headers.authorization?.split(' ')[1];
     const query = req.query as { id: number };
     const body = req.body as { address: string };
-    const nis = params.nis;
     const id_address = query.id;
     const address = body.address;
 
     try {
-        await models.updateAlamat(id_address, address);
-        return res.status(200).send({
-            message: 'Success!'
-        })
+        const verify = verifyToken(token);
+        if(verify){
+            await models.updateAlamat(id_address, address);
+            return res.status(200).send({
+                message: 'Success!'
+            })
+        }
     } catch (error) {
         console.log(error);
         return res.status(400).send({
@@ -422,16 +488,19 @@ export const editAddress = async (req: FastifyRequest, res: FastifyReply) => {
 }
 
 export const deleteAddress = async (req: FastifyRequest, res: FastifyReply) => {
-    const params = req.params as { nis: number };
+    const headers = req.headers as { authorization: string };
+    const token = headers.authorization?.split(' ')[1];
     const query = req.query as { id: number };
-    const nis = params.nis;
     const id_address = query.id;
 
     try {
-        await models.deleteAlamat(id_address);
-        return res.status(200).send({
-            message: 'Success!'
-        });
+        const verify = verifyToken(token);
+        if(verify){
+            await models.deleteAlamat(id_address);
+            return res.status(200).send({
+                message: 'Success!'
+            })
+        }
     } catch (error) {
         console.log(error);
         return res.status(400).send({
