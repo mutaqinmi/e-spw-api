@@ -42,7 +42,7 @@ export const kelompok = pgTable('kelompok', {
 export const produk = pgTable('produk', {
     id_produk: varchar('id_produk', {length: 50}).primaryKey(),
     id_toko: varchar('id_toko', {length: 50}).references(() => toko.id_toko, {onUpdate: "cascade", onDelete: "cascade"}),
-    nama_produk: varchar('nama_produk', {length: 20}),
+    nama_produk: varchar('nama_produk', {length: 50}),
     detail_produk: varchar('detail_produk', {length: 255}),
     deskripsi_produk: varchar('deskripsi_produk', {length: 255}),
     jumlah_terjual: integer('jumlah_terjual'),

@@ -26,7 +26,7 @@ export const getDataSiswa = async (nis: number) : Promise<Array<any>> => {
 // export const getTodayBanner
 
 export const getToko = async () : Promise<Array<any>> => {
-    return await db.select().from(table.toko).leftJoin(table.kelas, eq(table.toko.id_toko, table.kelas.id_kelas)).orderBy(table.toko.is_open);
+    return await db.select().from(table.toko).leftJoin(table.kelas, eq(table.toko.id_kelas, table.kelas.id_kelas)).orderBy(table.toko.is_open);
 }
 
 export const getProduk = async () : Promise<Array<any>> => {

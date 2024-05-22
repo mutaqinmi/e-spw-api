@@ -39,7 +39,7 @@ export const login = async (req: FastifyRequest, res: FastifyReply) => {
 export const logout = async (req: FastifyRequest, res: FastifyReply) => {
     const headers = req.headers as { authorization: string };
     const token = headers.authorization?.split(' ')[1];
-
+    
     try {
         const verify = verifyToken(token);
         const data = verify as { nis: number };
