@@ -25,10 +25,10 @@ export const toko = pgTable('toko', {
     id_toko: varchar('id_toko', {length: 50}).primaryKey(),
     nama_toko: varchar('nama_toko', {length: 20}),
     id_kelas: varchar('id_kelas', {length: 10}).references(() => kelas.id_kelas, {onUpdate: "cascade", onDelete: "cascade"}),
-    rating_toko: numeric('rating_toko'),
+    rating_toko: numeric('rating_toko').default("0.0"),
     deskripsi_toko: varchar('deskripsi_toko', {length: 255}),
     kategori_toko: varchar('kategori_toko'),
-    is_open: boolean('is_open'),
+    is_open: boolean('is_open').default(false),
     kode_unik: varchar('kode_unik', {length: 6}),
     banner_toko: varchar('banner_toko', {length: 50}).default(""),
 })

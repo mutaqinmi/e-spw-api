@@ -45,8 +45,11 @@ app.register(require("@fastify/static"), {
 //* -------------------------------------------- Mobile ---------------------------------------------
 app.post('/api/login', controller.login);
 app.post('/api/logout', controller.logout);
+app.get('/api/kelas', controller.kelas);
 // app.get('/api/banner', controller.todayBaner);
 app.get('/api/shop', controller.shop);
+app.post('/api/shop/create', controller.createShop);
+app.get('/api/kelompok', controller.kelompok);
 app.get('/api/products', controller.products);
 app.post('/api/search', controller.search);
 app.get('/api/shop/:id', controller.shopById);

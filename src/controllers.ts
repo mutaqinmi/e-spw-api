@@ -17,8 +17,8 @@ export const login = async (req: FastifyRequest, res: FastifyReply) => {
     try {
         const dataSiswa = await models.getDataSiswa(nis);
         if(dataSiswa.length === 1){
-            const token = generateToken(dataSiswa[0]);
-            models.addToken(dataSiswa[0]['nis'], token);
+            const token = generateToken(dataSiswa[0]['siswa']);
+            models.addToken(dataSiswa[0]['siswa']['nis'], token);
             return res.status(200).send({
                 data: dataSiswa[0],
                 token: token
@@ -72,6 +72,21 @@ export const logout = async (req: FastifyRequest, res: FastifyReply) => {
 //     }
 // }
 
+export const kelas = async (req: FastifyRequest, res: FastifyReply) => {
+    try {
+        const dataKelas = await models.getKelas();
+        return res.status(200).send({
+            data: dataKelas
+        })
+    } catch (error) {
+        console.log(error);
+        return res.status(400).send({
+            message: error
+        })
+    }
+
+}
+
 export const shop = async (req: FastifyRequest, res: FastifyReply) => {
     const headers = req.headers as { authorization: string };
     const token = headers.authorization?.split(' ')[1];
@@ -82,6 +97,54 @@ export const shop = async (req: FastifyRequest, res: FastifyReply) => {
             const dataToko = await models.getToko();
             return res.status(200).send({
                 data: dataToko
+            })
+        }
+    } catch (error) {
+        console.log(error);
+        return res.status(400).send({
+            message: error
+        })
+    }
+}
+
+export const createShop = async (req: FastifyRequest, res: FastifyReply) => {
+    const headers = req.headers as { authorization: string };
+    const token = headers.authorization?.split(' ')[1];
+    const body = req.body as { nama_toko: string; id_kelas: string; deskripsi_toko: string; kategori_toko: string; };
+    const get_id_kelas = await models.getKelasByName(body.id_kelas);
+
+    try {
+        const verify = verifyToken(token);
+        const data = verify as { nis: number };
+        if(verify){
+            await models.createToko(body.nama_toko, get_id_kelas[0]['id_kelas'], body.deskripsi_toko, body.kategori_toko);
+            const get_id_toko = await models.getTokoByName(body.nama_toko);
+            await models.addToKelompok(get_id_toko[0]['id_toko'], data.nis);
+            return res.status(200).send({
+                message: 'Success!'
+            })
+        }
+    } catch (error) {
+        console.log(error);
+        return res.status(400).send({
+            message: error
+        })
+    }
+
+
+}
+
+export const kelompok = async (req: FastifyRequest, res: FastifyReply) => {
+    const headers = req.headers as { authorization: string };
+    const token = headers.authorization?.split(' ')[1];
+
+    try {
+        const verify = verifyToken(token);
+        const data = verify as { nis: number };
+        if(verify){
+            const dataKelompok = await models.getDataKelompok(data.nis);
+            return res.status(200).send({
+                data: dataKelompok
             })
         }
     } catch (error) {

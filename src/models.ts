@@ -23,10 +23,36 @@ export const getDataSiswa = async (nis: number) : Promise<Array<any>> => {
     return await db.select().from(table.siswa).leftJoin(table.kelas, eq(table.siswa.kelas, table.kelas.id_kelas)).where(eq(table.siswa.nis, nis));
 }
 
+export const getKelas = async () : Promise<Array<any>> => {
+    return await db.select().from(table.kelas);
+}
+
+export const getKelasByName = async (nama_kelas: string) : Promise<Array<any>> => {
+    return await db.select().from(table.kelas).where(eq(table.kelas.kelas, nama_kelas));
+}
+
 // export const getTodayBanner
 
 export const getToko = async () : Promise<Array<any>> => {
     return await db.select().from(table.toko).leftJoin(table.kelas, eq(table.toko.id_kelas, table.kelas.id_kelas)).orderBy(table.toko.is_open);
+}
+
+export const getTokoByName = async (nama_toko: string) : Promise<Array<any>> => {
+    return await db.select().from(table.toko).where(eq(table.toko.nama_toko, nama_toko));
+}
+
+export const createToko = async (nama_toko: string, id_kelas: string, deskripsi_toko: string, kategori_toko: string) => {
+    const id_toko = `shop-${nama_toko.toLowerCase().split(' ').join('')}`;
+    const kode_unik = Math.random().toString(36).substring(7).slice(0, 4);
+
+    return await db.insert(table.toko).values({
+        "id_toko": id_toko,
+        "nama_toko": nama_toko,
+        "id_kelas": id_kelas,
+        "deskripsi_toko": deskripsi_toko,
+        "kategori_toko": kategori_toko,
+        "kode_unik": kode_unik,
+    });
 }
 
 export const getProduk = async () : Promise<Array<any>> => {
@@ -43,6 +69,17 @@ export const cariToko = async (keywords: string) : Promise<Array<any>> => {
 
 export const getTokoById = async (id_toko: string) : Promise<Array<any>> => {
     return await db.select().from(table.toko).leftJoin(table.produk, eq(table.produk.id_toko, table.toko.id_toko)).where(eq(table.toko.id_toko, id_toko));
+}
+
+export const getDataKelompok = async (nis: number) : Promise<Array<any>> => {
+    return await db.select().from(table.kelompok).leftJoin(table.siswa, eq(table.kelompok.nis, table.siswa.nis)).where(eq(table.siswa.nis, nis));
+}
+
+export const addToKelompok = async (id_toko: string, nis: number) => {
+    return await db.insert(table.kelompok).values({
+        id_toko: id_toko,
+        nis: nis
+    });
 }
 
 export const addToCart = async (id_produk: string, nis: number, jumlah: number) => {
