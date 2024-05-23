@@ -20,7 +20,7 @@ export const getToken = async (nis: number) : Promise<Array<any>> => {
 }
 
 export const getDataSiswa = async (nis: number) : Promise<Array<any>> => {
-    return await db.select().from(table.siswa).where(eq(table.siswa.nis, nis));
+    return await db.select().from(table.siswa).leftJoin(table.kelas, eq(table.siswa.kelas, table.kelas.id_kelas)).where(eq(table.siswa.nis, nis));
 }
 
 // export const getTodayBanner
