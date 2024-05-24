@@ -1,6 +1,7 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import * as models from "./models";
 import * as jwt from "jsonwebtoken";
+import fs from "fs/promises";
 
 const generateToken = (payload: Object) => {
     return jwt.sign(payload, process.env.SECRET_KEY!);
@@ -110,16 +111,32 @@ export const shop = async (req: FastifyRequest, res: FastifyReply) => {
 export const createShop = async (req: FastifyRequest, res: FastifyReply) => {
     const headers = req.headers as { authorization: string };
     const token = headers.authorization?.split(' ')[1];
-    const body = req.body as { nama_toko: string; id_kelas: string; deskripsi_toko: string; kategori_toko: string; };
-    const get_id_kelas = await models.getKelasByName(body.id_kelas);
+    const file = await req.file();
+    const field = file as { fields: any };
+    const fieldobject = Object.entries(field.fields);
+    let body: {[key: string]: any} = [];
+    for(let i = 0; i < fieldobject.length; i++){
+        const data = fieldobject[i][1] as { fieldname: string; value: string; };
+        body.push({ [data.fieldname]: data.value });
+    }
+
+    const get_id_kelas = await models.getKelasByName(body[1]['id_kelas']);
 
     try {
         const verify = verifyToken(token);
         const data = verify as { nis: number };
         if(verify){
-            await models.createToko(body.nama_toko, get_id_kelas[0]['id_kelas'], body.deskripsi_toko, body.kategori_toko);
-            const get_id_toko = await models.getTokoByName(body.nama_toko);
+            await models.createToko(body[0]['nama_toko'], get_id_kelas[0]['id_kelas'], body[2]['deskripsi_toko'], body[3]['kategori_toko']);
+
+            const get_id_toko = await models.getTokoByName(body[0]['nama_toko']);
             await models.addToKelompok(get_id_toko[0]['id_toko'], data.nis);
+
+            if(file){
+                const banner_toko = await file.toBuffer();
+                await fs.writeFile(`./assets/public/${get_id_toko[0]['id_toko']}.jpeg`, banner_toko);
+                await models.updateBannerToko(get_id_toko[0]['id_toko'], `${get_id_toko[0]['id_toko']}.jpeg`);
+            }
+
             return res.status(200).send({
                 message: 'Success!'
             })
@@ -130,8 +147,6 @@ export const createShop = async (req: FastifyRequest, res: FastifyReply) => {
             message: error
         })
     }
-
-
 }
 
 export const kelompok = async (req: FastifyRequest, res: FastifyReply) => {

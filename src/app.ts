@@ -1,11 +1,12 @@
 import fastify from "fastify";
 import path from "path";
 import * as controller from "./controllers";
+import multipart from '@fastify/multipart';
 
-const app = fastify();
+const app = fastify({bodyLimit: 5 * 1024 * 1024});
 
 app.register(require("@fastify/formbody"));
-app.register(require("@fastify/multipart"));
+app.register(multipart);
 
 app.register(require("@fastify/static"), {
     root: path.resolve(process.cwd(), "views"),
