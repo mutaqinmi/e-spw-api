@@ -52,6 +52,7 @@ app.get('/api/shop', controller.shop);
 app.post('/api/shop/create', controller.createShop);
 app.get('/api/kelompok', controller.kelompok);
 app.get('/api/products', controller.products);
+app.post('/api/products/add', controller.addProduct);
 app.post('/api/search', controller.search);
 app.get('/api/shop/:id', controller.shopById);
 app.post('/api/add-to-cart', controller.addToCart);

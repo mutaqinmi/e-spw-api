@@ -45,11 +45,11 @@ export const produk = pgTable('produk', {
     nama_produk: varchar('nama_produk', {length: 50}),
     detail_produk: varchar('detail_produk', {length: 255}),
     deskripsi_produk: varchar('deskripsi_produk', {length: 255}),
-    jumlah_terjual: integer('jumlah_terjual'),
+    jumlah_terjual: integer('jumlah_terjual').default(0),
     stok: integer('stok').default(0),
-    foto_produk: varchar('foto_produk', {length: 255}),
+    foto_produk: varchar('foto_produk', {length: 255}).default(""),
     harga: numeric('harga'),
-    rating_produk: numeric('rating_produk'),
+    rating_produk: numeric('rating_produk').default("0.0"),
 })
 
 export const keranjang = pgTable('keranjang', {

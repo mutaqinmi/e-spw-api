@@ -1,4 +1,4 @@
-import { and, eq, ilike } from 'drizzle-orm';
+import { and, desc, eq, ilike } from 'drizzle-orm';
 import { client, db } from './connection';
 import * as table from './schema';
 
@@ -34,7 +34,7 @@ export const getKelasByName = async (nama_kelas: string) : Promise<Array<any>> =
 // export const getTodayBanner
 
 export const getToko = async () : Promise<Array<any>> => {
-    return await db.select().from(table.toko).leftJoin(table.kelas, eq(table.toko.id_kelas, table.kelas.id_kelas)).orderBy(table.toko.is_open);
+    return await db.select().from(table.toko).leftJoin(table.kelas, eq(table.toko.id_kelas, table.kelas.id_kelas)).orderBy(desc(table.toko.is_open));
 }
 
 export const getTokoByName = async (nama_toko: string) : Promise<Array<any>> => {
@@ -65,6 +65,25 @@ export const getProduk = async () : Promise<Array<any>> => {
 
 export const cariProduk = async (keywords: string) : Promise<Array<any>> => {
     return await db.select().from(table.produk).leftJoin(table.toko, eq(table.produk.id_toko, table.toko.id_toko)).where(ilike(table.produk.nama_produk, `%${keywords}%`));
+}
+
+export const addProduk = async (nama_produk: string, harga: string, stok: number, deskripsi_produk: string, detail_produk: string, id_toko: string) => {
+    const product = db.select().from(table.produk).where(eq(table.produk.id_toko, id_toko));
+    const increment = (await product).length + 1;
+
+    return await db.insert(table.produk).values({
+        "id_produk": `${id_toko}-${increment}`,
+        "id_toko": id_toko,
+        "nama_produk": nama_produk,
+        "detail_produk": detail_produk,
+        "deskripsi_produk": deskripsi_produk,
+        "stok": stok,
+        "harga": harga,
+    }).returning();
+}
+
+export const updateFotoProduk = async (id_produk: string, foto_produk: string) => {
+    return await db.update(table.produk).set({ foto_produk: foto_produk }).where(eq(table.produk.id_produk, id_produk));
 }
 
 export const cariToko = async (keywords: string) : Promise<Array<any>> => {

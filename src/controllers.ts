@@ -126,7 +126,7 @@ export const createShop = async (req: FastifyRequest, res: FastifyReply) => {
         const verify = verifyToken(token);
         const data = verify as { nis: number };
         if(verify){
-            const create = await models.createToko(body[0]['nama_toko'], get_id_kelas[0]['id_kelas'], body[2]['deskripsi_toko'], body[3]['kategori_toko']);
+            const toko = await models.createToko(body[0]['nama_toko'], get_id_kelas[0]['id_kelas'], body[2]['deskripsi_toko'], body[3]['kategori_toko']);
 
             const get_id_toko = await models.getTokoByName(body[0]['nama_toko']);
             await models.addToKelompok(get_id_toko[0]['id_toko'], data.nis);
@@ -139,7 +139,7 @@ export const createShop = async (req: FastifyRequest, res: FastifyReply) => {
 
             return res.status(200).send({
                 message: 'Success!',
-                toko: create
+                toko: toko
             })
         }
     } catch (error) {
@@ -181,6 +181,41 @@ export const products = async (req: FastifyRequest, res: FastifyReply) => {
             const dataProduk = await models.getProduk();
             return res.status(200).send({
                 data: dataProduk
+            })
+        }
+    } catch (error) {
+        console.log(error);
+        return res.status(400).send({
+            message: error
+        })
+    }
+}
+
+export const addProduct = async (req: FastifyRequest, res: FastifyReply) => {
+    const headers = req.headers as { authorization: string };
+    const token = headers.authorization?.split(' ')[1];
+    const file = await req.file();
+    const field = file as { fields: any };
+    const fieldobject = Object.entries(field.fields);
+    let body: {[key: string]: any} = [];
+    for(let i = 0; i < fieldobject.length; i++){
+        const data = fieldobject[i][1] as { fieldname: string; value: string; };
+        body.push({ [data.fieldname]: data.value });
+    }
+
+    try {
+        const verify = verifyToken(token);
+        const data = verify as { nis: number };
+        if(verify){
+            const produk: {[key: string]: any} = await models.addProduk(body[0]['nama_produk'], body[1]['harga'], body[2]['stok'], body[3]['deskripsi_produk'], body[4]['detail_produk'], body[5]['id_toko']);
+            if(file){
+                const foto_produk = await file.toBuffer();
+                await fs.writeFile(`./assets/public/${produk[0]['id_produk']}.jpeg`, foto_produk);
+                await models.updateFotoProduk(produk[0]['id_produk'], `${produk[0]['id_produk']}.jpeg`);
+            }
+
+            return res.status(200).send({
+                message: 'Success!',
             })
         }
     } catch (error) {
