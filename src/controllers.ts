@@ -126,7 +126,7 @@ export const createShop = async (req: FastifyRequest, res: FastifyReply) => {
         const verify = verifyToken(token);
         const data = verify as { nis: number };
         if(verify){
-            await models.createToko(body[0]['nama_toko'], get_id_kelas[0]['id_kelas'], body[2]['deskripsi_toko'], body[3]['kategori_toko']);
+            const create = await models.createToko(body[0]['nama_toko'], get_id_kelas[0]['id_kelas'], body[2]['deskripsi_toko'], body[3]['kategori_toko']);
 
             const get_id_toko = await models.getTokoByName(body[0]['nama_toko']);
             await models.addToKelompok(get_id_toko[0]['id_toko'], data.nis);
@@ -138,7 +138,8 @@ export const createShop = async (req: FastifyRequest, res: FastifyReply) => {
             }
 
             return res.status(200).send({
-                message: 'Success!'
+                message: 'Success!',
+                id_kelas: create
             })
         }
     } catch (error) {
