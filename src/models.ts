@@ -52,7 +52,7 @@ export const createToko = async (nama_toko: string, id_kelas: string, deskripsi_
         "deskripsi_toko": deskripsi_toko,
         "kategori_toko": kategori_toko,
         "kode_unik": kode_unik,
-    });
+    }).returning();
 }
 
 export const updateBannerToko = async (id_toko: string, banner_toko: string) => {
