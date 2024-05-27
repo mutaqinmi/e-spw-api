@@ -139,7 +139,7 @@ export const createShop = async (req: FastifyRequest, res: FastifyReply) => {
 
             return res.status(200).send({
                 message: 'Success!',
-                kelas: create
+                toko: create
             })
         }
     } catch (error) {
