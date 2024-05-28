@@ -67,6 +67,14 @@ export const createToko = async (nama_toko: string, id_kelas: string, deskripsi_
     }).returning();
 }
 
+export const deleteToko = async (id_toko: string) => {
+    return await db.delete(table.toko).where(eq(table.toko.id_toko, id_toko));
+}
+
+export const updateJadwal = async (id_toko: string, is_open: boolean) => {
+    return await db.update(table.toko).set({ is_open: is_open }).where(eq(table.toko.id_toko, id_toko));
+}
+
 export const updateBannerToko = async (id_toko: string, banner_toko: string) => {
     return await db.update(table.toko).set({ banner_toko: banner_toko }).where(eq(table.toko.id_toko, id_toko));
 }
@@ -99,7 +107,7 @@ export const updateFotoProduk = async (id_produk: string, foto_produk: string) =
 }
 
 export const cariToko = async (keywords: string) : Promise<Array<any>> => {
-    return await db.select().from(table.toko).leftJoin(table.kelas, eq(table.toko.id_kelas, table.kelas.id_kelas)).where(ilike(table.toko.nama_toko, `%${keywords}%`));
+    return await db.select().from(table.toko).leftJoin(table.kelas, eq(table.toko.id_kelas, table.kelas.id_kelas)).leftJoin(table.produk, eq(table.produk.id_toko, table.toko.id_toko)).where(ilike(table.toko.nama_toko, `%${keywords}%`));
 }
 
 export const getTokoById = async (id_toko: string) : Promise<Array<any>> => {
@@ -115,6 +123,10 @@ export const addToKelompok = async (id_toko: string, nis: number) => {
         id_toko: id_toko,
         nis: nis
     });
+}
+
+export const removeFromKelompok = async (id_toko: string, nis: number) => {
+    return await db.delete(table.kelompok).where(and(eq(table.kelompok.id_toko, id_toko), eq(table.kelompok.nis, nis)));
 }
 
 export const addToCart = async (id_produk: string, nis: number, jumlah: number) => {

@@ -186,6 +186,74 @@ export const joinShop = async (req: FastifyRequest, res: FastifyReply) => {
     }
 }
 
+export const removeFromKelompok = async (req: FastifyRequest, res: FastifyReply) => {
+    const headers = req.headers as { authorization: string };
+    const token = headers.authorization?.split(' ')[1];
+    const body = req.body as { id_toko: string };
+    const id_toko = body.id_toko;
+
+    try {
+        const verify = verifyToken(token);
+        const data = verify as { nis: number };
+        if(verify){
+            await models.removeFromKelompok(id_toko, data.nis);
+            return res.status(200).send({
+                message: 'Success!'
+            });
+        }
+    } catch (error) {
+        console.log(error);
+        return res.status(400).send({
+            message: error
+        })
+    }
+}
+
+export const deleteToko = async (req: FastifyRequest, res: FastifyReply) => {
+    const headers = req.headers as { authorization: string };
+    const token = headers.authorization?.split(' ')[1];
+    const body = req.body as { id_toko: string };
+    const id_toko = body.id_toko;
+
+    try {
+        const verify = verifyToken(token);
+        if(verify){
+            await models.deleteToko(id_toko);
+            return res.status(200).send({
+                message: 'Success!'
+            });
+        }
+    } catch (error) {
+        console.log(error);
+        return res.status(400).send({
+            message: error
+        })
+    }
+}
+
+export const updateJadwal = async (req: FastifyRequest, res: FastifyReply) => {
+    const headers = req.headers as { authorization: string };
+    const token = headers.authorization?.split(' ')[1];
+    const body = req.body as { id_toko: string, is_open: boolean; };
+    const id_toko = body.id_toko;
+    const is_open = body.is_open;
+
+    try {
+        const verify = verifyToken(token);
+        if(verify){
+            await models.updateJadwal(id_toko, is_open);
+            return res.status(200).send({
+                message: 'Success!'
+            });
+        }
+    } catch (error) {
+        console.log(error);
+        return res.status(400).send({
+            message: error
+        })
+    }
+}
+
 export const kelompok = async (req: FastifyRequest, res: FastifyReply) => {
     const headers = req.headers as { authorization: string };
     const token = headers.authorization?.split(' ')[1];
