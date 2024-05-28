@@ -163,12 +163,14 @@ export const joinShop = async (req: FastifyRequest, res: FastifyReply) => {
         if(verify){
             const toko: {[key: string]: any} = await models.getTokoByKode(kode_unik);
             const kelompok = await models.getDataKelompok(data.nis);
-            for(let i = 0; i <= kelompok.length; i++){
-                if(kelompok[i]['toko']['id_toko'] === toko[0]['id_toko']){
-                    return res.status(400).send({
-                        message: 'Duplicate',
-                        nama_toko: kelompok[0]['toko']['nama_toko']
-                    })
+            if(kelompok){
+                for(let i = 0; i <= kelompok.length; i++){
+                    if(kelompok[i]['toko']['id_toko'] === toko[0]['id_toko']){
+                        return res.status(400).send({
+                            message: 'Duplicate',
+                            nama_toko: kelompok[0]['toko']['nama_toko']
+                        })
+                    }
                 }
             }
             await models.addToKelompok(toko[0]['id_toko'], data.nis);
