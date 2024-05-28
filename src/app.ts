@@ -51,6 +51,7 @@ app.get('/api/kelas', controller.kelas);
 app.get('/api/shop', controller.shop);
 app.post('/api/shop/create', controller.createShop);
 app.get('/api/kelompok', controller.kelompok);
+app.post('/api/kelompok/join', controller.joinShop);
 app.get('/api/products', controller.products);
 app.post('/api/products/add', controller.addProduct);
 app.post('/api/search', controller.search);

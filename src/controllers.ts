@@ -151,6 +151,41 @@ export const createShop = async (req: FastifyRequest, res: FastifyReply) => {
     }
 }
 
+export const joinShop = async (req: FastifyRequest, res: FastifyReply) => {
+    const headers = req.headers as { authorization: string };
+    const token = headers.authorization?.split(' ')[1];
+    const body = req.body as { kode_unik: string; };
+    const kode_unik = body.kode_unik;
+
+    try {
+        const verify = verifyToken(token);
+        const data = verify as { nis: number };
+        if(verify){
+            const toko: {[key: string]: any} = await models.getTokoByKode(kode_unik);
+            const kelompok = await models.getDataKelompok(data.nis);
+            for(let i = 0; i <= kelompok.length; i++){
+                if(kelompok[i]['toko']['id_toko'] === toko[0]['id_toko']){
+                    return res.status(400).send({
+                        message: 'Duplicate',
+                        nama_toko: kelompok[0]['toko']['nama_toko']
+                    })
+                }
+            }
+            await models.addToKelompok(toko[0]['id_toko'], data.nis);
+            return res.status(200).send({
+                message: 'Success!',
+                id_toko: toko[0]['id_toko'],
+                nama_toko: toko[0]['nama_toko']
+            })
+        }
+    } catch (error) {
+        console.log(error);
+        return res.status(400).send({
+            message: error
+        })
+    }
+}
+
 export const kelompok = async (req: FastifyRequest, res: FastifyReply) => {
     const headers = req.headers as { authorization: string };
     const token = headers.authorization?.split(' ')[1];

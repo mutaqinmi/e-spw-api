@@ -49,6 +49,10 @@ export const getTokoByName = async (nama_toko: string) : Promise<Array<any>> => 
     return await db.select().from(table.toko).where(eq(table.toko.nama_toko, nama_toko));
 }
 
+export const getTokoByKode = async (kode_unik: string) : Promise<Array<any>> => {
+    return await db.select().from(table.toko).where(eq(table.toko.kode_unik, kode_unik));
+}
+
 export const createToko = async (nama_toko: string, id_kelas: string, deskripsi_toko: string, kategori_toko: string) => {
     const id_toko = `shop-${nama_toko.toLowerCase().split(' ').join('')}`;
     const kode_unik = Math.random().toString(36).substring(7).slice(0, 4);
