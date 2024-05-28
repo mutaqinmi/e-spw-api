@@ -67,6 +67,7 @@ app.get('/api/notifications', controller.notifications);
 app.get('/api/rate/:nis', controller.userRateHistory);
 app.get('/api/favorite/:nis', controller.favorites);
 app.patch('/api/user/:nis/change-password', controller.changePassword);
+app.post('/api/user/:nis/update-profile-picture', controller.updateProfilePicture);
 app.get('/api/user/:nis/address', controller.addresses);
 app.post('/api/user/:nis/add-address', controller.addAdress);
 app.patch('/api/user/:nis/edit-address', controller.editAddress);

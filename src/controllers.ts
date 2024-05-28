@@ -2,6 +2,7 @@ import { FastifyReply, FastifyRequest } from "fastify";
 import * as models from "./models";
 import * as jwt from "jsonwebtoken";
 import fs from "fs/promises";
+import * as luxon from "luxon";
 
 const generateToken = (payload: Object) => {
     return jwt.sign(payload, process.env.SECRET_KEY!);
@@ -531,6 +532,47 @@ export const changePassword = async (req: FastifyRequest, res: FastifyReply) => 
             message: error
         })
     }
+}
+
+export const updateProfilePicture = async (req: FastifyRequest, res: FastifyReply) => {
+    const headers = req.headers as { authorization: string };
+    const token = headers.authorization?.split(' ')[1];
+    const file = await req.file();
+    const field = file as { fields: any };
+    const fieldobject = Object.entries(field.fields);
+    let body: {[key: string]: any} = [];
+    for(let i = 0; i < fieldobject.length; i++){
+        const data = fieldobject[0][i] as { fieldname: string; value: string; };
+        body.push({ [data.fieldname]: data.value });
+    }
+
+    try {
+        const verify = verifyToken(token);
+        const data = verify as { nis: number };
+        if(verify){
+            if(body[1]['old_image'] != ''){
+                await fs.rm(`./assets/public/${body[1]['old_image']}`);
+            }
+            if(file){
+                const timestamp = luxon.DateTime.now().toFormat('yyyyLLddHHmmss');
+                const foto_profil = await file.toBuffer();
+                const filename = `${data.nis}-${timestamp}.jpeg`;
+                await fs.writeFile(`./assets/public/${filename}`, foto_profil);
+                const siswa = await models.updateProfilePicture(data.nis, `${filename}`);
+                return res.status(200).send({
+                    message: 'Success!',
+                    siswa: siswa,
+                })
+            }
+        }
+    } catch (error) {
+        console.log(error);
+        return res.status(400).send({
+            message: error
+        })
+    }
+
+
 }
 
 export const addresses = async (req: FastifyRequest, res: FastifyReply) => {
