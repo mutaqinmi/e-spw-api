@@ -89,10 +89,9 @@ export const cariProduk = async (keywords: string) : Promise<Array<any>> => {
 
 export const addProduk = async (nama_produk: string, harga: string, stok: number, deskripsi_produk: string, detail_produk: string, id_toko: string) => {
     const product: {[key: string]: any} = await db.select().from(table.produk).where(eq(table.produk.id_toko, id_toko));
-    console.log(product);
-    const increment: number = product?.length + parseInt(product[0]?.['id_produk'].split('-')[2]) + 1;
+    const increment: number = await product?.length + parseInt(await product[0]?.['id_produk'].split('-')[2]) + 1;
 
-    return await db.insert(table.produk).values({
+    return db.insert(table.produk).values({
         "id_produk": `product-${id_toko.split('-')[1]}-${increment}`,
         "id_toko": id_toko,
         "nama_produk": nama_produk,
