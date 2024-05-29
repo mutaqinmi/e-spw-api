@@ -34,4 +34,4 @@ INSERT INTO siswa VALUES
                     (12225188, 'Ulli Ulliyani', 'pplg2022', '12345', '', ''),
                     (12225189, 'Varrel Aldiansyah', 'pplg2022', '12345', '', ''),
                     (12225190, 'Vina Hanif', 'pplg2022', '12345', '', ''),
-                    (12225191, 'Yardo Ardi Mardian', 'pplg2022', '12345', '', '')
+                    (12225191, 'Yardo Ardi Mardian', 'pplg2022', '12345', '', '');

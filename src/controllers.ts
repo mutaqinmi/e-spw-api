@@ -193,6 +193,26 @@ export const joinShop = async (req: FastifyRequest, res: FastifyReply) => {
     }
 }
 
+export const getDataKelompok = async (req: FastifyRequest, res: FastifyReply) => {
+    const headers = req.headers as { authorization: string };
+    const token = headers.authorization?.split(' ')[1];
+
+    try {
+        const verify = verifyToken(token);
+        if(verify){
+            const dataKelompok = await models.getAllDataKelompok();
+            return res.status(200).send({
+                data: dataKelompok
+            })
+        }
+    } catch (error) {
+        console.log(error);
+        return res.status(400).send({
+            message: error
+        })
+    }
+}
+
 export const removeFromKelompok = async (req: FastifyRequest, res: FastifyReply) => {
     const headers = req.headers as { authorization: string };
     const token = headers.authorization?.split(' ')[1];
@@ -319,7 +339,6 @@ export const addProduct = async (req: FastifyRequest, res: FastifyReply) => {
         const data = verify as { nis: number };
         if(verify){
             const produk: {[key: string]: any} = await models.addProduk(body[0]['nama_produk'], body[1]['harga'], body[2]['stok'], body[3]['deskripsi_produk'], body[4]['detail_produk'], body[5]['id_toko']);
-            console.log(produk);
             if(file){
                 const foto_produk = await file.toBuffer();
                 await fs.writeFile(`./assets/public/${produk[0]?.['id_produk']}.jpeg`, foto_produk);
@@ -329,6 +348,28 @@ export const addProduct = async (req: FastifyRequest, res: FastifyReply) => {
             return res.status(200).send({
                 message: 'Success!',
             })
+        }
+    } catch (error) {
+        console.log(error);
+        return res.status(400).send({
+            message: error
+        })
+    }
+}
+
+export const deleteProduk = async (req: FastifyRequest, res: FastifyReply) => {
+    const headers = req.headers as { authorization: string };
+    const token = headers.authorization?.split(' ')[1];
+    const body = req.body as { id_produk: string };
+    const id_produk = body.id_produk;
+
+    try {
+        const verify = verifyToken(token);
+        if(verify){
+            await models.deleteProduk(id_produk);
+            return res.status(200).send({
+                message: 'Success!'
+            });
         }
     } catch (error) {
         console.log(error);
@@ -612,6 +653,29 @@ export const favorites = async (req: FastifyRequest, res: FastifyReply) => {
             const dataFavorit = await models.getFavorit(data.nis);
             return res.status(200).send({
                 data: dataFavorit
+            })
+        }
+    } catch (error) {
+        console.log(error);
+        return res.status(400).send({
+            message: error
+        })
+    }
+}
+
+export const updateTelepon = async (req: FastifyRequest, res: FastifyReply) => {
+    const headers = req.headers as { authorization: string };
+    const token = headers.authorization?.split(' ')[1];
+    const body = req.body as { telepon: string };
+    const telepon = body.telepon;
+
+    try {
+        const verify = verifyToken(token);
+        const data = verify as { nis: number };
+        if(verify){
+            await models.updateTelepon(data.nis, telepon);
+            return res.status(200).send({
+                message: 'Success!'
             })
         }
     } catch (error) {

@@ -70,4 +70,4 @@ INSERT INTO kelas VALUES
                     ('tjkt22021', 'XII TJKT 2', 'Teknik Jaringan Komputer dan Telekomunikasi'),
                     ('pplg2021', 'XII PPLG', 'Pengembangan Perangkat Lunak dan Gim'),
                     ('bp12021', 'XII BP 1', 'Broadcasting dan Perfilman'),
-                    ('bp22021', 'XII BP 2', 'Broadcasting dan Perfilman')
+                    ('bp22021', 'XII BP 2', 'Broadcasting dan Perfilman');

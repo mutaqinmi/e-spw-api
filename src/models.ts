@@ -109,12 +109,20 @@ export const updateFotoProduk = async (id_produk: string, foto_produk: string) =
     return await db.update(table.produk).set({ foto_produk: foto_produk }).where(eq(table.produk.id_produk, id_produk));
 }
 
+export const deleteProduk = async (id_produk: string) => {
+    return await db.delete(table.produk).where(eq(table.produk.id_produk, id_produk));
+}
+
 export const cariToko = async (keywords: string) : Promise<Array<any>> => {
     return await db.select().from(table.toko).leftJoin(table.kelas, eq(table.toko.id_kelas, table.kelas.id_kelas)).leftJoin(table.produk, eq(table.produk.id_toko, table.toko.id_toko)).where(ilike(table.toko.nama_toko, `%${keywords}%`));
 }
 
 export const getTokoById = async (id_toko: string) : Promise<Array<any>> => {
     return await db.select().from(table.toko).leftJoin(table.produk, eq(table.produk.id_toko, table.toko.id_toko)).leftJoin(table.kelas, eq(table.toko.id_kelas, table.kelas.id_kelas)).where(eq(table.toko.id_toko, id_toko));
+}
+
+export const getAllDataKelompok = async () : Promise<Array<any>> => {
+    return await db.select().from(table.kelompok).leftJoin(table.siswa, eq(table.kelompok.nis, table.siswa.nis)).leftJoin(table.toko, eq(table.kelompok.id_toko, table.toko.id_toko)).leftJoin(table.kelas, eq(table.siswa.kelas, table.kelas.id_kelas));
 }
 
 export const getDataKelompok = async (nis: number) : Promise<Array<any>> => {
@@ -173,6 +181,10 @@ export const getRiwayatUlasan = async (nis: number) : Promise<Array<any>> => {
 
 export const getFavorit = async (nis: number) : Promise<Array<any>> => {
     return await db.select().from(table.favorit).where(eq(table.favorit.nis, nis));
+}
+
+export const updateTelepon = async (nis: number, telepon: string) => {
+    return await db.update(table.siswa).set({ telepon: telepon }).where(eq(table.siswa.nis, nis));
 }
 
 export const changePassword = async (nis: number, password: string) => {
