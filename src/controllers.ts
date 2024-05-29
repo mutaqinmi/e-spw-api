@@ -322,10 +322,8 @@ export const addProduct = async (req: FastifyRequest, res: FastifyReply) => {
             if(file){
                 const foto_produk = await file.toBuffer();
                 console.log(produk);
-                if(produk){
-                    await fs.writeFile(`./assets/public/${produk[0]?.['id_produk']}.jpeg`, foto_produk);
-                    await models.updateFotoProduk(produk[0]?.['id_produk'], `${produk[0]?.['id_produk']}.jpeg`);
-                }
+                await fs.writeFile(`./assets/public/${produk[0]?.['id_produk']}.jpeg`, foto_produk);
+                await models.updateFotoProduk(produk[0]?.['id_produk'], `${produk[0]?.['id_produk']}.jpeg`);
             }
 
             return res.status(200).send({
