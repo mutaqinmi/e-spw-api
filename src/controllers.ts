@@ -319,6 +319,7 @@ export const addProduct = async (req: FastifyRequest, res: FastifyReply) => {
         const data = verify as { nis: number };
         if(verify){
             const produk: {[key: string]: any} = await models.addProduk(body[0]['nama_produk'], body[1]['harga'], body[2]['stok'], body[3]['deskripsi_produk'], body[4]['detail_produk'], body[5]['id_toko']);
+            console.log(produk);
             if(file){
                 const foto_produk = await file.toBuffer();
                 await fs.writeFile(`./assets/public/${produk[0]?.['id_produk']}.jpeg`, foto_produk);
