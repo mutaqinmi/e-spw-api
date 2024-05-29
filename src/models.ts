@@ -91,7 +91,7 @@ export const addProduk = async (nama_produk: string, harga: string, stok: number
     const product: {[key: string]: any} = await db.select().from(table.produk).where(eq(table.produk.id_toko, id_toko));
     let increment: number = 1;
     if(product){
-        console.log(product.length, product[0]?.['id_produk'].split('-')[2]);
+        console.log(product.length, product[0]?.['id_produk']);
         increment = product?.length + parseInt(product[0]?.['id_produk'].split('-')[2]) + 1;
     }
 
