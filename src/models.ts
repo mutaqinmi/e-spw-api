@@ -92,7 +92,7 @@ export const addProduk = async (nama_produk: string, harga: string, stok: number
     let increment: number = 1;
     if(product){
         console.log(product.length, product[0]?.['id_produk']);
-        increment = product?.length + parseInt(product[0]?.['id_produk'].split('-')[2]) + 1;
+        increment = product?.length + parseInt(product[0]?.['id_produk'].split('-')[2]) ?? 0 + 1;
     }
 
     return await db.insert(table.produk).values({
