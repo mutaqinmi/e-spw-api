@@ -367,6 +367,7 @@ export const deleteProduk = async (req: FastifyRequest, res: FastifyReply) => {
         const verify = verifyToken(token);
         if(verify){
             await models.deleteProduk(id_produk);
+            await fs.rm(`./assets/public/${id_produk}.jpeg`);
             return res.status(200).send({
                 message: 'Success!'
             });

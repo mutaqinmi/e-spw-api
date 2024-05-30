@@ -118,7 +118,7 @@ export const cariToko = async (keywords: string) : Promise<Array<any>> => {
 }
 
 export const getTokoById = async (id_toko: string) : Promise<Array<any>> => {
-    return await db.select().from(table.toko).leftJoin(table.produk, eq(table.produk.id_toko, table.toko.id_toko)).leftJoin(table.kelas, eq(table.toko.id_kelas, table.kelas.id_kelas)).where(eq(table.toko.id_toko, id_toko));
+    return await db.select().from(table.produk).leftJoin(table.toko, eq(table.produk.id_toko, table.toko.id_toko)).leftJoin(table.kelas, eq(table.toko.id_kelas, table.kelas.id_kelas)).where(eq(table.toko.id_toko, id_toko));
 }
 
 export const getAllDataKelompok = async () : Promise<Array<any>> => {
