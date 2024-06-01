@@ -324,6 +324,28 @@ export const products = async (req: FastifyRequest, res: FastifyReply) => {
     }
 }
 
+export const getProductById = async (req: FastifyRequest, res: FastifyReply) => {
+    const headers = req.headers as { authorization: string };
+    const token = headers.authorization?.split(' ')[1];
+    const params = req.params as { id: string };
+    const id = params.id;
+
+    try {
+        const verify = verifyToken(token);
+        if(verify){
+            const dataProduk = await models.getProdukById(id);
+            return res.status(200).send({
+                data: dataProduk
+            })
+        }
+    } catch (error) {
+        console.log(error);
+        return res.status(400).send({
+            message: error
+        })
+    }
+}
+
 export const addProduct = async (req: FastifyRequest, res: FastifyReply) => {
     const headers = req.headers as { authorization: string };
     const token = headers.authorization?.split(' ')[1];

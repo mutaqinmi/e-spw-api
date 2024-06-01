@@ -57,6 +57,7 @@ app.post('/api/kelompok/all', controller.getDataKelompok);
 app.post('/api/kelompok/join', controller.joinShop);
 app.post('/api/kelompok/remove', controller.removeFromKelompok);
 app.get('/api/products', controller.products);
+app.get('/api/products/:id', controller.getProductById);
 app.post('/api/products/add', controller.addProduct);
 app.post('/api/products/delete', controller.deleteProduk);
 app.post('/api/search', controller.search);

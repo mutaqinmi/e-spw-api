@@ -78,6 +78,10 @@ export const updateBannerToko = async (id_toko: string, banner_toko: string) => 
     return await db.update(table.toko).set({ banner_toko: banner_toko }).where(eq(table.toko.id_toko, id_toko));
 }
 
+export const getProdukById = async (id_produk: string) : Promise<Array<any>> => {
+    return await db.select().from(table.produk).leftJoin(table.toko, eq(table.produk.id_toko, table.toko.id_toko)).where(eq(table.produk.id_produk, id_produk))
+}
+
 export const getProduk = async () : Promise<Array<any>> => {
     return await db.select().from(table.produk).leftJoin(table.toko, eq(table.produk.id_toko, table.toko.id_toko)).where(eq(table.toko.is_open, true));
 }
