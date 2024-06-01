@@ -53,7 +53,7 @@ app.post('/api/shop/create', controller.createShop);
 app.post('/api/shop/delete', controller.deleteToko);
 app.post('/api/shop/update-jadwal', controller.updateJadwal);
 app.get('/api/kelompok', controller.kelompok);
-app.get('/api/kelompok/all', controller.getDataKelompok);
+app.post('/api/kelompok/all', controller.getDataKelompok);
 app.post('/api/kelompok/join', controller.joinShop);
 app.post('/api/kelompok/remove', controller.removeFromKelompok);
 app.get('/api/products', controller.products);
