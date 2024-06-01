@@ -121,8 +121,8 @@ export const getTokoById = async (id_toko: string) : Promise<Array<any>> => {
     return await db.select().from(table.produk).leftJoin(table.toko, eq(table.produk.id_toko, table.toko.id_toko)).leftJoin(table.kelas, eq(table.toko.id_kelas, table.kelas.id_kelas)).where(eq(table.toko.id_toko, id_toko));
 }
 
-export const getAllDataKelompok = async () : Promise<Array<any>> => {
-    return await db.select().from(table.kelompok).leftJoin(table.siswa, eq(table.kelompok.nis, table.siswa.nis)).leftJoin(table.toko, eq(table.kelompok.id_toko, table.toko.id_toko)).leftJoin(table.kelas, eq(table.siswa.kelas, table.kelas.id_kelas));
+export const getAllDataKelompok = async (id_toko: string) : Promise<Array<any>> => {
+    return await db.select().from(table.kelompok).leftJoin(table.siswa, eq(table.kelompok.nis, table.siswa.nis)).leftJoin(table.toko, eq(table.kelompok.id_toko, table.toko.id_toko)).leftJoin(table.kelas, eq(table.siswa.kelas, table.kelas.id_kelas)).where(eq(table.kelompok.id_toko, id_toko));
 }
 
 export const getDataKelompok = async (nis: number) : Promise<Array<any>> => {
