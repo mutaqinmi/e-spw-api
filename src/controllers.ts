@@ -191,13 +191,12 @@ export const updateShop = async (req: FastifyRequest, res: FastifyReply) => {
     const token = headers.authorization?.split(' ')[1];
     const body = req.body as { id_toko: string, nama_toko: string; deskripsi_toko: string; };
     const id_toko = body.id_toko;
-    const nama_toko = body.nama_toko;
     const deskripsi_toko = body.deskripsi_toko;
 
     try {
         const verify = verifyToken(token);
         if(verify){
-            await models.updateShop(id_toko, nama_toko, deskripsi_toko);
+            await models.updateShop(id_toko, deskripsi_toko);
             return res.status(200).send({
                 message: 'Success!'
             });
