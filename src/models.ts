@@ -159,13 +159,6 @@ export const addToCart = async (id_produk: string, nis: number, jumlah: number) 
     });
 }
 
-export const addToFavorite = async (id_toko: string, nis: number) => {
-    return await db.insert(table.favorit).values({
-        toko: id_toko,
-        nis: nis,
-    });
-}
-
 export const getKeranjang = async (nis: number) : Promise<Array<any>> => {
     return await db.select().from(table.keranjang).leftJoin(table.produk, eq(table.keranjang.id_produk, table.produk.id_produk)).leftJoin(table.toko, eq(table.produk.id_toko, table.toko.id_toko)).where(eq(table.keranjang.nis, nis));
 }
@@ -192,6 +185,17 @@ export const getRiwayatUlasan = async (nis: number) : Promise<Array<any>> => {
 
 export const getFavorit = async (nis: number) : Promise<Array<any>> => {
     return await db.select().from(table.favorit).where(eq(table.favorit.nis, nis));
+}
+
+export const addToFavorite = async (id_toko: string, nis: number) => {
+    return await db.insert(table.favorit).values({
+        toko: id_toko,
+        nis: nis,
+    });
+}
+
+export const deleteFromFavorite = async (id_toko: string, nis: number) => {
+    return await db.delete(table.favorit).where(and(eq(table.favorit.toko, id_toko), eq(table.favorit.nis, nis)));
 }
 
 export const updateTelepon = async (nis: number, telepon: string) => {

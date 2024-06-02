@@ -67,7 +67,6 @@ app.post('/api/products/:id/update-profile-picture', controller.updateFotoProduk
 app.post('/api/search', controller.search);
 app.get('/api/shop/:id', controller.shopById);
 app.post('/api/add-to-cart', controller.addToCart);
-app.post('/api/add-to-favorite', controller.addToFavorite);
 app.get('/api/cart', controller.carts);
 app.delete('/api/cart/delete', controller.deleteFromCart);
 app.post('/api/cart/update', controller.updateCart);
@@ -77,6 +76,8 @@ app.get('/api/notifications', controller.notifications);
 // app.get('/api/chats/message/:id', controller.messages);
 app.get('/api/rate/:nis', controller.userRateHistory);
 app.get('/api/favorite/:nis', controller.favorites);
+app.post('/api/favorite/:nis/add', controller.addToFavorite);
+app.post('/api/favorite/:nis/delete', controller.addToFavorite);
 app.patch('/api/user/:nis/update-telepon', controller.updateTelepon);
 app.patch('/api/user/:nis/change-password', controller.changePassword);
 app.post('/api/user/:nis/update-profile-picture', controller.updateProfilePicture);
