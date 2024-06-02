@@ -668,8 +668,8 @@ export const updateCart = async (req: FastifyRequest, res: FastifyReply) => {
 export const orders = async (req: FastifyRequest, res: FastifyReply) => {
     const headers = req.headers as { authorization: string };
     const token = headers.authorization?.split(' ')[1];
-    const body = req.body as { status: string };
-    const status_pesanan = body.status;
+    const query = req.query as { status: string };
+    const status_pesanan = query.status;
 
     try {
         const verify = verifyToken(token);
