@@ -151,6 +151,57 @@ export const createShop = async (req: FastifyRequest, res: FastifyReply) => {
     }
 }
 
+export const updateShopBanner = async (req: FastifyRequest, res: FastifyReply) => {
+    const headers = req.headers as { authorization: string };
+    const file = await req.file();
+    const token = headers.authorization?.split(' ')[1];
+    const params = req.params as { id: string };
+    const id_toko = params.id;
+    
+    try {
+        const verify = verifyToken(token);
+        if(verify){
+            if(file){
+                const banner_toko = await file.toBuffer();
+                await fs.writeFile(`./assets/public/${id_toko}.jpeg`, banner_toko);
+                await models.updateBannerToko(id_toko, `${id_toko}.jpeg`);
+            }
+            return res.status(200).send({
+                message: 'Success!'
+            });
+        }
+    } catch (error) {
+        console.log(error);
+        return res.status(400).send({
+            message: error
+        })
+    }
+}
+
+export const updateShop = async (req: FastifyRequest, res: FastifyReply) => {
+    const headers = req.headers as { authorization: string };
+    const token = headers.authorization?.split(' ')[1];
+    const body = req.body as { id_toko: string, nama_toko: string; deskripsi_toko: string; };
+    const id_toko = body.id_toko;
+    const nama_toko = body.nama_toko;
+    const deskripsi_toko = body.deskripsi_toko;
+
+    try {
+        const verify = verifyToken(token);
+        if(verify){
+            await models.updateShop(id_toko, nama_toko, deskripsi_toko);
+            return res.status(200).send({
+                message: 'Success!'
+            });
+        }
+    } catch (error) {
+        console.log(error);
+        return res.status(400).send({
+            message: error
+        })
+    }
+}
+
 export const joinShop = async (req: FastifyRequest, res: FastifyReply) => {
     const headers = req.headers as { authorization: string };
     const token = headers.authorization?.split(' ')[1];

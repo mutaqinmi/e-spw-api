@@ -51,6 +51,8 @@ app.get('/api/kelas', controller.kelas);
 app.get('/api/shop', controller.shop);
 app.post('/api/shop/create', controller.createShop);
 app.post('/api/shop/delete', controller.deleteToko);
+app.patch('/api/shop/update', controller.updateShop);
+app.post('/api/shop/:id/update-profile-picture', controller.updateShopBanner);
 app.post('/api/shop/update-jadwal', controller.updateJadwal);
 app.get('/api/kelompok', controller.kelompok);
 app.post('/api/kelompok/all', controller.getDataKelompok);
