@@ -66,10 +66,6 @@ export const createToko = async (nama_toko: string, id_kelas: string, deskripsi_
     }).returning();
 }
 
-export const updateShopBanner = async (id_toko: string, banner_toko: string) => {
-    return await db.update(table.toko).set({ banner_toko: banner_toko }).where(eq(table.toko.id_toko, id_toko));
-}
-
 export const updateShop = async (id_toko: string, deskripsi_toko: string) => {
     return await db.update(table.toko).set({ deskripsi_toko: deskripsi_toko }).where(eq(table.toko.id_toko, id_toko));
 }

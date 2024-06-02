@@ -133,9 +133,11 @@ export const createShop = async (req: FastifyRequest, res: FastifyReply) => {
             await models.addToKelompok(get_id_toko[0]['id_toko'], data.nis);
 
             if(file){
+                const timestamp = luxon.DateTime.now().toFormat('yyyyLLddHHmmss');
+                const filename = `${get_id_toko[0]['id_toko']}-${timestamp}.jpeg`;
                 const banner_toko = await file.toBuffer();
-                await fs.writeFile(`./assets/public/${get_id_toko[0]['id_toko']}.jpeg`, banner_toko);
-                await models.updateBannerToko(get_id_toko[0]['id_toko'], `${get_id_toko[0]['id_toko']}.jpeg`);
+                await fs.writeFile(`./assets/public/${filename}`, banner_toko);
+                await models.updateBannerToko(get_id_toko[0]['id_toko'], `${filename}`);
             }
 
             return res.status(200).send({
@@ -170,9 +172,11 @@ export const updateShopBanner = async (req: FastifyRequest, res: FastifyReply) =
         if(verify){
             await fs.rm(`./assets/public/${body[1]['old_image']}`);
             if(file){
+                const timestamp = luxon.DateTime.now().toFormat('yyyyLLddHHmmss');
+                const filename = `${id_toko}-${timestamp}.jpeg`;
                 const banner_toko = await file.toBuffer();
-                await fs.writeFile(`./assets/public/${id_toko}.jpeg`, banner_toko);
-                await models.updateBannerToko(id_toko, `${id_toko}.jpeg`);
+                await fs.writeFile(`./assets/public/${filename}`, banner_toko);
+                await models.updateBannerToko(id_toko, `${filename}`);
             }
             return res.status(200).send({
                 message: 'Success!'
