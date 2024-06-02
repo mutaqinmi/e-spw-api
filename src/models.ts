@@ -184,7 +184,7 @@ export const getRiwayatUlasan = async (nis: number) : Promise<Array<any>> => {
 }
 
 export const getFavorit = async (nis: number) : Promise<Array<any>> => {
-    return await db.select().from(table.favorit).where(eq(table.favorit.nis, nis));
+    return await db.select().from(table.favorit).leftJoin(table.toko, eq(table.favorit.toko, table.toko.id_toko)).where(eq(table.favorit.nis, nis));
 }
 
 export const addToFavorite = async (id_toko: string, nis: number) => {

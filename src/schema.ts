@@ -75,7 +75,6 @@ export const favorit = pgTable('favorit', {
     id_favorit: serial('id_favorit').primaryKey(),
     nis: integer('nis').references(() => siswa.nis),
     toko: varchar('id_toko', {length: 50}).references(() => toko.id_toko, {onUpdate: "cascade", onDelete: "cascade"}),
-    subscribed: boolean('subscribed').default(false),
 })
 
 export const notifikasi = pgTable('notifikasi', {
