@@ -77,7 +77,7 @@ app.get('/api/notifications', controller.notifications);
 app.get('/api/rate/:nis', controller.userRateHistory);
 app.get('/api/favorite/:nis', controller.favorites);
 app.post('/api/favorite/:nis/add', controller.addToFavorite);
-app.post('/api/favorite/:nis/delete', controller.addToFavorite);
+app.post('/api/favorite/:nis/delete', controller.deleteFromFavorite);
 app.patch('/api/user/:nis/update-telepon', controller.updateTelepon);
 app.patch('/api/user/:nis/change-password', controller.changePassword);
 app.post('/api/user/:nis/update-profile-picture', controller.updateProfilePicture);
