@@ -968,8 +968,8 @@ export const editAddress = async (req: FastifyRequest, res: FastifyReply) => {
 export const deleteAddress = async (req: FastifyRequest, res: FastifyReply) => {
     const headers = req.headers as { authorization: string };
     const token = headers.authorization?.split(' ')[1];
-    const query = req.query as { id: number };
-    const id_address = query.id;
+    const body = req.body as { id_address: number };
+    const id_address = body.id_address;
 
     try {
         const verify = verifyToken(token);

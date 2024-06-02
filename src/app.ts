@@ -83,7 +83,7 @@ app.post('/api/user/:nis/update-profile-picture', controller.updateProfilePictur
 app.get('/api/user/:nis/address', controller.addresses);
 app.post('/api/user/:nis/add-address', controller.addAdress);
 app.patch('/api/user/:nis/edit-address', controller.editAddress);
-app.delete('/api/user/:nis/delete-address', controller.deleteAddress);
+app.post('/api/user/:nis/delete-address', controller.deleteAddress);
 
 app.listen({ port: Number(process.env.PORT!), host: process.env.HOST }, () => {
     const address = app.server.address();
