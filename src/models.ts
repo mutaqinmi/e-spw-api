@@ -116,6 +116,10 @@ export const updateFotoProduk = async (id_produk: string, foto_produk: string) =
     return await db.update(table.produk).set({ foto_produk: foto_produk }).where(eq(table.produk.id_produk, id_produk));
 }
 
+export const updateProduk = async (id_produk: string, nama_produk: string, harga: string, stok: number, deskripsi_produk: string, detail_produk: string) => {
+    return await db.update(table.produk).set({ nama_produk: nama_produk, harga: harga, stok: stok, deskripsi_produk: deskripsi_produk, detail_produk: detail_produk }).where(eq(table.produk.id_produk, id_produk));
+}
+
 export const deleteProduk = async (id_produk: string) => {
     return await db.delete(table.produk).where(eq(table.produk.id_produk, id_produk));
 }

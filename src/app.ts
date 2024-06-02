@@ -62,6 +62,8 @@ app.get('/api/products', controller.products);
 app.get('/api/products/:id', controller.getProductById);
 app.post('/api/products/add', controller.addProduct);
 app.post('/api/products/delete', controller.deleteProduk);
+app.patch('/api/products/update', controller.updateProduk);
+app.post('/api/products/:id/update-profile-picture', controller.updateFotoProduk);
 app.post('/api/search', controller.search);
 app.get('/api/shop/:id', controller.shopById);
 app.post('/api/add-to-cart', controller.addToCart);

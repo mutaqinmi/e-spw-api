@@ -422,18 +422,78 @@ export const addProduct = async (req: FastifyRequest, res: FastifyReply) => {
 
     try {
         const verify = verifyToken(token);
-        const data = verify as { nis: number };
         if(verify){
             const produk: {[key: string]: any} = await models.addProduk(body[0]['nama_produk'], body[1]['harga'], body[2]['stok'], body[3]['deskripsi_produk'], body[4]['detail_produk'], body[5]['id_toko']);
             if(file){
+                const timestamp = luxon.DateTime.now().toFormat('yyyyLLddHHmmss');
+                const filename = `${produk[0]?.['id_produk']}-${timestamp}.jpeg`;
                 const foto_produk = await file.toBuffer();
-                await fs.writeFile(`./assets/public/${produk[0]?.['id_produk']}.jpeg`, foto_produk);
-                await models.updateFotoProduk(produk[0]?.['id_produk'], `${produk[0]?.['id_produk']}.jpeg`);
+                await fs.writeFile(`./assets/public/${filename}`, foto_produk);
+                await models.updateFotoProduk(produk[0]?.['id_produk'], `${filename}`);
             }
 
             return res.status(200).send({
                 message: 'Success!',
             })
+        }
+    } catch (error) {
+        console.log(error);
+        return res.status(400).send({
+            message: error
+        })
+    }
+}
+
+export const updateFotoProduk = async (req: FastifyRequest, res: FastifyReply) => {
+    const headers = req.headers as { authorization: string };
+    const file = await req.file();
+    const token = headers.authorization?.split(' ')[1];
+    const params = req.params as { id: string };
+    const id_produk = params.id;
+    const field = file as { fields: any };
+    const fieldobject = Object.entries(field.fields);
+    let body: {[key: string]: any} = [];
+    for(let i = 0; i < fieldobject.length; i++){
+        const data = fieldobject[0][i] as { fieldname: string; value: string; };
+        body.push({ [data.fieldname]: data.value });
+    }
+
+    try {
+        const verify = verifyToken(token);
+        if(verify){
+            await fs.rm(`./assets/public/${body[1]['old_image']}`);
+            if(file){
+                const timestamp = luxon.DateTime.now().toFormat('yyyyLLddHHmmss');
+                const filename = `${id_produk}-${timestamp}.jpeg`;
+                const foto_produk = await file.toBuffer();
+                await fs.writeFile(`./assets/public/${filename}`, foto_produk);
+                await models.updateFotoProduk(id_produk, `${filename}`);
+            }
+            return res.status(200).send({
+                message: 'Success!'
+            });
+        }
+    } catch (error) {
+        console.log(error);
+        return res.status(400).send({
+            message: error
+        })
+    }
+}
+
+export const updateProduk = async (req: FastifyRequest, res: FastifyReply) => {
+    const headers = req.headers as { authorization: string };
+    const token = headers.authorization?.split(' ')[1];
+    const body = req.body as { id_produk: string; nama_produk: string; harga: string; stok: number; deskripsi_produk: string; detail_produk: string; };
+    const id_produk = body.id_produk;
+
+    try {
+        const verify = verifyToken(token);
+        if(verify){
+            await models.updateProduk(id_produk, body.nama_produk, body.harga, body.stok, body.deskripsi_produk, body.detail_produk);
+            return res.status(200).send({
+                message: 'Success!'
+            });
         }
     } catch (error) {
         console.log(error);
