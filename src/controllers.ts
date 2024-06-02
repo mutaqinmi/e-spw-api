@@ -668,8 +668,8 @@ export const updateCart = async (req: FastifyRequest, res: FastifyReply) => {
 export const orders = async (req: FastifyRequest, res: FastifyReply) => {
     const headers = req.headers as { authorization: string };
     const token = headers.authorization?.split(' ')[1];
-    const query = req.query as { status: string };
-    const status_pesanan = query.status;
+    const body = req.body as { status: string };
+    const status_pesanan = body.status;
 
     try {
         const verify = verifyToken(token);
@@ -678,6 +678,31 @@ export const orders = async (req: FastifyRequest, res: FastifyReply) => {
             const dataPesanan = await models.getPesanan(data.nis, status_pesanan);
             return res.status(200).send({
                 data: dataPesanan
+            })
+        }
+    } catch (error) {
+        console.log(error);
+        return res.status(400).send({
+            message: error
+        })
+    }
+}
+
+export const createOrder = async (req: FastifyRequest, res: FastifyReply) => {
+    const headers = req.headers as { authorization: string };
+    const token = headers.authorization?.split(' ')[1];
+    const body = req.body as { id_produk: string; jumlah: number; total_harga: number; catatan: string };
+
+    try {
+        const verify = verifyToken(token);
+        const data = verify as { nis: number };
+        if(verify){
+            const timestamp = luxon.DateTime.now().toFormat('yyyyLLddHHmmss');
+            const pesanan = await models.createPesanan(`transaction-${data.nis}-${timestamp}`, data.nis, body.id_produk, body.jumlah, body.total_harga, body.catatan);
+            await models.deleteFromKeranjangByNIS(data.nis);
+            return res.status(200).send({
+                message: 'Success!',
+                pesanan: pesanan,
             })
         }
     } catch (error) {
@@ -710,40 +735,6 @@ export const notifications = async (req: FastifyRequest, res: FastifyReply) => {
         })
     }
 }
-
-// const chats = async (req: FastifyRequest, res: FastifyReply) => {
-//     const params = req.params as { nis: number };
-//     const nis = params.nis;
-
-//     try {
-//         const dataChat = await models.getChat(nis);
-//         return res.status(200).send({
-//             data: dataChat
-//         })
-//     } catch (error) {
-//         console.log(error);
-//         return res.status(400).send({
-//             message: error
-//         })
-//     }
-// }
-
-// const messages = async (req: FastifyRequest, res: FastifyReply) => {
-//     const params = req.params as { id: string };
-//     const id = params.id;
-
-//     try {
-//         const dataPesan = await models.getMessage(id);
-//         return res.status(200).send({
-//             data: dataPesan
-//         })
-//     } catch (error) {
-//         console.log(error);
-//         return res.status(400).send({
-//             message: error
-//         })
-//     }
-// }
 
 export const userRateHistory = async (req: FastifyRequest, res: FastifyReply) => {
     const headers = req.headers as { authorization: string };
