@@ -157,11 +157,18 @@ export const updateShopBanner = async (req: FastifyRequest, res: FastifyReply) =
     const token = headers.authorization?.split(' ')[1];
     const params = req.params as { id: string };
     const id_toko = params.id;
+    const field = file as { fields: any };
+    const fieldobject = Object.entries(field.fields);
+    let body: {[key: string]: any} = [];
+    for(let i = 0; i < fieldobject.length; i++){
+        const data = fieldobject[0][i] as { fieldname: string; value: string; };
+        body.push({ [data.fieldname]: data.value });
+    }
     
     try {
         const verify = verifyToken(token);
         if(verify){
-            await fs.rm(`./assets/public/${id_toko}.jpeg`);
+            await fs.rm(`./assets/public/${body[1]['old_image']}.jpeg`);
             if(file){
                 const banner_toko = await file.toBuffer();
                 await fs.writeFile(`./assets/public/${id_toko}.jpeg`, banner_toko);
