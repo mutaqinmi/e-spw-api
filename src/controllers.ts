@@ -161,6 +161,7 @@ export const updateShopBanner = async (req: FastifyRequest, res: FastifyReply) =
     try {
         const verify = verifyToken(token);
         if(verify){
+            await fs.rm(`./assets/public/${id_toko}.jpeg`);
             if(file){
                 const banner_toko = await file.toBuffer();
                 await fs.writeFile(`./assets/public/${id_toko}.jpeg`, banner_toko);
