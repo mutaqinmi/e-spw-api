@@ -102,6 +102,7 @@ export const ulasan = pgTable('ulasan', {
     id_ulasan: serial('id_ulasan').primaryKey(),
     nis: integer('nis').references(() => siswa.nis, {onUpdate: "cascade", onDelete: "cascade"}),
     id_produk: varchar('id_produk', {length: 50}).references(() => produk.id_produk, {onUpdate: "cascade", onDelete: "cascade"}),
+    id_transaksi: varchar('id_transaksi', {length: 50}).references(() => transaksi.id_transaksi, {onUpdate: "cascade", onDelete: "cascade"}),
     deskripsi_ulasan: varchar('deskripsi_ulasan', {length: 255}),
     jumlah_rating: numeric('jumlah_rating'),
 })

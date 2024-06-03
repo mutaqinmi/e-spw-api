@@ -828,13 +828,13 @@ export const shopRateHistory = async (req: FastifyRequest, res: FastifyReply) =>
 export const addUlasan = async (req: FastifyRequest, res: FastifyReply) => {
     const headers = req.headers as { authorization: string };
     const token = headers.authorization?.split(' ')[1];
-    const body = req.body as { id_produk: string; ulasan: string; rating: string; };
+    const body = req.body as { id_produk: string; id_transaksi: string; ulasan: string; rating: string; };
 
     try {
         const verify = verifyToken(token);
         const data = verify as { nis: number };
         if(verify){
-            await models.addUlasan(data.nis, body.id_produk, body.ulasan, body.rating);
+            await models.addUlasan(data.nis, body.id_produk, body.id_transaksi, body.ulasan, body.rating);
             return res.status(200).send({
                 message: 'Success!'
             })
