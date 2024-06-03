@@ -806,13 +806,13 @@ export const userRateHistory = async (req: FastifyRequest, res: FastifyReply) =>
 export const shopRateHistory = async (req: FastifyRequest, res: FastifyReply) => {
     const headers = req.headers as { authorization: string };
     const token = headers.authorization?.split(' ')[1];
-    const body = req.body as { id_produk: string; };
-    const id_produk = body.id_produk;
+    const body = req.body as { id_toko: string; };
+    const id_toko = body.id_toko;
 
     try {
         const verify = verifyToken(token);
         if(verify){
-            const dataRating = await models.getRiwayatUlasanByShop(id_produk);
+            const dataRating = await models.getRiwayatUlasanByShop(id_toko);
             return res.status(200).send({
                 data: dataRating
             })
