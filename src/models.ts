@@ -180,6 +180,10 @@ export const getPesanan = async (nis: number, status_pesanan: string) : Promise<
     return await db.select().from(table.transaksi).leftJoin(table.produk, eq(table.transaksi.id_produk, table.produk.id_produk)).leftJoin(table.toko, eq(table.produk.id_toko, table.toko.id_toko)).leftJoin(table.kelas, eq(table.toko.id_kelas, table.kelas.id_kelas)).where(and(eq(table.transaksi.nis, nis), eq(table.transaksi.status, status_pesanan)));
 }
 
+export const getPesananByToko = async (id_toko: string, status_pesanan: string) : Promise<Array<any>> => {
+    return await db.select().from(table.transaksi).leftJoin(table.produk, eq(table.transaksi.id_produk, table.produk.id_produk)).leftJoin(table.toko, eq(table.produk.id_toko, table.toko.id_toko)).leftJoin(table.kelas, eq(table.toko.id_kelas, table.kelas.id_kelas)).where(and(eq(table.toko.id_toko, id_toko), eq(table.transaksi.status, status_pesanan)));
+}
+
 export const createPesanan = async (id_transaksi: string, nis: number, id_produk: string, jumlah: number, total_harga: number, catatan: string) => {
     return await db.insert(table.transaksi).values({
         id_transaksi: id_transaksi,

@@ -689,6 +689,29 @@ export const orders = async (req: FastifyRequest, res: FastifyReply) => {
     }
 }
 
+export const ordersByShop = async (req: FastifyRequest, res: FastifyReply) => {
+    const headers = req.headers as { authorization: string };
+    const token = headers.authorization?.split(' ')[1];
+    const body = req.body as { id_toko: string; status: string };
+    const id_toko = body.id_toko;
+    const status_pesanan = body.status;
+
+    try {
+        const verify = verifyToken(token);
+        if(verify){
+            const dataPesanan = await models.getPesananByToko(id_toko, status_pesanan);
+            return res.status(200).send({
+                data: dataPesanan
+            })
+        }
+    } catch (error) {
+        console.log(error);
+        return res.status(400).send({
+            message: error
+        })
+    }
+}
+
 export const createOrder = async (req: FastifyRequest, res: FastifyReply) => {
     const headers = req.headers as { authorization: string };
     const token = headers.authorization?.split(' ')[1];

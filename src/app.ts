@@ -66,6 +66,7 @@ app.patch('/api/products/update', controller.updateProduk);
 app.post('/api/products/:id/update-profile-picture', controller.updateFotoProduk);
 app.post('/api/search', controller.search);
 app.get('/api/shop/:id', controller.shopById);
+app.post('/api/shop/orders', controller.ordersByShop);
 app.post('/api/add-to-cart', controller.addToCart);
 app.get('/api/cart', controller.carts);
 app.delete('/api/cart/delete', controller.deleteFromCart);
