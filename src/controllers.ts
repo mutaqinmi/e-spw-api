@@ -741,12 +741,12 @@ export const createOrder = async (req: FastifyRequest, res: FastifyReply) => {
 export const updateStatusPesanan = async (req: FastifyRequest, res: FastifyReply) => {
     const headers = req.headers as { authorization: string };
     const token = headers.authorization?.split(' ')[1];
-    const body = req.body as { id_pesanan: string; status: string; };
+    const body = req.body as { id_transaksi: string; status: string; };
 
     try {
         const verify = verifyToken(token);
         if(verify){
-            await models.updateStatusPesanan(body.id_pesanan, body.status);
+            await models.updateStatusPesanan(body.id_transaksi, body.status);
             return res.status(200).send({
                 message: 'Success!'
             });
