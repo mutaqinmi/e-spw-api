@@ -212,6 +212,10 @@ export const getRiwayatUlasanByShop = async (id_toko: string) : Promise<Array<an
     return await db.select().from(table.ulasan).leftJoin(table.transaksi, eq(table.ulasan.id_transaksi, table.transaksi.id_transaksi)).leftJoin(table.produk, eq(table.ulasan.id_produk, table.produk.id_produk)).leftJoin(table.toko, eq(table.produk.id_toko, table.toko.id_toko)).leftJoin(table.siswa, eq(table.ulasan.nis, table.siswa.nis)).leftJoin(table.kelas, eq(table.siswa.kelas, table.kelas.id_kelas)).where(eq(table.toko.id_toko, id_toko));
 }
 
+export const getRiwayatUlasanByShopLimited = async (id_toko: string) : Promise<Array<any>> => {
+    return await db.select().from(table.ulasan).leftJoin(table.transaksi, eq(table.ulasan.id_transaksi, table.transaksi.id_transaksi)).leftJoin(table.produk, eq(table.ulasan.id_produk, table.produk.id_produk)).leftJoin(table.toko, eq(table.produk.id_toko, table.toko.id_toko)).leftJoin(table.siswa, eq(table.ulasan.nis, table.siswa.nis)).leftJoin(table.kelas, eq(table.siswa.kelas, table.kelas.id_kelas)).where(eq(table.toko.id_toko, id_toko)).limit(3);
+}
+
 export const addUlasan = async (nis: number, id_produk: string, id_transaksi: string, deskripsi_ulasan: string, jumlah_rating: string) => {
     return await db.insert(table.ulasan).values({
         nis: nis,

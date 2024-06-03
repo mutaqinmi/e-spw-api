@@ -825,6 +825,28 @@ export const shopRateHistory = async (req: FastifyRequest, res: FastifyReply) =>
     }
 }
 
+export const shopRateHistoryLimited = async (req: FastifyRequest, res: FastifyReply) => {
+    const headers = req.headers as { authorization: string };
+    const token = headers.authorization?.split(' ')[1];
+    const body = req.body as { id_toko: string; };
+    const id_toko = body.id_toko;
+
+    try {
+        const verify = verifyToken(token);
+        if(verify){
+            const dataRating = await models.getRiwayatUlasanByShopLimited(id_toko);
+            return res.status(200).send({
+                data: dataRating
+            })
+        }
+    } catch (error) {
+        console.log(error);
+        return res.status(400).send({
+            message: error
+        })
+    }
+}
+
 export const addUlasan = async (req: FastifyRequest, res: FastifyReply) => {
     const headers = req.headers as { authorization: string };
     const token = headers.authorization?.split(' ')[1];

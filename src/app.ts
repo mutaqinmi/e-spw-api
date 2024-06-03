@@ -67,6 +67,7 @@ app.post('/api/search', controller.search);
 app.get('/api/shop/:id', controller.shopById);
 app.post('/api/shop/orders', controller.ordersByShop);
 app.post('/api/shop/rate', controller.shopRateHistory);
+app.post('/api/shop/rate-limited', controller.shopRateHistoryLimited);
 app.post('/api/add-to-cart', controller.addToCart);
 app.get('/api/cart', controller.carts);
 app.delete('/api/cart/delete', controller.deleteFromCart);
