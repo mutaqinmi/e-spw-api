@@ -56,6 +56,7 @@ export const keranjang = pgTable('keranjang', {
     nis: integer('nis').references(() => siswa.nis),
     id_produk: varchar('id_produk', {length: 50}).references(() => produk.id_produk, {onUpdate: "cascade", onDelete: "cascade"}),
     jumlah: integer('jumlah').default(1),
+    catatan: varchar('catatan', {length: 50}),
 })
 
 export const banner = pgTable('banner', {
@@ -92,7 +93,6 @@ export const transaksi = pgTable('transaksi', {
     id_produk: varchar('id_produk', {length: 50}).references(() => produk.id_produk, {onUpdate: "cascade", onDelete: "cascade"}),
     jumlah: integer('jumlah'),
     total_harga: integer('total_harga'),
-    catatan: varchar('catatan', {length: 50}),
     status: varchar('status', {length: 20}),
     waktu: timestamp('waktu').default(sql`now()`),
 })
