@@ -196,6 +196,10 @@ export const createPesanan = async (id_transaksi: string, nis: number, id_produk
     }).returning();
 }
 
+export const updateStatusPesanan = async (id_transaksi: string, status: string) => {
+    return await db.update(table.transaksi).set({ status: status }).where(eq(table.transaksi.id_transaksi, id_transaksi));
+}
+
 export const getNotifikasi = async (nis: number, type: string) : Promise<Array<any>> => {
     return await db.select().from(table.notifikasi).where(and(eq(table.notifikasi.nis, nis), eq(table.notifikasi.jenis_notifikasi, type)));
 }

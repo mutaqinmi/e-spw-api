@@ -73,6 +73,7 @@ app.delete('/api/cart/delete', controller.deleteFromCart);
 app.post('/api/cart/update', controller.updateCart);
 app.post('/api/orders', controller.orders);
 app.post('/api/orders/new', controller.createOrder);
+app.patch('/api/orders/update', controller.updateStatusPesanan);
 app.get('/api/notifications', controller.notifications);
 // app.get('/api/chats/:nis', controller.chats);
 // app.get('/api/chats/message/:id', controller.messages);
