@@ -191,7 +191,8 @@ export const createPesanan = async (id_transaksi: string, nis: number, id_produk
         id_produk: id_produk,
         jumlah: jumlah,
         total_harga: total_harga,
-        status: 'Menunggu Konfirmasi'
+        status: 'Menunggu Konfirmasi',
+        catatan: catatan,
     }).returning();
 }
 

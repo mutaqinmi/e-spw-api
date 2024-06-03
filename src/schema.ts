@@ -94,6 +94,7 @@ export const transaksi = pgTable('transaksi', {
     jumlah: integer('jumlah'),
     total_harga: integer('total_harga'),
     status: varchar('status', {length: 20}),
+    catatan: varchar('catatan', {length: 50}),
     waktu: timestamp('waktu').default(sql`now()`),
 })
 
