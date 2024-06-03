@@ -205,7 +205,20 @@ export const getNotifikasi = async (nis: number, type: string) : Promise<Array<a
 }
 
 export const getRiwayatUlasan = async (nis: number) : Promise<Array<any>> => {
-    return await db.select().from(table.ulasan).where(eq(table.ulasan.nis, nis));
+    return await db.select().from(table.ulasan).leftJoin(table.produk, eq(table.ulasan.id_produk, table.produk.id_produk)).leftJoin(table.toko, eq(table.produk.id_toko, table.toko.id_toko)).where(eq(table.ulasan.nis, nis));
+}
+
+export const getRiwayatUlasanByShop = async (id_produk: string) : Promise<Array<any>> => {
+    return await db.select().from(table.ulasan).leftJoin(table.produk, eq(table.ulasan.id_produk, table.produk.id_produk)).leftJoin(table.toko, eq(table.produk.id_toko, table.toko.id_toko)).where(eq(table.ulasan.id_produk, id_produk));
+}
+
+export const addUlasan = async (nis: number, id_produk: string, deskripsi_ulasan: string, jumlah_rating: string) => {
+    return await db.insert(table.ulasan).values({
+        nis: nis,
+        id_produk: id_produk,
+        deskripsi_ulasan: deskripsi_ulasan,
+        jumlah_rating: jumlah_rating
+    });
 }
 
 export const getFavorit = async (nis: number) : Promise<Array<any>> => {

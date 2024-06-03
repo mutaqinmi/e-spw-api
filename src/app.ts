@@ -47,7 +47,6 @@ app.register(require("@fastify/static"), {
 app.post('/api/login', controller.login);
 app.post('/api/logout', controller.logout);
 app.get('/api/kelas', controller.kelas);
-// app.get('/api/banner', controller.todayBaner);
 app.get('/api/shop', controller.shop);
 app.post('/api/shop/create', controller.createShop);
 app.post('/api/shop/delete', controller.deleteToko);
@@ -67,6 +66,7 @@ app.post('/api/products/:id/update-profile-picture', controller.updateFotoProduk
 app.post('/api/search', controller.search);
 app.get('/api/shop/:id', controller.shopById);
 app.post('/api/shop/orders', controller.ordersByShop);
+app.post('/api/shop/rate', controller.shopRateHistory);
 app.post('/api/add-to-cart', controller.addToCart);
 app.get('/api/cart', controller.carts);
 app.delete('/api/cart/delete', controller.deleteFromCart);
@@ -75,9 +75,8 @@ app.post('/api/orders', controller.orders);
 app.post('/api/orders/new', controller.createOrder);
 app.patch('/api/orders/update', controller.updateStatusPesanan);
 app.get('/api/notifications', controller.notifications);
-// app.get('/api/chats/:nis', controller.chats);
-// app.get('/api/chats/message/:id', controller.messages);
 app.get('/api/rate/:nis', controller.userRateHistory);
+app.post('/api/rate/:nis/add', controller.addUlasan);
 app.get('/api/favorite/:nis', controller.favorites);
 app.post('/api/favorite/:nis/add', controller.addToFavorite);
 app.post('/api/favorite/:nis/delete', controller.deleteFromFavorite);

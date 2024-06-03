@@ -803,6 +803,50 @@ export const userRateHistory = async (req: FastifyRequest, res: FastifyReply) =>
     }
 }
 
+export const shopRateHistory = async (req: FastifyRequest, res: FastifyReply) => {
+    const headers = req.headers as { authorization: string };
+    const token = headers.authorization?.split(' ')[1];
+    const body = req.body as { id_produk: string; };
+    const id_produk = body.id_produk;
+
+    try {
+        const verify = verifyToken(token);
+        if(verify){
+            const dataRating = await models.getRiwayatUlasanByShop(id_produk);
+            return res.status(200).send({
+                data: dataRating
+            })
+        }
+    } catch (error) {
+        console.log(error);
+        return res.status(400).send({
+            message: error
+        })
+    }
+}
+
+export const addUlasan = async (req: FastifyRequest, res: FastifyReply) => {
+    const headers = req.headers as { authorization: string };
+    const token = headers.authorization?.split(' ')[1];
+    const body = req.body as { id_produk: string; ulasan: string; rating: string; };
+
+    try {
+        const verify = verifyToken(token);
+        const data = verify as { nis: number };
+        if(verify){
+            await models.addUlasan(data.nis, body.id_produk, body.ulasan, body.rating);
+            return res.status(200).send({
+                message: 'Success!'
+            })
+        }
+    } catch (error) {
+        console.log(error);
+        return res.status(400).send({
+            message: error
+        })
+    }
+}
+
 export const favorites = async (req: FastifyRequest, res: FastifyReply) => {
     const headers = req.headers as { authorization: string };
     const token = headers.authorization?.split(' ')[1];
