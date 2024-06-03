@@ -88,7 +88,7 @@ export const notifikasi = pgTable('notifikasi', {
 })
 
 export const transaksi = pgTable('transaksi', {
-    id_transaksi: varchar('id_transaksi', {length: 20}).primaryKey(),
+    id_transaksi: varchar('id_transaksi', {length: 50}).primaryKey(),
     nis: integer('nis').references(() => siswa.nis, {onUpdate: "cascade", onDelete: "cascade"}),
     id_produk: varchar('id_produk', {length: 50}).references(() => produk.id_produk, {onUpdate: "cascade", onDelete: "cascade"}),
     jumlah: integer('jumlah'),
