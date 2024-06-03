@@ -762,8 +762,8 @@ export const updateStatusPesanan = async (req: FastifyRequest, res: FastifyReply
 export const notifications = async (req: FastifyRequest, res: FastifyReply) => {
     const headers = req.headers as { authorization: string };
     const token = headers.authorization?.split(' ')[1];
-    const query = req.query as { type: string };
-    const type = query.type;
+    const body = req.body as { type: string };
+    const type = body.type;
 
     try {
         const verify = verifyToken(token);
@@ -773,6 +773,28 @@ export const notifications = async (req: FastifyRequest, res: FastifyReply) => {
             return res.status(200).send({
                 data: dataNotifikasi
             })
+        }
+    } catch (error) {
+        console.log(error);
+        return res.status(400).send({
+            message: error
+        })
+    }
+}
+
+export const createNotification = async (req: FastifyRequest, res: FastifyReply) => {
+    const headers = req.headers as { authorization: string };
+    const token = headers.authorization?.split(' ')[1];
+    const body = req.body as { type: string; title: string; description: string; };
+
+    try {
+        const verify = verifyToken(token);
+        const data = verify as { nis: number };
+        if(verify){
+            await models.createNotifikasi(data.nis, body.type, body.title, body.description);
+            return res.status(200).send({
+                message: 'Success!'
+            });
         }
     } catch (error) {
         console.log(error);
