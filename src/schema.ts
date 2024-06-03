@@ -83,7 +83,7 @@ export const notifikasi = pgTable('notifikasi', {
     nis: integer('nis').references(() => siswa.nis, {onUpdate: "cascade", onDelete: "cascade"}),
     jenis_notifikasi: varchar('jenis_notifikasi', {length: 50}),
     waktu: timestamp('waktu').default(sql`now()`),
-    judul_notifikasi: varchar('judul_notifikasi', {length: 20}),
+    judul_notifikasi: varchar('judul_notifikasi', {length: 255}),
     detail_notifikasi: varchar('detail_notifikasi', {length: 255}),
 })
 
