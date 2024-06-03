@@ -201,7 +201,7 @@ export const updateStatusPesanan = async (id_transaksi: string, status: string) 
 }
 
 export const getNotifikasi = async (nis: number, type: string) : Promise<Array<any>> => {
-    return await db.select().from(table.notifikasi).where(and(eq(table.notifikasi.nis, nis), eq(table.notifikasi.jenis_notifikasi, type)));
+    return await db.select().from(table.notifikasi).where(and(eq(table.notifikasi.nis, nis), eq(table.notifikasi.jenis_notifikasi, type))).orderBy(desc(table.notifikasi.waktu));
 }
 
 export const createNotifikasi = async (nis: number, jenis_notifikasi: string, judul_notifikasi: string, detail_notifikasi: string) => {
