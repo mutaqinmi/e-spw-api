@@ -151,11 +151,12 @@ export const removeFromKelompok = async (id_toko: string, nis: number) => {
     return await db.delete(table.kelompok).where(and(eq(table.kelompok.id_toko, id_toko), eq(table.kelompok.nis, nis)));
 }
 
-export const addToCart = async (id_produk: string, nis: number, jumlah: number) => {
+export const addToCart = async (id_produk: string, nis: number, jumlah: number, catatan: string) => {
     return await db.insert(table.keranjang).values({
         nis: nis,
         id_produk: id_produk,
-        jumlah: jumlah
+        jumlah: jumlah,
+        catatan: catatan
     });
 }
 
@@ -186,7 +187,6 @@ export const createPesanan = async (id_transaksi: string, nis: number, id_produk
         id_produk: id_produk,
         jumlah: jumlah,
         total_harga: total_harga,
-        catatan: catatan,
         status: 'Menunggu Konfirmasi'
     }).returning();
 }

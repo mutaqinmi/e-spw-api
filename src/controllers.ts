@@ -575,16 +575,17 @@ export const shopById = async (req: FastifyRequest, res: FastifyReply) => {
 export const addToCart = async (req: FastifyRequest, res: FastifyReply) => {
     const headers = req.headers as { authorization: string };
     const token = headers.authorization?.split(' ')[1];
-    const body = req.body as { id: string; qty: number; token: string; }
+    const body = req.body as { id: string; qty: number; catatan: string; }
     const id_produk = body.id;
     const qty = body.qty;
+    const catatan = body.catatan;
     
     try {
         const verify = verifyToken(token);
         const data = verify as { nis: number };
         
         if(verify){
-            await models.addToCart(id_produk, data.nis, qty);
+            await models.addToCart(id_produk, data.nis, qty, catatan);
             return res.status(200).send({
                 message: 'Success!'
             })
