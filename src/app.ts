@@ -92,6 +92,5 @@ app.post('/api/user/:nis/delete-address', controller.deleteAddress);
 
 app.listen({ port: Number(process.env.PORT!), host: process.env.HOST }, () => {
     const address = app.server.address();
-    // console.log(`Server running at port ${typeof address === "string" ? address : address?.port}`);
-    console.log(`Server running at port ${address}`);
+    console.log(`Server running at port ${typeof address === "string" ? address : address?.port}`);
 })
