@@ -1,5 +1,5 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import * as models from "./models";
+import * as models from "./query";
 import * as jwt from "jsonwebtoken";
 import fs from "fs/promises";
 import * as luxon from "luxon";
@@ -12,12 +12,12 @@ const verifyToken = (token: string) => {
     return jwt.verify(token, process.env.SECRET_KEY!);
 }
 
-export const login = async (req: FastifyRequest, res: FastifyReply) => {
+export const getSiswa = async (req: FastifyRequest, res: FastifyReply) => {
     const body = req.body as { nis: number };
     const nis = body.nis;
 
     try {
-        const dataSiswa = await models.getDataSiswa(nis);
+        const dataSiswa = await models.getSiswa(nis);
         if(dataSiswa.length === 1){
             const token = generateToken(dataSiswa[0]['siswa']);
             models.addToken(dataSiswa[0]['siswa']['nis'], token);
@@ -60,20 +60,6 @@ export const logout = async (req: FastifyRequest, res: FastifyReply) => {
     }
 }
 
-// const todayBaner = async (req: FastifyRequest, res: FastifyReply) => {
-//     try {
-//         const dataBanner = await models.getTodayBanner() as { rows: any[]};
-//         return res.status(200).send({
-//             data: dataBanner
-//         })
-//     } catch (error) {
-//         console.log(error);
-//         return res.status(400).send({
-//             message: error
-//         })
-//     }
-// }
-
 export const kelas = async (req: FastifyRequest, res: FastifyReply) => {
     try {
         const dataKelas = await models.getKelas();
@@ -89,7 +75,7 @@ export const kelas = async (req: FastifyRequest, res: FastifyReply) => {
 
 }
 
-export const shop = async (req: FastifyRequest, res: FastifyReply) => {
+export const toko = async (req: FastifyRequest, res: FastifyReply) => {
     const headers = req.headers as { authorization: string };
     const token = headers.authorization?.split(' ')[1];
 
@@ -109,7 +95,7 @@ export const shop = async (req: FastifyRequest, res: FastifyReply) => {
     }
 }
 
-export const createShop = async (req: FastifyRequest, res: FastifyReply) => {
+export const createToko = async (req: FastifyRequest, res: FastifyReply) => {
     const headers = req.headers as { authorization: string };
     const token = headers.authorization?.split(' ')[1];
     const file = await req.file();
@@ -133,10 +119,10 @@ export const createShop = async (req: FastifyRequest, res: FastifyReply) => {
             await models.addToKelompok(get_id_toko[0]['id_toko'], data.nis);
 
             if(file){
-                const timestamp = luxon.DateTime.now().toFormat('yyyyLLddHHmmss');
+                const timestamp = luxon.DateTime.now().toISO();
                 const filename = `${get_id_toko[0]['id_toko']}-${timestamp}.jpeg`;
                 const banner_toko = await file.toBuffer();
-                await fs.writeFile(`./assets/public/${filename}`, banner_toko);
+                await fs.writeFile(`./assets/uploads/${filename}`, banner_toko);
                 await models.updateBannerToko(get_id_toko[0]['id_toko'], `${filename}`);
             }
 
@@ -153,7 +139,7 @@ export const createShop = async (req: FastifyRequest, res: FastifyReply) => {
     }
 }
 
-export const updateShopBanner = async (req: FastifyRequest, res: FastifyReply) => {
+export const updateBannerToko = async (req: FastifyRequest, res: FastifyReply) => {
     const headers = req.headers as { authorization: string };
     const file = await req.file();
     const token = headers.authorization?.split(' ')[1];
@@ -170,12 +156,12 @@ export const updateShopBanner = async (req: FastifyRequest, res: FastifyReply) =
     try {
         const verify = verifyToken(token);
         if(verify){
-            await fs.rm(`./assets/public/${body[1]['old_image']}`);
+            await fs.rm(`./assets/uploads/${body[1]['old_image']}`);
             if(file){
-                const timestamp = luxon.DateTime.now().toFormat('yyyyLLddHHmmss');
+                const timestamp = luxon.DateTime.now().toISO();
                 const filename = `${id_toko}-${timestamp}.jpeg`;
                 const banner_toko = await file.toBuffer();
-                await fs.writeFile(`./assets/public/${filename}`, banner_toko);
+                await fs.writeFile(`./assets/uploads/${filename}`, banner_toko);
                 await models.updateBannerToko(id_toko, `${filename}`);
             }
             return res.status(200).send({
@@ -190,7 +176,7 @@ export const updateShopBanner = async (req: FastifyRequest, res: FastifyReply) =
     }
 }
 
-export const updateShop = async (req: FastifyRequest, res: FastifyReply) => {
+export const updateToko = async (req: FastifyRequest, res: FastifyReply) => {
     const headers = req.headers as { authorization: string };
     const token = headers.authorization?.split(' ')[1];
     const body = req.body as { id_toko: string, nama_toko: string; deskripsi_toko: string; };
@@ -200,7 +186,7 @@ export const updateShop = async (req: FastifyRequest, res: FastifyReply) => {
     try {
         const verify = verifyToken(token);
         if(verify){
-            await models.updateShop(id_toko, deskripsi_toko);
+            await models.updateToko(id_toko, deskripsi_toko);
             return res.status(200).send({
                 message: 'Success!'
             });
@@ -213,7 +199,7 @@ export const updateShop = async (req: FastifyRequest, res: FastifyReply) => {
     }
 }
 
-export const joinShop = async (req: FastifyRequest, res: FastifyReply) => {
+export const gabungToko = async (req: FastifyRequest, res: FastifyReply) => {
     const headers = req.headers as { authorization: string };
     const token = headers.authorization?.split(' ')[1];
     const body = req.body as { kode_unik: string; };
@@ -224,7 +210,7 @@ export const joinShop = async (req: FastifyRequest, res: FastifyReply) => {
         const data = verify as { nis: number };
         if(verify){
             const toko: {[key: string]: any} = await models.getTokoByKode(kode_unik);
-            const kelompok = await models.getDataKelompok(data.nis);
+            const kelompok = await models.getKelompok(data.nis);
             if(kelompok.length > 0){
                 for(let i = 0; i < kelompok.length; i++){
                     if(kelompok[i]?.['toko']?.['id_toko'] === toko[0]['id_toko']){
@@ -332,7 +318,7 @@ export const updateJadwal = async (req: FastifyRequest, res: FastifyReply) => {
     try {
         const verify = verifyToken(token);
         if(verify){
-            await models.updateJadwal(id_toko, is_open);
+            await models.updateJadwalToko(id_toko, is_open);
             return res.status(200).send({
                 message: 'Success!'
             });
@@ -353,7 +339,7 @@ export const kelompok = async (req: FastifyRequest, res: FastifyReply) => {
         const verify = verifyToken(token);
         const data = verify as { nis: number };
         if(verify){
-            const dataKelompok = await models.getDataKelompok(data.nis);
+            const dataKelompok = await models.getKelompok(data.nis);
             return res.status(200).send({
                 data: dataKelompok
             })
@@ -366,7 +352,7 @@ export const kelompok = async (req: FastifyRequest, res: FastifyReply) => {
     }
 }
 
-export const products = async (req: FastifyRequest, res: FastifyReply) => {
+export const produk = async (req: FastifyRequest, res: FastifyReply) => {
     const headers = req.headers as { authorization: string };
     const token = headers.authorization?.split(' ')[1];
 
@@ -386,7 +372,7 @@ export const products = async (req: FastifyRequest, res: FastifyReply) => {
     }
 }
 
-export const getProductById = async (req: FastifyRequest, res: FastifyReply) => {
+export const getProdukById = async (req: FastifyRequest, res: FastifyReply) => {
     const headers = req.headers as { authorization: string };
     const token = headers.authorization?.split(' ')[1];
     const params = req.params as { id: string };
@@ -408,7 +394,7 @@ export const getProductById = async (req: FastifyRequest, res: FastifyReply) => 
     }
 }
 
-export const addProduct = async (req: FastifyRequest, res: FastifyReply) => {
+export const addProduk = async (req: FastifyRequest, res: FastifyReply) => {
     const headers = req.headers as { authorization: string };
     const token = headers.authorization?.split(' ')[1];
     const file = await req.file();
@@ -425,10 +411,10 @@ export const addProduct = async (req: FastifyRequest, res: FastifyReply) => {
         if(verify){
             const produk: {[key: string]: any} = await models.addProduk(body[0]['nama_produk'], body[1]['harga'], body[2]['stok'], body[3]['deskripsi_produk'], body[4]['detail_produk'], body[5]['id_toko']);
             if(file){
-                const timestamp = luxon.DateTime.now().toFormat('yyyyLLddHHmmss');
+                const timestamp = luxon.DateTime.now().toISO();
                 const filename = `${produk[0]?.['id_produk']}-${timestamp}.jpeg`;
                 const foto_produk = await file.toBuffer();
-                await fs.writeFile(`./assets/public/${filename}`, foto_produk);
+                await fs.writeFile(`./assets/uploads/${filename}`, foto_produk);
                 await models.updateFotoProduk(produk[0]?.['id_produk'], `${filename}`);
             }
 
@@ -461,12 +447,11 @@ export const updateFotoProduk = async (req: FastifyRequest, res: FastifyReply) =
     try {
         const verify = verifyToken(token);
         if(verify){
-            await fs.rm(`./assets/public/${body[1]['old_image']}`);
             if(file){
-                const timestamp = luxon.DateTime.now().toFormat('yyyyLLddHHmmss');
+                const timestamp = luxon.DateTime.now().toISO();
                 const filename = `${id_produk}-${timestamp}.jpeg`;
                 const foto_produk = await file.toBuffer();
-                await fs.writeFile(`./assets/public/${filename}`, foto_produk);
+                await fs.writeFile(`./assets/uploads/${filename}`, foto_produk);
                 await models.updateFotoProduk(id_produk, `${filename}`);
             }
             return res.status(200).send({
@@ -513,7 +498,6 @@ export const deleteProduk = async (req: FastifyRequest, res: FastifyReply) => {
         const verify = verifyToken(token);
         if(verify){
             await models.deleteProduk(id_produk);
-            await fs.rm(`./assets/public/${id_produk}.jpeg`);
             return res.status(200).send({
                 message: 'Success!'
             });
@@ -535,8 +519,8 @@ export const search = async (req: FastifyRequest, res: FastifyReply) => {
     try {
         const verify = verifyToken(token);
         if(verify){
-            const searchProductResult = await models.cariProduk(query);
-            const searchShopResult = await models.cariToko(query);
+            const searchProductResult = await models.searchProduk(query);
+            const searchShopResult = await models.searchToko(query);
             return res.status(200).send({
                 dataProduk: searchProductResult,
                 dataToko: searchShopResult
@@ -550,7 +534,7 @@ export const search = async (req: FastifyRequest, res: FastifyReply) => {
     }
 }
 
-export const shopById = async (req: FastifyRequest, res: FastifyReply) => {
+export const getTokoById = async (req: FastifyRequest, res: FastifyReply) => {
     const headers = req.headers as { authorization: string };
     const token = headers.authorization?.split(' ')[1];
     const params = req.params as { id: string };
@@ -572,7 +556,7 @@ export const shopById = async (req: FastifyRequest, res: FastifyReply) => {
     }
 }
 
-export const addToCart = async (req: FastifyRequest, res: FastifyReply) => {
+export const addToKeranjang = async (req: FastifyRequest, res: FastifyReply) => {
     const headers = req.headers as { authorization: string };
     const token = headers.authorization?.split(' ')[1];
     const body = req.body as { id: string; qty: number; catatan: string; }
@@ -585,7 +569,7 @@ export const addToCart = async (req: FastifyRequest, res: FastifyReply) => {
         const data = verify as { nis: number };
         
         if(verify){
-            await models.addToCart(id_produk, data.nis, qty, catatan);
+            await models.addToKeranjang(id_produk, data.nis, qty, catatan);
             return res.status(200).send({
                 message: 'Success!'
             })
@@ -619,7 +603,7 @@ export const carts = async (req: FastifyRequest, res: FastifyReply) => {
     }
 }
 
-export const deleteFromCart = async (req: FastifyRequest, res: FastifyReply) => {
+export const deleteFromKeranjang = async (req: FastifyRequest, res: FastifyReply) => {
     const headers = req.headers as { authorization: string };
     const token = headers.authorization?.split(' ')[1];
     const body = req.body as { id: number; };
@@ -629,7 +613,7 @@ export const deleteFromCart = async (req: FastifyRequest, res: FastifyReply) => 
         const verify = verifyToken(token);
         const data = verify as { nis: number };
         if(verify){
-            await models.deleteFromKeranjang(id_keranjang, data.nis);
+            await models.removeFromKeranjang(id_keranjang, data.nis);
             return res.status(200).send({
                 message: 'Success!'
             })
@@ -642,7 +626,7 @@ export const deleteFromCart = async (req: FastifyRequest, res: FastifyReply) => 
     }
 }
 
-export const updateCart = async (req: FastifyRequest, res: FastifyReply) => {
+export const updateKeranjang = async (req: FastifyRequest, res: FastifyReply) => {
     const headers = req.headers as { authorization: string };
     const token = headers.authorization?.split(' ')[1];
     const body = req.body as { id: number; qty: number;};
@@ -689,7 +673,7 @@ export const orders = async (req: FastifyRequest, res: FastifyReply) => {
     }
 }
 
-export const ordersByShop = async (req: FastifyRequest, res: FastifyReply) => {
+export const ordersByToko = async (req: FastifyRequest, res: FastifyReply) => {
     const headers = req.headers as { authorization: string };
     const token = headers.authorization?.split(' ')[1];
     const body = req.body as { id_toko: string; status: string };
@@ -712,7 +696,7 @@ export const ordersByShop = async (req: FastifyRequest, res: FastifyReply) => {
     }
 }
 
-export const createOrder = async (req: FastifyRequest, res: FastifyReply) => {
+export const createPesanan = async (req: FastifyRequest, res: FastifyReply) => {
     const headers = req.headers as { authorization: string };
     const token = headers.authorization?.split(' ')[1];
     const body = req.body as { id_produk: string; jumlah: number; total_harga: number; catatan: string };
@@ -721,10 +705,10 @@ export const createOrder = async (req: FastifyRequest, res: FastifyReply) => {
         const verify = verifyToken(token);
         const data = verify as { nis: number };
         if(verify){
-            const timestamp = luxon.DateTime.now().toFormat('yyyyLLddHHmmss');
+            const timestamp = luxon.DateTime.now().toISO();
             const kode_unik = Math.random().toString(36).substring(7).slice(0, 4);
             const pesanan = await models.createPesanan(`transaction-${data.nis}-${timestamp}${kode_unik}`, data.nis, body.id_produk, body.jumlah, body.total_harga, body.catatan);
-            await models.deleteFromKeranjangByNIS(data.nis);
+            await models.emptyKeranjang(data.nis);
             return res.status(200).send({
                 message: 'Success!',
                 pesanan: pesanan,
@@ -804,6 +788,50 @@ export const createNotification = async (req: FastifyRequest, res: FastifyReply)
     }
 }
 
+export const tokoNotifications = async (req: FastifyRequest, res: FastifyReply) => {
+    const headers = req.headers as { authorization: string };
+    const token = headers.authorization?.split(' ')[1];
+    const body = req.body as { type: string };
+    const type = body.type;
+
+    try {
+        const verify = verifyToken(token);
+        const data = verify as { nis: number };
+        if(verify){
+            const dataNotifikasi = await models.getNotifikasiToko(data.nis, type);
+            return res.status(200).send({
+                data: dataNotifikasi
+            })
+        }
+    } catch (error) {
+        console.log(error);
+        return res.status(400).send({
+            message: error
+        })
+    }
+}
+
+export const createTokoNotification = async (req: FastifyRequest, res: FastifyReply) => {
+    const headers = req.headers as { authorization: string };
+    const token = headers.authorization?.split(' ')[1];
+    const body = req.body as { id_toko: string; type: string; title: string; description: string; };
+
+    try {
+        const verify = verifyToken(token);
+        if(verify){
+            await models.createNotifikasiToko(body.id_toko, body.type, body.title, body.description);
+            return res.status(200).send({
+                message: 'Success!'
+            });
+        }
+    } catch (error) {
+        console.log(error);
+        return res.status(400).send({
+            message: error
+        })
+    }
+}
+
 export const userRateHistory = async (req: FastifyRequest, res: FastifyReply) => {
     const headers = req.headers as { authorization: string };
     const token = headers.authorization?.split(' ')[1];
@@ -834,7 +862,7 @@ export const shopRateHistory = async (req: FastifyRequest, res: FastifyReply) =>
     try {
         const verify = verifyToken(token);
         if(verify){
-            const dataRating = await models.getRiwayatUlasanByShop(id_toko);
+            const dataRating = await models.getRiwayatUlasanByToko(id_toko);
             return res.status(200).send({
                 data: dataRating
             })
@@ -856,7 +884,7 @@ export const shopRateHistoryLimited = async (req: FastifyRequest, res: FastifyRe
     try {
         const verify = verifyToken(token);
         if(verify){
-            const dataRating = await models.getRiwayatUlasanByShopLimited(id_toko);
+            const dataRating = await models.getRiwayatUlasanByTokoLimited(id_toko);
             return res.status(200).send({
                 data: dataRating
             })
@@ -912,7 +940,7 @@ export const favorites = async (req: FastifyRequest, res: FastifyReply) => {
     }
 }
 
-export const addToFavorite = async (req: FastifyRequest, res: FastifyReply) => {
+export const addToFavorit = async (req: FastifyRequest, res: FastifyReply) => {
     const headers = req.headers as { authorization: string };
     const token = headers.authorization?.split(' ')[1];
     const body = req.body as { id_toko: string; };
@@ -922,7 +950,7 @@ export const addToFavorite = async (req: FastifyRequest, res: FastifyReply) => {
         const verify = verifyToken(token);
         const data = verify as { nis: number };
         if(verify){
-            await models.addToFavorite(id_toko, data.nis);
+            await models.addToFavorit(id_toko, data.nis);
             return res.status(200).send({
                 message: 'Success!'
             })
@@ -945,7 +973,7 @@ export const deleteFromFavorite = async (req: FastifyRequest, res: FastifyReply)
         const verify = verifyToken(token);
         const data = verify as { nis: number };
         if(verify){
-            await models.deleteFromFavorite(id_toko, data.nis);
+            await models.deleteFromFavorit(id_toko, data.nis);
             return res.status(200).send({
                 message: 'Success!'
             })
@@ -991,7 +1019,7 @@ export const changePassword = async (req: FastifyRequest, res: FastifyReply) => 
         const verify = verifyToken(token);
         const data = verify as { nis: number };
         if(verify){
-            await models.changePassword(data.nis, newPassword);
+            await models.updatePassword(data.nis, newPassword);
             return res.status(200).send({
                 message: 'Success!'
             })
@@ -1008,26 +1036,16 @@ export const updateProfilePicture = async (req: FastifyRequest, res: FastifyRepl
     const headers = req.headers as { authorization: string };
     const token = headers.authorization?.split(' ')[1];
     const file = await req.file();
-    const field = file as { fields: any };
-    const fieldobject = Object.entries(field.fields);
-    let body: {[key: string]: any} = [];
-    for(let i = 0; i < fieldobject.length; i++){
-        const data = fieldobject[0][i] as { fieldname: string; value: string; };
-        body.push({ [data.fieldname]: data.value });
-    }
 
     try {
         const verify = verifyToken(token);
         const data = verify as { nis: number };
         if(verify){
-            if(body[1]['old_image'] != ''){
-                await fs.rm(`./assets/public/${body[1]['old_image']}`);
-            }
             if(file){
-                const timestamp = luxon.DateTime.now().toFormat('yyyyLLddHHmmss');
+                const timestamp = luxon.DateTime.now().toISO();
                 const foto_profil = await file.toBuffer();
                 const filename = `${data.nis}-${timestamp}.jpeg`;
-                await fs.writeFile(`./assets/public/${filename}`, foto_profil);
+                await fs.writeFile(`./assets/uploads/${filename}`, foto_profil);
                 const siswa = await models.updateProfilePicture(data.nis, `${filename}`);
                 return res.status(200).send({
                     message: 'Success!',
@@ -1066,7 +1084,7 @@ export const addresses = async (req: FastifyRequest, res: FastifyReply) => {
     }
 }
 
-export const addAdress = async (req: FastifyRequest, res: FastifyReply) => {
+export const addAlamat = async (req: FastifyRequest, res: FastifyReply) => {
     const headers = req.headers as { authorization: string };
     const token = headers.authorization?.split(' ')[1];
     const body = req.body as { address: string };
@@ -1089,7 +1107,7 @@ export const addAdress = async (req: FastifyRequest, res: FastifyReply) => {
     }
 }
 
-export const editAddress = async (req: FastifyRequest, res: FastifyReply) => {
+export const editAlamat = async (req: FastifyRequest, res: FastifyReply) => {
     const headers = req.headers as { authorization: string };
     const token = headers.authorization?.split(' ')[1];
     const query = req.query as { id: number };
@@ -1113,7 +1131,7 @@ export const editAddress = async (req: FastifyRequest, res: FastifyReply) => {
     }
 }
 
-export const deleteAddress = async (req: FastifyRequest, res: FastifyReply) => {
+export const deleteAlamat = async (req: FastifyRequest, res: FastifyReply) => {
     const headers = req.headers as { authorization: string };
     const token = headers.authorization?.split(' ')[1];
     const body = req.body as { id_address: number };

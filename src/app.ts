@@ -9,86 +9,58 @@ app.register(require("@fastify/formbody"));
 app.register(multipart);
 
 app.register(require("@fastify/static"), {
-    root: path.resolve(process.cwd(), "views"),
-    prefix: "/"
+    root: path.resolve(process.cwd()),
+    prefix: "/",
 })
-
-app.register(require("@fastify/static"), {
-    root: path.resolve(process.cwd(), "assets"),
-    prefix: "/assets/",
-    decorateReply: false,
-})
-
-//* ---------------------------------------------- Web ----------------------------------------------
-// app.post('/login-guru', async (req, res) => {
-//     const body = req.body as { nomorInduk: string; password: string; };
-
-//     const nomorInduk = parseInt(body.nomorInduk);
-//     const password = body.password;
-    
-//     try {
-//         const result = await controller.getGuru(nomorInduk);
-        
-//         if(nomorInduk === result.rows[0].nip){
-//             if(password === result.rows[0].password){
-//                 res.redirect(301, '/guru');
-//             }
-//         }
-
-//         return res.status(400).send({
-//             message: 'NIP/NUPTK atau Password salah!',
-//         })
-//     } catch (error){
-//         return error;
-//     }
-// })
 
 //* -------------------------------------------- Mobile ---------------------------------------------
-app.post('/api/login', controller.login);
-app.post('/api/logout', controller.logout);
-app.get('/api/kelas', controller.kelas);
-app.get('/api/shop', controller.shop);
-app.post('/api/shop/create', controller.createShop);
-app.post('/api/shop/delete', controller.deleteToko);
-app.patch('/api/shop/update', controller.updateShop);
-app.post('/api/shop/:id/update-profile-picture', controller.updateShopBanner);
-app.post('/api/shop/update-jadwal', controller.updateJadwal);
-app.get('/api/kelompok', controller.kelompok);
-app.post('/api/kelompok/all', controller.getDataKelompok);
-app.post('/api/kelompok/join', controller.joinShop);
-app.post('/api/kelompok/remove', controller.removeFromKelompok);
-app.get('/api/products', controller.products);
-app.get('/api/products/:id', controller.getProductById);
-app.post('/api/products/add', controller.addProduct);
-app.post('/api/products/delete', controller.deleteProduk);
-app.patch('/api/products/update', controller.updateProduk);
-app.post('/api/products/:id/update-profile-picture', controller.updateFotoProduk);
-app.post('/api/search', controller.search);
-app.get('/api/shop/:id', controller.shopById);
-app.post('/api/shop/orders', controller.ordersByShop);
-app.post('/api/shop/rate', controller.shopRateHistory);
-app.post('/api/shop/rate-limited', controller.shopRateHistoryLimited);
-app.post('/api/add-to-cart', controller.addToCart);
-app.get('/api/cart', controller.carts);
-app.delete('/api/cart/delete', controller.deleteFromCart);
-app.post('/api/cart/update', controller.updateCart);
-app.post('/api/orders', controller.orders);
-app.post('/api/orders/new', controller.createOrder);
-app.patch('/api/orders/update', controller.updateStatusPesanan);
-app.post('/api/notifications', controller.notifications);
-app.post('/api/notifications/add', controller.createNotification);
-app.get('/api/rate/:nis', controller.userRateHistory);
-app.post('/api/rate/:nis/add', controller.addUlasan);
-app.get('/api/favorite/:nis', controller.favorites);
-app.post('/api/favorite/:nis/add', controller.addToFavorite);
-app.post('/api/favorite/:nis/delete', controller.deleteFromFavorite);
-app.patch('/api/user/:nis/update-telepon', controller.updateTelepon);
-app.patch('/api/user/:nis/change-password', controller.changePassword);
-app.post('/api/user/:nis/update-profile-picture', controller.updateProfilePicture);
-app.get('/api/user/:nis/address', controller.addresses);
-app.post('/api/user/:nis/add-address', controller.addAdress);
-app.patch('/api/user/:nis/edit-address', controller.editAddress);
-app.post('/api/user/:nis/delete-address', controller.deleteAddress);
+app.post('/api/v2/user/auth/login', controller.getSiswa);
+app.post('/api/v2/user/auth/logout', controller.logout);
+app.get('/api/v2/user/keranjang', controller.carts);
+app.post('/api/v2/user/keranjang/add', controller.addToKeranjang);
+app.delete('/api/v2/user/keranjang/delete', controller.deleteFromKeranjang);
+app.post('/api/v2/user/keranjang/update', controller.updateKeranjang);
+app.post('/api/v2/user/notifikasi', controller.notifications);
+app.post('/api/v2/user/notifikasi/add', controller.createNotification);
+app.get('/api/v2/user/rate/:nis', controller.userRateHistory);
+app.post('/api/v2/user/rate/add/:nis', controller.addUlasan);
+app.get('/api/v2/user/favorit/:nis', controller.favorites);
+app.post('/api/v2/user/favorit/add/:nis', controller.addToFavorit);
+app.post('/api/v2/user/favorit/delete/:nis', controller.deleteFromFavorite);
+app.patch('/api/v2/user/update/telepon/:nis', controller.updateTelepon);
+app.patch('/api/v2/user/update/password/:nis', controller.changePassword);
+app.post('/api/v2/user/update/profile-picture/:nis', controller.updateProfilePicture);
+app.get('/api/v2/user/alamat/:nis', controller.addresses);
+app.post('/api/v2/user/alamat/add/:nis', controller.addAlamat);
+app.patch('/api/v2/user/alamat/update/:nis', controller.editAlamat);
+app.post('/api/v2/user/alamat/delete/:nis', controller.deleteAlamat);
+app.get('/api/v2/kelas', controller.kelas);
+app.get('/api/v2/toko', controller.toko);
+app.post('/api/v2/toko/create', controller.createToko);
+app.post('/api/v2/toko/delete', controller.deleteToko);
+app.patch('/api/v2/toko/update', controller.updateToko);
+app.post('/api/v2/toko/update/banner/:id', controller.updateBannerToko);
+app.post('/api/v2/toko/update/jadwal', controller.updateJadwal);
+app.get('/api/v2/toko/:id', controller.getTokoById);
+app.post('/api/v2/toko/orders', controller.ordersByToko);
+app.post('/api/v2/toko/rate', controller.shopRateHistory);
+app.post('/api/v2/toko/rate-limited', controller.shopRateHistoryLimited);
+app.post('/api/v2/toko/notifikasi', controller.tokoNotifications);
+app.post('/api/v2/toko/notifikasi/add', controller.createTokoNotification);
+app.get('/api/v2/kelompok', controller.kelompok);
+app.post('/api/v2/kelompok/all', controller.getDataKelompok);
+app.post('/api/v2/kelompok/join', controller.gabungToko);
+app.post('/api/v2/kelompok/delete', controller.removeFromKelompok);
+app.get('/api/v2/produk', controller.produk);
+app.get('/api/v2/produk/:id', controller.getProdukById);
+app.post('/api/v2/produk/add', controller.addProduk);
+app.post('/api/v2/produk/delete', controller.deleteProduk);
+app.patch('/api/v2/produk/update', controller.updateProduk);
+app.post('/api/v2/produk/update/foto/:id', controller.updateFotoProduk);
+app.post('/api/v2/search', controller.search);
+app.post('/api/v2/order', controller.orders);
+app.post('/api/v2/order/new', controller.createPesanan);
+app.patch('/api/v2/order/update', controller.updateStatusPesanan);
 
 app.listen({ port: Number(process.env.PORT!), host: process.env.HOST }, () => {
     const address = app.server.address();

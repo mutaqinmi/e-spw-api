@@ -87,6 +87,15 @@ export const notifikasi = pgTable('notifikasi', {
     detail_notifikasi: varchar('detail_notifikasi', {length: 255}),
 })
 
+export const notifikasi_toko = pgTable('notifikasi_toko', {
+    id_notifikasi: serial('id_notifikasi').primaryKey(),
+    id_toko: varchar('id_toko', {length: 50}).references(() => toko.id_toko, {onUpdate: "cascade", onDelete: "cascade"}),
+    jenis_notifikasi: varchar('jenis_notifikasi', {length: 50}),
+    waktu: timestamp('waktu').default(sql`now()`),
+    judul_notifikasi: varchar('judul_notifikasi', {length: 255}),
+    detail_notifikasi: varchar('detail_notifikasi', {length: 255}),
+})
+
 export const transaksi = pgTable('transaksi', {
     id_transaksi: varchar('id_transaksi', {length: 50}).primaryKey(),
     nis: integer('nis').references(() => siswa.nis, {onUpdate: "cascade", onDelete: "cascade"}),
