@@ -912,7 +912,7 @@ export const addUlasan = async (req: FastifyRequest, res: FastifyReply) => {
             for(let i = 0; i < allUlasan.length; i++){
                 jumlahRating += parseInt(allUlasan[i]['produk']['rating_produk']);
             }
-            await models.updateRatingToko(ulasan['toko'][0]['id_toko'], (jumlahRating / allUlasan.length).toString());
+            await models.updateRatingToko(body.id_toko, (jumlahRating / allUlasan.length).toString());
             return res.status(200).send({
                 message: 'Success!'
             })
