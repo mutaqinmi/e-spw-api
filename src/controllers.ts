@@ -17,8 +17,10 @@ const updateRatingToko = async (id_toko: string) => {
     const allUlasan = await models.getRiwayatUlasanByToko(id_toko);
     let jumlahRating = 0;
     for(let i = 0; i < allUlasan.length; i++){
+        console.log(allUlasan[i]['produk']['rating_produk']);
         jumlahRating += parseInt(allUlasan[i]['produk']['rating_produk']);
     }
+    console.log(jumlahRating);
     await models.updateRatingToko(id_toko, (jumlahRating / allUlasan.length).toString());
 }
 
