@@ -13,7 +13,8 @@ const verifyToken = (token: string) => {
 }
 
 const updateRatingToko = async (id_toko: string) => {
-    const allUlasan: {[key: string]: any} = await models.getRiwayatUlasanByToko(id_toko);
+    const allUlasan = await models.getRiwayatUlasanByToko(id_toko);
+    console.log(allUlasan);
     let jumlahRating = 0;
     for(let i = 0; i < allUlasan.length; i++){
         jumlahRating += parseInt(allUlasan[i]['produk']['rating_produk']);
