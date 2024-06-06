@@ -12,6 +12,15 @@ const verifyToken = (token: string) => {
     return jwt.verify(token, process.env.SECRET_KEY!);
 }
 
+const updateRatingToko = async (id_toko: string) => {
+    const allUlasan: {[key: string]: any} = await models.getRiwayatUlasanByToko(id_toko);
+    let jumlahRating = 0;
+    for(let i = 0; i < allUlasan.length; i++){
+        jumlahRating += parseInt(allUlasan[i]['produk']['rating_produk']);
+    }
+    await models.updateRatingToko(id_toko, (jumlahRating / allUlasan.length).toString());
+}
+
 export const getSiswa = async (req: FastifyRequest, res: FastifyReply) => {
     const body = req.body as { nis: number };
     const nis = body.nis;
@@ -906,14 +915,8 @@ export const addUlasan = async (req: FastifyRequest, res: FastifyReply) => {
         const verify = verifyToken(token);
         const data = verify as { nis: number };
         if(verify){
-            await models.addUlasan(data.nis, body.id_produk, body.id_transaksi, body.ulasan, body.rating);
-            const allUlasan: {[key: string]: any} = await models.getRiwayatUlasanByToko(body.id_toko);
-            console.log(allUlasan);
-            let jumlahRating = 0;
-            for(let i = 0; i < allUlasan.length; i++){
-                jumlahRating += parseInt(allUlasan[i]['produk']['rating_produk']);
-            }
-            await models.updateRatingToko(body.id_toko, (jumlahRating / allUlasan.length).toString());
+            await models.addUlasan(data.nis, body.id_produk, body.id_transaksi, body.ulasan, body.rating)
+            await updateRatingToko(body.id_toko);
             return res.status(200).send({
                 message: 'Success!'
             })
