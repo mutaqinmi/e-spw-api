@@ -705,7 +705,7 @@ export const createPesanan = async (req: FastifyRequest, res: FastifyReply) => {
         const verify = verifyToken(token);
         const data = verify as { nis: number };
         if(verify){
-            const timestamp = luxon.DateTime.now().toISO();
+            const timestamp = luxon.DateTime.now().toFormat('yyyyLLddHHmmss');
             const kode_unik = Math.random().toString(36).substring(7).slice(0, 4);
             const pesanan = await models.createPesanan(`transaction-${data.nis}-${timestamp}${kode_unik}`, data.nis, body.id_produk, body.jumlah, body.total_harga, body.catatan);
             await models.emptyKeranjang(data.nis);
