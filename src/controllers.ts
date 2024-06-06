@@ -900,15 +900,14 @@ export const shopRateHistoryLimited = async (req: FastifyRequest, res: FastifyRe
 export const addUlasan = async (req: FastifyRequest, res: FastifyReply) => {
     const headers = req.headers as { authorization: string };
     const token = headers.authorization?.split(' ')[1];
-    const body = req.body as { id_produk: string; id_transaksi: string; ulasan: string; rating: string; };
+    const body = req.body as { id_produk: string; id_transaksi: string; ulasan: string; rating: string; id_toko: string };
 
     try {
         const verify = verifyToken(token);
         const data = verify as { nis: number };
         if(verify){
             const ulasan: {[key: string]: any} = await models.addUlasan(data.nis, body.id_produk, body.id_transaksi, body.ulasan, body.rating);
-            console.log(ulasan);
-            const allUlasan: {[key: string]: any} = await models.getRiwayatUlasanByToko(ulasan['toko']['id_toko']);
+            const allUlasan: {[key: string]: any} = await models.getRiwayatUlasanByToko(body.id_toko);
             let jumlahRating = 0;
             for(let i = 0; i < allUlasan.length; i++){
                 jumlahRating += parseInt(allUlasan[i]['produk']['rating_produk']);
