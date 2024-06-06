@@ -29,7 +29,7 @@ export const toko = pgTable('toko', {
     deskripsi_toko: varchar('deskripsi_toko', {length: 255}),
     is_open: boolean('is_open').default(false),
     kode_unik: varchar('kode_unik', {length: 6}),
-    banner_toko: varchar('banner_toko', {length: 50}).default(""),
+    banner_toko: varchar('banner_toko', {length: 255}).default(""),
 })
 
 export const kelompok = pgTable('kelompok', {

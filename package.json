@@ -1,6 +1,6 @@
 {
   "name": "e-spw-web",
-  "version": "1.0.0",
+  "version": "2.0.3",
   "description": "E - SPW Web Version",
   "main": "app.js",
   "scripts": {
