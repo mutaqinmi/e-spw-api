@@ -122,7 +122,7 @@ export const createToko = async (req: FastifyRequest, res: FastifyReply) => {
                 const timestamp = luxon.DateTime.now().toISO();
                 const filename = `${get_id_toko[0]['id_toko']}-${timestamp}.jpeg`;
                 const banner_toko = await file.toBuffer();
-                await fs.writeFile(`./assets/uploads/${filename}`, banner_toko);
+                await fs.writeFile(`./public/${filename}`, banner_toko);
                 await models.updateBannerToko(get_id_toko[0]['id_toko'], `${filename}`);
             }
 
@@ -156,12 +156,12 @@ export const updateBannerToko = async (req: FastifyRequest, res: FastifyReply) =
     try {
         const verify = verifyToken(token);
         if(verify){
-            await fs.rm(`./assets/uploads/${body[1]['old_image']}`);
+            await fs.rm(`./public/${body[1]['old_image']}`);
             if(file){
                 const timestamp = luxon.DateTime.now().toISO();
                 const filename = `${id_toko}-${timestamp}.jpeg`;
                 const banner_toko = await file.toBuffer();
-                await fs.writeFile(`./assets/uploads/${filename}`, banner_toko);
+                await fs.writeFile(`./public/${filename}`, banner_toko);
                 await models.updateBannerToko(id_toko, `${filename}`);
             }
             return res.status(200).send({
@@ -414,7 +414,7 @@ export const addProduk = async (req: FastifyRequest, res: FastifyReply) => {
                 const timestamp = luxon.DateTime.now().toISO();
                 const filename = `${produk[0]?.['id_produk']}-${timestamp}.jpeg`;
                 const foto_produk = await file.toBuffer();
-                await fs.writeFile(`./assets/uploads/${filename}`, foto_produk);
+                await fs.writeFile(`./public/${filename}`, foto_produk);
                 await models.updateFotoProduk(produk[0]?.['id_produk'], `${filename}`);
             }
 
@@ -451,7 +451,7 @@ export const updateFotoProduk = async (req: FastifyRequest, res: FastifyReply) =
                 const timestamp = luxon.DateTime.now().toISO();
                 const filename = `${id_produk}-${timestamp}.jpeg`;
                 const foto_produk = await file.toBuffer();
-                await fs.writeFile(`./assets/uploads/${filename}`, foto_produk);
+                await fs.writeFile(`./public/${filename}`, foto_produk);
                 await models.updateFotoProduk(id_produk, `${filename}`);
             }
             return res.status(200).send({
@@ -1045,7 +1045,7 @@ export const updateProfilePicture = async (req: FastifyRequest, res: FastifyRepl
                 const timestamp = luxon.DateTime.now().toISO();
                 const foto_profil = await file.toBuffer();
                 const filename = `${data.nis}-${timestamp}.jpeg`;
-                await fs.writeFile(`./assets/uploads/${filename}`, foto_profil);
+                await fs.writeFile(`./public/${filename}`, foto_profil);
                 const siswa = await models.updateProfilePicture(data.nis, `${filename}`);
                 return res.status(200).send({
                     message: 'Success!',
