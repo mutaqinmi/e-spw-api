@@ -223,7 +223,6 @@ export const updateJumlahKeranjang = async (jumlah: number, id_keranjang: number
 
 export const getPesanan = async (nis: number, status_pesanan: string) : Promise<Array<any>> => {
     return await db.select().from(table.transaksi)
-        .groupBy(table.toko.id_toko)
         .leftJoin(table.produk, eq(table.transaksi.id_produk, table.produk.id_produk))
         .leftJoin(table.toko, eq(table.produk.id_toko, table.toko.id_toko))
         .leftJoin(table.kelas, eq(table.toko.id_kelas, table.kelas.id_kelas))
@@ -232,9 +231,7 @@ export const getPesanan = async (nis: number, status_pesanan: string) : Promise<
 }
 
 export const getPesananByToko = async (id_toko: string, status_pesanan: string) : Promise<Array<any>> => {
-    return await db.select()
-        .from(table.transaksi)
-        .groupBy(table.siswa.nis)
+    return await db.select().from(table.transaksi)
         .leftJoin(table.produk, eq(table.transaksi.id_produk, table.produk.id_produk))
         .leftJoin(table.toko, eq(table.produk.id_toko, table.toko.id_toko))
         .leftJoin(table.kelas, eq(table.toko.id_kelas, table.kelas.id_kelas))
