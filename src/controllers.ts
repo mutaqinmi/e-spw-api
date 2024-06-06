@@ -906,7 +906,13 @@ export const addUlasan = async (req: FastifyRequest, res: FastifyReply) => {
         const verify = verifyToken(token);
         const data = verify as { nis: number };
         if(verify){
-            await models.addUlasan(data.nis, body.id_produk, body.id_transaksi, body.ulasan, body.rating);
+            const ulasan: {[key: string]: any} = await models.addUlasan(data.nis, body.id_produk, body.id_transaksi, body.ulasan, body.rating);
+            const allUlasan: {[key: string]: any} = await models.getRiwayatUlasanByToko(ulasan['toko'][0]['id_toko']);
+            let jumlahRating = 0;
+            for(let i = 0; i < allUlasan.length; i++){
+                jumlahRating += parseInt(allUlasan[i]['produk']['rating_produk']);
+            }
+            await models.updateRatingToko(ulasan['toko'][0]['id_toko'], (jumlahRating / allUlasan.length).toString());
             return res.status(200).send({
                 message: 'Success!'
             })

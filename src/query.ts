@@ -318,6 +318,11 @@ export const getRiwayatUlasanByTokoLimited = async (id_toko: string) : Promise<A
         .limit(3);
 }
 
+export const updateRatingToko = async (id_toko: string, jumlah_rating: string) => {
+    return await db.update(table.toko).set({ rating_toko: jumlah_rating })
+        .where(eq(table.toko.id_toko, id_toko));
+}
+
 export const addUlasan = async (nis: number, id_produk: string, id_transaksi: string, deskripsi_ulasan: string, jumlah_rating: string) => {
     return await db.insert(table.ulasan).values({
         nis: nis,
@@ -325,7 +330,7 @@ export const addUlasan = async (nis: number, id_produk: string, id_transaksi: st
         id_transaksi: id_transaksi,
         deskripsi_ulasan: deskripsi_ulasan,
         jumlah_rating: jumlah_rating
-    });
+    }).returning();
 }
 
 export const getFavorit = async (nis: number) : Promise<Array<any>> => {
