@@ -907,6 +907,7 @@ export const addUlasan = async (req: FastifyRequest, res: FastifyReply) => {
         const data = verify as { nis: number };
         if(verify){
             const ulasan: {[key: string]: any} = await models.addUlasan(data.nis, body.id_produk, body.id_transaksi, body.ulasan, body.rating);
+            console.log(ulasan);
             const allUlasan: {[key: string]: any} = await models.getRiwayatUlasanByToko(ulasan['toko']['id_toko']);
             let jumlahRating = 0;
             for(let i = 0; i < allUlasan.length; i++){
