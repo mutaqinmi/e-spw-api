@@ -229,6 +229,7 @@ export const getPesananByToko = async (id_toko: string, status_pesanan: string) 
         .leftJoin(table.produk, eq(table.transaksi.id_produk, table.produk.id_produk))
         .leftJoin(table.toko, eq(table.produk.id_toko, table.toko.id_toko))
         .leftJoin(table.kelas, eq(table.toko.id_kelas, table.kelas.id_kelas))
+        .leftJoin(table.siswa, eq(table.transaksi.nis, table.siswa.nis))
         .where(and(eq(table.toko.id_toko, id_toko), eq(table.transaksi.status, status_pesanan)))
         .orderBy(desc(table.transaksi.waktu));
 }
