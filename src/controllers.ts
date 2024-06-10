@@ -104,27 +104,6 @@ export const toko = async (req: FastifyRequest, res: FastifyReply) => {
     }
 }
 
-export const tokoByIsOpen = async (req: FastifyRequest, res: FastifyReply) => {
-    const headers = req.headers as { authorization: string };
-    const token = headers.authorization?.split(' ')[1];
-
-    try {
-        const verify = verifyToken(token);
-        if(verify){
-            const dataToko = await models.getTokoByIsOpen();
-            return res.status(200).send({
-                data: dataToko
-            })
-        }
-    } catch (error) {
-        console.log(error);
-        return res.status(400).send({
-            message: error
-        })
-    }
-
-}
-
 export const createToko = async (req: FastifyRequest, res: FastifyReply) => {
     const headers = req.headers as { authorization: string };
     const token = headers.authorization?.split(' ')[1];
@@ -729,7 +708,7 @@ export const ordersByToko = async (req: FastifyRequest, res: FastifyReply) => {
 export const createPesanan = async (req: FastifyRequest, res: FastifyReply) => {
     const headers = req.headers as { authorization: string };
     const token = headers.authorization?.split(' ')[1];
-    const body = req.body as { id_produk: string; jumlah: number; total_harga: number; catatan: string };
+    const body = req.body as { id_produk: string; jumlah: number; total_harga: number; catatan: string; alamat: string;};
 
     try {
         const verify = verifyToken(token);
@@ -737,7 +716,7 @@ export const createPesanan = async (req: FastifyRequest, res: FastifyReply) => {
         if(verify){
             const timestamp = luxon.DateTime.now().toFormat('yyyyLLddHHmmss');
             const kode_unik = Math.random().toString(36).substring(7).slice(0, 4);
-            const pesanan = await models.createPesanan(`transaction-${data.nis}-${timestamp}${kode_unik}`, data.nis, body.id_produk, body.jumlah, body.total_harga, body.catatan);
+            const pesanan = await models.createPesanan(`transaction-${data.nis}-${timestamp}${kode_unik}`, data.nis, body.id_produk, body.jumlah, body.total_harga, body.catatan, body.alamat);
             await models.updateJumlahTerjual(body.id_produk, body.jumlah);
             await models.emptyKeranjang(data.nis);
             return res.status(200).send({

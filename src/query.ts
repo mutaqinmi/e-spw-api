@@ -48,12 +48,6 @@ export const getToko = async () : Promise<Array<any>> => {
         .orderBy(desc(table.toko.is_open));
 }
 
-export const getTokoByIsOpen = async () : Promise<Array<any>> => {
-    return await db.select().from(table.toko)
-        .leftJoin(table.kelas, eq(table.toko.id_kelas, table.kelas.id_kelas))
-        .where(eq(table.toko.is_open, true));
-}
-
 export const getTokoByName = async (nama_toko: string) : Promise<Array<any>> => {
     return await db.select().from(table.toko)
         .where(eq(table.toko.nama_toko, nama_toko));
@@ -239,7 +233,7 @@ export const getPesananByToko = async (id_toko: string, status_pesanan: string) 
         .orderBy(desc(table.transaksi.waktu));
 }
 
-export const createPesanan = async (id_transaksi: string, nis: number, id_produk: string, jumlah: number, total_harga: number, catatan: string) => {
+export const createPesanan = async (id_transaksi: string, nis: number, id_produk: string, jumlah: number, total_harga: number, catatan: string, alamat: string) => {
     return await db.insert(table.transaksi).values({
         id_transaksi: id_transaksi,
         nis: nis,
@@ -248,6 +242,7 @@ export const createPesanan = async (id_transaksi: string, nis: number, id_produk
         total_harga: total_harga,
         status: 'Menunggu Konfirmasi',
         catatan: catatan,
+        alamat: alamat,
     }).returning();
 }
 
