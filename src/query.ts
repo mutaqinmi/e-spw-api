@@ -1,4 +1,4 @@
-import { and, desc, eq, ilike } from 'drizzle-orm';
+import { and, desc, eq, ilike, sql } from 'drizzle-orm';
 import { client, db } from './connection';
 import * as table from './schema';
 
@@ -249,6 +249,11 @@ export const createPesanan = async (id_transaksi: string, nis: number, id_produk
         status: 'Menunggu Konfirmasi',
         catatan: catatan,
     }).returning();
+}
+
+export const updateJumlahTerjual = async (id_produk: string, jumlah: number) => {
+    return await db.update(table.produk).set({ jumlah_terjual: sql`${table.produk.jumlah_terjual} + ${jumlah}` })
+        .where(eq(table.produk.id_produk, id_produk));
 }
 
 export const updateStatusPesanan = async (id_transaksi: string, status: string) => {

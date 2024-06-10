@@ -738,6 +738,7 @@ export const createPesanan = async (req: FastifyRequest, res: FastifyReply) => {
             const timestamp = luxon.DateTime.now().toFormat('yyyyLLddHHmmss');
             const kode_unik = Math.random().toString(36).substring(7).slice(0, 4);
             const pesanan = await models.createPesanan(`transaction-${data.nis}-${timestamp}${kode_unik}`, data.nis, body.id_produk, body.jumlah, body.total_harga, body.catatan);
+            await models.updateJumlahTerjual(body.id_produk, body.jumlah);
             await models.emptyKeranjang(data.nis);
             return res.status(200).send({
                 message: 'Success!',
