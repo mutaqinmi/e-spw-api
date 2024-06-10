@@ -18,7 +18,7 @@ const updateRatingToko = async (id_toko: string) => {
     for(let i = 0; i < allUlasan.length; i++){
         jumlahRating += parseInt(allUlasan[i]['ulasan']['jumlah_rating']);
     }
-    await models.updateRatingToko(id_toko, (jumlahRating / allUlasan.length).toString());
+    await models.updateRatingToko(id_toko, (jumlahRating / allUlasan.length).toString().slice(0, 3));
 }
 
 export const getSiswa = async (req: FastifyRequest, res: FastifyReply) => {
