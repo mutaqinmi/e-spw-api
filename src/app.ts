@@ -36,6 +36,7 @@ app.patch('/api/v2/user/alamat/update/:nis', controller.editAlamat);
 app.post('/api/v2/user/alamat/delete/:nis', controller.deleteAlamat);
 app.get('/api/v2/kelas', controller.kelas);
 app.get('/api/v2/toko', controller.toko);
+app.get('/api/v2/toko/isopen', controller.tokoByIsOpen);
 app.post('/api/v2/toko/create', controller.createToko);
 app.post('/api/v2/toko/delete', controller.deleteToko);
 app.patch('/api/v2/toko/update', controller.updateToko);

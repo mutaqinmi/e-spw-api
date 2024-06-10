@@ -14,10 +14,8 @@ const verifyToken = (token: string) => {
 
 const updateRatingToko = async (id_toko: string) => {
     const allUlasan = await models.getRiwayatUlasanByToko(id_toko);
-    console.log(allUlasan);
     let jumlahRating = 0;
     for(let i = 0; i < allUlasan.length; i++){
-        console.log(allUlasan[i]['produk']['rating_produk']);
         jumlahRating += parseInt(allUlasan[i]['ulasan']['jumlah_rating']);
     }
     await models.updateRatingToko(id_toko, (jumlahRating / allUlasan.length).toString());
@@ -104,6 +102,27 @@ export const toko = async (req: FastifyRequest, res: FastifyReply) => {
             message: error
         })
     }
+}
+
+export const tokoByIsOpen = async (req: FastifyRequest, res: FastifyReply) => {
+    const headers = req.headers as { authorization: string };
+    const token = headers.authorization?.split(' ')[1];
+
+    try {
+        const verify = verifyToken(token);
+        if(verify){
+            const dataToko = await models.getTokoByIsOpen();
+            return res.status(200).send({
+                data: dataToko
+            })
+        }
+    } catch (error) {
+        console.log(error);
+        return res.status(400).send({
+            message: error
+        })
+    }
+
 }
 
 export const createToko = async (req: FastifyRequest, res: FastifyReply) => {
