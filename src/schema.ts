@@ -15,10 +15,17 @@ export const siswa = pgTable('siswa', {
     foto_profil: varchar('foto_profil', {length: 50}).default(""),
 })
 
+export const guru = pgTable('guru', {
+    nip: integer('nip').primaryKey(),
+    nama: varchar('nama', {length: 50}),
+    password: varchar('password', {length: 50}),
+})
+
 export const kelas = pgTable('kelas', {
     id_kelas: varchar('id_kelas', {length: 10}).primaryKey(),
     kelas: varchar('kelas', {length: 10}),
     program_keahlian: varchar('program_keahlian', {length: 50}),
+    guru: integer('nip').references(() => guru.nip, {onUpdate: "cascade", onDelete: "cascade"}),
 })
 
 export const toko = pgTable('toko', {
