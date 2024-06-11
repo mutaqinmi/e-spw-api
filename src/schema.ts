@@ -1,4 +1,5 @@
 import { sql } from "drizzle-orm";
+import { bigint } from "drizzle-orm/pg-core";
 import { integer, pgTable, serial, varchar, numeric, boolean, date, timestamp } from "drizzle-orm/pg-core";
 
 export const token = pgTable('token', {
@@ -16,7 +17,7 @@ export const siswa = pgTable('siswa', {
 })
 
 export const guru = pgTable('guru', {
-    nip: integer('nip').primaryKey(),
+    nip: bigint('nip', {mode: 'bigint'}).primaryKey(),
     nama: varchar('nama', {length: 50}),
     password: varchar('password', {length: 50}),
 })
