@@ -1171,7 +1171,7 @@ export const loginGuru = async (req: FastifyRequest, res: FastifyReply) => {
         const guru = await models.getGuru(body.nip);
         if(guru.length === 1){
             if(guru[0]['password'] === body.password){
-                const token = generateToken(guru);
+                const token = generateToken(guru[0]['guru']);
                 return res.status(200).send({
                     message: 'Success!',
                     data: guru,
