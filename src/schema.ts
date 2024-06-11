@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { integer, pgTable, serial, varchar, numeric, boolean, date, timestamp, bigint } from "drizzle-orm/pg-core";
+import { integer, pgTable, serial, varchar, numeric, boolean, date, timestamp } from "drizzle-orm/pg-core";
 
 export const token = pgTable('token', {
     nis: integer('nis').references(() => siswa.nis, {onUpdate: "cascade", onDelete: "cascade"}),
@@ -16,7 +16,7 @@ export const siswa = pgTable('siswa', {
 })
 
 export const guru = pgTable('guru', {
-    nip: bigint('nip', {mode: 'bigint'}).primaryKey(),
+    nip: varchar('nip').primaryKey(),
     nama: varchar('nama', {length: 50}),
     password: varchar('password', {length: 50}),
 })
@@ -25,7 +25,7 @@ export const kelas = pgTable('kelas', {
     id_kelas: varchar('id_kelas', {length: 10}).primaryKey(),
     kelas: varchar('kelas', {length: 10}),
     program_keahlian: varchar('program_keahlian', {length: 50}),
-    guru: bigint('nip', {mode: 'bigint'}).references(() => guru.nip, {onUpdate: "cascade", onDelete: "cascade"}),
+    guru: varchar('nip').references(() => guru.nip, {onUpdate: "cascade", onDelete: "cascade"}),
 })
 
 export const toko = pgTable('toko', {
