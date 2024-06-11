@@ -1191,13 +1191,18 @@ export const loginGuru = async (req: FastifyRequest, res: FastifyReply) => {
 }
 
 export const getAllDataKelas = async (req: FastifyRequest, res: FastifyReply) => {
-    const body = req.body as { nip: string };
+    const headers = req.headers as { authorization: string };
+    const token = headers.authorization?.split(' ')[1];
 
     try {
-        const datas = await models.getAllDataKelas(body.nip);
-        return res.status(200).send({
-            data: datas
-        })
+        const verify = verifyToken(token);
+        const data = verify as { nip: string }
+        if(verify){
+            const datas = await models.getAllDataKelas(data.nip);
+            return res.status(200).send({
+                data: datas
+            })
+        }
     } catch (error) {
         console.log(error);
         return res.status(400).send({
