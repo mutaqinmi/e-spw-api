@@ -2,11 +2,15 @@ import fastify from "fastify";
 import path from "path";
 import * as controller from "./controllers";
 import multipart from '@fastify/multipart';
+import cors from '@fastify/cors';
 
 const app = fastify({bodyLimit: 5 * 1024 * 1024});
 
 app.register(require("@fastify/formbody"));
 app.register(multipart);
+app.register(cors, {
+    origin: "*"
+})
 
 app.register(require("@fastify/static"), {
     root: path.resolve(process.cwd()),
