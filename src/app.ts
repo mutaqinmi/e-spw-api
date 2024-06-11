@@ -68,7 +68,9 @@ app.patch('/api/v2/order/update', controller.updateStatusPesanan);
 
 //* ---------------------------------------------- Web ----------------------------------------------
 app.post('/api/v2/guru/auth/login', controller.loginGuru);
-app.get('/api/v2/guru/kelas/all', controller.getAllDataKelas);
+app.get('/api/v2/guru/all/siswa', controller.getAllDataSiswaByGuru);
+app.get('/api/v2/guru/all/kelas', controller.getAllDataKelasByGuru);
+app.get('/api/v2/guru/all/kelompok', controller.getAllDataKelompokByGuru);
 
 app.listen({ port: Number(process.env.PORT!), host: process.env.HOST }, () => {
     const address = app.server.address();

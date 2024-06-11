@@ -387,9 +387,19 @@ export const getGuru = async (nip: string) : Promise<Array<any>> => {
         .where(eq(table.guru.nip, nip));
 }
 
-export const getAllDataKelas = async (nip: string) : Promise<Array<any>> => {
+export const getAllDataSiswaByGuru = async (nip: string) : Promise<Array<any>> => {
     return await db.select().from(table.siswa)
         .leftJoin(table.kelas, eq(table.siswa.kelas, table.kelas.id_kelas))
-        .leftJoin(table.toko, eq(table.toko.id_kelas, table.kelas.id_kelas))
+        .where(eq(table.kelas.guru, nip));
+}
+
+export const getAllDataKelasByGuru = async (nip: string) : Promise<Array<any>> => {
+    return await db.select().from(table.kelas)
+        .where(eq(table.kelas.guru, nip));
+}
+
+export const getAllDataKelompokByGuru = async (nip: string) : Promise<Array<any>> => {
+    return await db.select().from(table.toko)
+        .leftJoin(table.kelas, eq(table.toko.id_kelas, table.kelas.id_kelas))
         .where(eq(table.kelas.guru, nip));
 }

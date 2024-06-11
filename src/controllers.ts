@@ -1190,7 +1190,7 @@ export const loginGuru = async (req: FastifyRequest, res: FastifyReply) => {
     }
 }
 
-export const getAllDataKelas = async (req: FastifyRequest, res: FastifyReply) => {
+export const getAllDataSiswaByGuru = async (req: FastifyRequest, res: FastifyReply) => {
     const headers = req.headers as { authorization: string };
     const token = headers.authorization?.split(' ')[1];
 
@@ -1198,7 +1198,49 @@ export const getAllDataKelas = async (req: FastifyRequest, res: FastifyReply) =>
         const verify = verifyToken(token);
         const data = verify as { nip: string }
         if(verify){
-            const datas = await models.getAllDataKelas(data.nip);
+            const datas = await models.getAllDataSiswaByGuru(data.nip);
+            return res.status(200).send({
+                data: datas
+            })
+        }
+    } catch (error) {
+        console.log(error);
+        return res.status(400).send({
+            message: error
+        })
+    }
+}
+
+export const getAllDataKelasByGuru = async (req: FastifyRequest, res: FastifyReply) => {
+    const headers = req.headers as { authorization: string };
+    const token = headers.authorization?.split(' ')[1];
+
+    try {
+        const verify = verifyToken(token);
+        const data = verify as { nip: string }
+        if(verify){
+            const datas = await models.getAllDataKelasByGuru(data.nip);
+            return res.status(200).send({
+                data: datas
+            })
+        }
+    } catch (error) {
+        console.log(error);
+        return res.status(400).send({
+            message: error
+        })
+    }
+}
+
+export const getAllDataKelompokByGuru = async (req: FastifyRequest, res: FastifyReply) => {
+    const headers = req.headers as { authorization: string };
+    const token = headers.authorization?.split(' ')[1];
+
+    try {
+        const verify = verifyToken(token);
+        const data = verify as { nip: string }
+        if(verify){
+            const datas = await models.getAllDataKelompokByGuru(data.nip);
             return res.status(200).send({
                 data: datas
             })
