@@ -1252,3 +1252,24 @@ export const getAllDataKelompokByGuru = async (req: FastifyRequest, res: Fastify
         })
     }
 }
+
+export const getTokoByIdKelas = async (req: FastifyRequest, res: FastifyReply) => {
+    const headers = req.headers as { authorization: string };
+    const token = headers.authorization?.split(' ')[1];
+    const params = req.params as { id: string }
+
+    try {
+        const verify = verifyToken(token);
+        if(verify){
+            const toko = await models.getTokoByIdKelas(params.id);
+            return res.status(200).send({
+                data: toko
+            })
+        }
+    } catch (error) {
+        console.log(error);
+        return res.status(400).send({
+            message: error
+        })
+    }
+}

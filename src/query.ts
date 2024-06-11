@@ -403,3 +403,9 @@ export const getAllDataKelompokByGuru = async (nip: string) : Promise<Array<any>
         .leftJoin(table.kelas, eq(table.toko.id_kelas, table.kelas.id_kelas))
         .where(eq(table.kelas.guru, nip));
 }
+
+export const getTokoByIdKelas = async (id_kelas: string) : Promise<Array<any>> => {
+    return await db.select().from(table.toko)
+        .leftJoin(table.kelas, eq(table.toko.id_kelas, table.kelas.id_kelas))
+        .where(eq(table.kelas.id_kelas, id_kelas));
+}

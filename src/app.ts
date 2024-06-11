@@ -71,8 +71,9 @@ app.post('/api/v2/guru/auth/login', controller.loginGuru);
 app.get('/api/v2/guru/all/siswa', controller.getAllDataSiswaByGuru);
 app.get('/api/v2/guru/all/kelas', controller.getAllDataKelasByGuru);
 app.get('/api/v2/guru/all/kelompok', controller.getAllDataKelompokByGuru);
+app.post('/api/v2/guru/kelas/:id', controller.getTokoByIdKelas);
 
 app.listen({ port: Number(process.env.PORT!), host: process.env.HOST }, () => {
     const address = app.server.address();
     console.log(`Server running at port ${typeof address === "string" ? address : address?.port}`);
-    })
+})
