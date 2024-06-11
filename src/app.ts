@@ -62,7 +62,10 @@ app.post('/api/v2/order', controller.orders);
 app.post('/api/v2/order/new', controller.createPesanan);
 app.patch('/api/v2/order/update', controller.updateStatusPesanan);
 
+//* ---------------------------------------------- Web ----------------------------------------------
+app.post('/api/v2/guru/auth/login', controller.loginGuru);
+
 app.listen({ port: Number(process.env.PORT!), host: process.env.HOST }, () => {
     const address = app.server.address();
     console.log(`Server running at port ${typeof address === "string" ? address : address?.port}`);
-})
+    })

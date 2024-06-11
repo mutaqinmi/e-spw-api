@@ -381,3 +381,8 @@ export const deleteAlamat = async (id_alamat: number) => {
     return await db.delete(table.alamat)
         .where(eq(table.alamat.id_alamat, id_alamat));
 }
+
+export const getGuru = async (nip: string) : Promise<Array<any>> => {
+    return await db.select().from(table.guru)
+        .where(eq(table.guru.nip, nip));
+}
