@@ -1174,7 +1174,6 @@ export const loginGuru = async (req: FastifyRequest, res: FastifyReply) => {
                 const token = generateToken(guru[0]);
                 return res.status(200).send({
                     message: 'Success!',
-                    data: guru,
                     token: token
                 })
             }
@@ -1182,6 +1181,22 @@ export const loginGuru = async (req: FastifyRequest, res: FastifyReply) => {
 
         return res.status(400).send({
             message: 'NIP/NUPTK atau Password salah!'
+        })
+    } catch (error) {
+        console.log(error);
+        return res.status(400).send({
+            message: error
+        })
+    }
+}
+
+export const getAllDataKelas = async (req: FastifyRequest, res: FastifyReply) => {
+    const body = req.body as { nip: string };
+
+    try {
+        const datas = await models.getAllDataKelas(body.nip);
+        return res.status(200).send({
+            data: datas
         })
     } catch (error) {
         console.log(error);

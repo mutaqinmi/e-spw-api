@@ -386,3 +386,10 @@ export const getGuru = async (nip: string) : Promise<Array<any>> => {
     return await db.select().from(table.guru)
         .where(eq(table.guru.nip, nip));
 }
+
+export const getAllDataKelas = async (nip: string) : Promise<Array<any>> => {
+    return await db.select().from(table.siswa)
+        .leftJoin(table.kelas, eq(table.siswa.kelas, table.kelas.id_kelas))
+        .leftJoin(table.toko, eq(table.toko.id_kelas, table.kelas.id_kelas))
+        .where(eq(table.kelas.guru, nip));
+}
