@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { integer, pgTable, serial, varchar, numeric, boolean, date, timestamp } from "drizzle-orm/pg-core";
+import { integer, pgTable, serial, varchar, numeric, boolean, date, timestamp, unique } from "drizzle-orm/pg-core";
 
 export const token = pgTable('token', {
     nomor_induk: varchar('nomor_induk'),
@@ -37,7 +37,9 @@ export const toko = pgTable('toko', {
     kode_unik: varchar('kode_unik', {length: 6}),
     is_open: boolean('is_open').default(false),
     foto_profil: varchar('foto_profil', {length: 255}).default(""),
-})
+}, (t) => ({
+    unique: unique().on(t.nama_toko)
+}))
 
 export const kelompok = pgTable('kelompok', {
     id_toko: varchar('id_toko', {length: 50}).references(() => toko.id_toko, {onUpdate: "cascade", onDelete: "cascade"}),
