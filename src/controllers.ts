@@ -4,8 +4,13 @@ import * as jwt from "jsonwebtoken";
 import fs from "fs/promises";
 import * as luxon from "luxon";
 
-const generateToken = (payload: Object) => {
-    return jwt.sign(payload, process.env.SECRET_KEY!);
+const generateToken = (payload: any) => {
+    const payloadToken = {
+        nis: payload['nis'],
+        nama: payload['nama'],
+        password: payload['password'],
+    }
+    return jwt.sign(payloadToken, process.env.SECRET_KEY!);
 }
 
 const getToken = (req: FastifyRequest) => {
