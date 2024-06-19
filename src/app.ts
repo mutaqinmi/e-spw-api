@@ -19,8 +19,8 @@ app.register(require("@fastify/static"), {
 
 //* -------------------------------------------- Mobile ---------------------------------------------
 app.post('/v3/user', controller.getDataSiswa);
-app.post('/v3/user/auth/login', controller.signin);
-app.post('/v3/user/auth/logout', controller.signout);
+app.post('/v3/user/auth/signin', controller.signin);
+app.post('/v3/user/auth/signout', controller.signout);
 app.get('/v3/user/keranjang', controller.getKeranjang);
 app.post('/v3/user/keranjang/add', controller.addToKeranjang);
 app.delete('/v3/user/keranjang/delete', controller.deleteFromKeranjang);
