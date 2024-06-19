@@ -20,8 +20,15 @@ const getToken = (req: FastifyRequest) => {
     }
 }
 
-const verifyToken = (req: FastifyRequest) => {
-    return jwt.verify(getToken(req)!, process.env.SECRET_KEY!);
+const verifyToken = async (req: FastifyRequest) : Promise<any> => {
+    try {
+        const token = await models.getToken(getToken(req)!);
+        if(token.length >= 1){
+            return jwt.verify(getToken(req)!, process.env.SECRET_KEY!);
+        }
+    } catch (error) {
+        return false;
+    }
 }
 
 const updateUlasanToko = async (id_toko: string) => {
@@ -36,10 +43,8 @@ const updateUlasanToko = async (id_toko: string) => {
 
 export const getDataSiswa = async (req: FastifyRequest, res: FastifyReply) => {
     const body = req.body as { nis: string };
-    const nis = body.nis;
-
     try {
-        const dataSiswa = await models.getSiswa(nis);
+        const dataSiswa = await models.getSiswa(body.nis);
         if(dataSiswa.length === 1){
             const token = generateToken(dataSiswa[0]['siswa']);
             return res.status(200).send({
@@ -60,15 +65,12 @@ export const getDataSiswa = async (req: FastifyRequest, res: FastifyReply) => {
 }
 
 export const signin = async (req: FastifyRequest, res: FastifyReply) => {
+    const body = req.body as { nis: string };
     try {
-        const verify = verifyToken(req);
-        const data = verify as { nis: string };
-        if(verify){
-            await models.addToken(data.nis, getToken(req)!);
-            return res.status(200).send({
-                message: 'Success!'
-            });
-        }
+        await models.addToken(body.nis, getToken(req)!);
+        return res.status(200).send({
+            message: 'Success!'
+        });
     } catch (error) {
         console.log(error);
         return res.status(400).send({
@@ -79,7 +81,7 @@ export const signin = async (req: FastifyRequest, res: FastifyReply) => {
 
 export const signout = async (req: FastifyRequest, res: FastifyReply) => {
     try {
-        const verify = verifyToken(req);
+        const verify = await verifyToken(req);
         const data = verify as { nis: string };
         if(verify){
             await models.removeToken(data.nis);
@@ -112,7 +114,7 @@ export const getDataKelas = async (req: FastifyRequest, res: FastifyReply) => {
 
 export const getDataToko = async (req: FastifyRequest, res: FastifyReply) => {
     try {
-        if(verifyToken(req)){
+        if(await verifyToken(req)){
             const dataToko = await models.getToko();
             return res.status(200).send({
                 data: dataToko
@@ -139,7 +141,7 @@ export const createToko = async (req: FastifyRequest, res: FastifyReply) => {
     const get_id_kelas = await models.getKelasByNamaKelas(body[1]['id_kelas']);
 
     try {
-        const verify = verifyToken(req);
+        const verify = await verifyToken(req);
         const data = verify as { nis: string };
         if(verify){
             const toko = await models.addToko(body[0]['nama_toko'], get_id_kelas[0]['id_kelas'], body[2]['deskripsi_toko']);
@@ -181,7 +183,7 @@ export const updateFotoProfilToko = async (req: FastifyRequest, res: FastifyRepl
     }
     
     try {
-        if(verifyToken(req)){
+        if(await verifyToken(req)){
             await fs.rm(`./public/${body[1]['old_image']}`);
             if(file){
                 const timestamp = luxon.DateTime.now().toFormat('yyyyLLddHHmmss');
@@ -205,7 +207,7 @@ export const updateFotoProfilToko = async (req: FastifyRequest, res: FastifyRepl
 export const updateDeskripsiToko = async (req: FastifyRequest, res: FastifyReply) => {
     const body = req.body as { id_toko: string, nama_toko: string; deskripsi_toko: string; };
     try {
-        if(verifyToken(req)){
+        if(await verifyToken(req)){
             await models.updateDeskripsiToko(body.id_toko, body.deskripsi_toko);
             return res.status(200).send({
                 message: 'Success!'
@@ -222,7 +224,7 @@ export const updateDeskripsiToko = async (req: FastifyRequest, res: FastifyReply
 export const gabungToko = async (req: FastifyRequest, res: FastifyReply) => {
     const body = req.body as { kode_unik: string; };
     try {
-        const verify = verifyToken(req);
+        const verify = await verifyToken(req);
         const data = verify as { nis: string };
         if(verify){
             const toko: {[key: string]: any} = await models.getTokoByKodeUnik(body.kode_unik);
@@ -260,7 +262,7 @@ export const gabungToko = async (req: FastifyRequest, res: FastifyReply) => {
 export const getDataKelompok = async (req: FastifyRequest, res: FastifyReply) => {
     const body = req.body as { id_toko: string };
     try {
-        if(verifyToken(req)){
+        if(await verifyToken(req)){
             const dataKelompok = await models.getKelompok(body.id_toko);
             return res.status(200).send({
                 data: dataKelompok
@@ -277,7 +279,7 @@ export const getDataKelompok = async (req: FastifyRequest, res: FastifyReply) =>
 export const removeFromKelompok = async (req: FastifyRequest, res: FastifyReply) => {
     const body = req.body as { id_toko: string };
     try {
-        const verify = verifyToken(req);
+        const verify = await verifyToken(req);
         const data = verify as { nis: string };
         if(verify){
             await models.removeFromKelompok(body.id_toko, data.nis);
@@ -296,7 +298,7 @@ export const removeFromKelompok = async (req: FastifyRequest, res: FastifyReply)
 export const deleteToko = async (req: FastifyRequest, res: FastifyReply) => {
     const body = req.body as { id_toko: string };
     try {
-        if(verifyToken(req)){
+        if(await verifyToken(req)){
             await models.removeToko(body.id_toko);
             return res.status(200).send({
                 message: 'Success!'
@@ -313,7 +315,7 @@ export const deleteToko = async (req: FastifyRequest, res: FastifyReply) => {
 export const updateJadwalToko = async (req: FastifyRequest, res: FastifyReply) => {
     const body = req.body as { id_toko: string, is_open: boolean; };
     try {
-        if(verifyToken(req)){
+        if(await verifyToken(req)){
             await models.updateJadwalToko(body.id_toko, body.is_open);
             return res.status(200).send({
                 message: 'Success!'
@@ -329,7 +331,7 @@ export const updateJadwalToko = async (req: FastifyRequest, res: FastifyReply) =
 
 export const getSelfKelompok = async (req: FastifyRequest, res: FastifyReply) => {
     try {
-        const verify = verifyToken(req);
+        const verify = await verifyToken(req);
         const data = verify as { nis: string };
         if(verify){
             const dataKelompok = await models.getSelfKelompok(data.nis);
@@ -347,7 +349,7 @@ export const getSelfKelompok = async (req: FastifyRequest, res: FastifyReply) =>
 
 export const getDataProduk = async (req: FastifyRequest, res: FastifyReply) => {
     try {
-        if(verifyToken(req)){
+        if(await verifyToken(req)){
             const dataProduk = await models.getProduk();
             return res.status(200).send({
                 data: dataProduk
@@ -364,7 +366,7 @@ export const getDataProduk = async (req: FastifyRequest, res: FastifyReply) => {
 export const getProdukByIdProduk = async (req: FastifyRequest, res: FastifyReply) => {
     const params = req.params as { id: string };
     try {
-        if(verifyToken(req)){
+        if(await verifyToken(req)){
             const dataProduk = await models.getProdukByIdProduk(params.id);
             return res.status(200).send({
                 data: dataProduk
@@ -389,7 +391,7 @@ export const addProduk = async (req: FastifyRequest, res: FastifyReply) => {
     }
 
     try {
-        if(verifyToken(req)){
+        if(await verifyToken(req)){
             const produk: {[key: string]: any} = await models.addProduk(body[0]['nama_produk'], body[1]['harga'], body[2]['stok'], body[3]['deskripsi_produk'], body[5]['id_toko']);
             if(file){
                 const timestamp = luxon.DateTime.now().toFormat('yyyyLLddHHmmss');
@@ -424,7 +426,7 @@ export const updateFotoProduk = async (req: FastifyRequest, res: FastifyReply) =
     }
 
     try {
-        if(verifyToken(req)){
+        if(await verifyToken(req)){
             if(file){
                 const timestamp = luxon.DateTime.now().toFormat('yyyyLLddHHmmss');
                 const filename = `${id_produk}-${timestamp}.jpeg`;
@@ -448,7 +450,7 @@ export const updateProduk = async (req: FastifyRequest, res: FastifyReply) => {
     const body = req.body as { id_produk: string; nama_produk: string; harga: string; stok: number; deskripsi_produk: string; detail_produk: string; };
 
     try {
-        if(verifyToken(req)){
+        if(await verifyToken(req)){
             await models.updateProduk(body.id_produk, body.nama_produk, body.harga, body.stok, body.deskripsi_produk);
             return res.status(200).send({
                 message: 'Success!'
@@ -465,7 +467,7 @@ export const updateProduk = async (req: FastifyRequest, res: FastifyReply) => {
 export const deleteProduk = async (req: FastifyRequest, res: FastifyReply) => {
     const body = req.body as { id_produk: string };
     try {
-        if(verifyToken(req)){
+        if(await verifyToken(req)){
             await models.removeProduk(body.id_produk);
             return res.status(200).send({
                 message: 'Success!'
@@ -482,7 +484,7 @@ export const deleteProduk = async (req: FastifyRequest, res: FastifyReply) => {
 export const search = async (req: FastifyRequest, res: FastifyReply) => {
     const body = req.body as { query: string };
     try {
-        if(verifyToken(req)){
+        if(await verifyToken(req)){
             const searchProductResult = await models.getProdukByKeywords(body.query);
             const searchShopResult = await models.getTokoByKeywords(body.query);
             return res.status(200).send({
@@ -501,7 +503,7 @@ export const search = async (req: FastifyRequest, res: FastifyReply) => {
 export const getTokoByIdToko = async (req: FastifyRequest, res: FastifyReply) => {
     const params = req.params as { id: string };
     try {
-        if(verifyToken(req)){
+        if(await verifyToken(req)){
             const dataToko = await models.getTokoByIdToko(params.id);
             return res.status(200).send({
                 data: dataToko
@@ -518,7 +520,7 @@ export const getTokoByIdToko = async (req: FastifyRequest, res: FastifyReply) =>
 export const addToKeranjang = async (req: FastifyRequest, res: FastifyReply) => {
     const body = req.body as { id: string; qty: number; catatan: string; }
     try {
-        const verify = verifyToken(req);
+        const verify = await verifyToken(req);
         const data = verify as { nis: string };
         if(verify){
             await models.addToKeranjang(body.id, data.nis, body.qty, body.catatan);
@@ -536,7 +538,7 @@ export const addToKeranjang = async (req: FastifyRequest, res: FastifyReply) => 
 
 export const getKeranjang = async (req: FastifyRequest, res: FastifyReply) => {
     try {
-        const verify = verifyToken(req);
+        const verify = await verifyToken(req);
         const data = verify as { nis: string };
         if(verify){
             const dataKeranjang = await models.getKeranjang(data.nis);
@@ -555,7 +557,7 @@ export const getKeranjang = async (req: FastifyRequest, res: FastifyReply) => {
 export const deleteFromKeranjang = async (req: FastifyRequest, res: FastifyReply) => {
     const body = req.body as { id: number; };
     try {
-        const verify = verifyToken(req);
+        const verify = await verifyToken(req);
         const data = verify as { nis: string };
         if(verify){
             await models.removeFromKeranjang(body.id, data.nis);
@@ -574,7 +576,7 @@ export const deleteFromKeranjang = async (req: FastifyRequest, res: FastifyReply
 export const updateKeranjang = async (req: FastifyRequest, res: FastifyReply) => {
     const body = req.body as { id: number; qty: number;};
     try {
-        const verify = verifyToken(req);
+        const verify = await verifyToken(req);
         const data = verify as { nis: string };
         if(verify){
             await models.updateJumlahKeranjang(body.qty, body.id, data.nis);
@@ -593,7 +595,7 @@ export const updateKeranjang = async (req: FastifyRequest, res: FastifyReply) =>
 export const getPesanan = async (req: FastifyRequest, res: FastifyReply) => {
     const body = req.body as { status: string };
     try {
-        const verify = verifyToken(req);
+        const verify = await verifyToken(req);
         const data = verify as { nis: string };
         if(verify){
             const dataPesanan = await models.getPesanan(data.nis, body.status);
@@ -612,7 +614,7 @@ export const getPesanan = async (req: FastifyRequest, res: FastifyReply) => {
 export const getPesananByToko = async (req: FastifyRequest, res: FastifyReply) => {
     const body = req.body as { id_toko: string; status: string };
     try {
-        if(verifyToken(req)){
+        if(await verifyToken(req)){
             const dataPesanan = await models.getPesananByToko(body.id_toko, body.status);
             return res.status(200).send({
                 data: dataPesanan
@@ -629,7 +631,7 @@ export const getPesananByToko = async (req: FastifyRequest, res: FastifyReply) =
 export const createPesanan = async (req: FastifyRequest, res: FastifyReply) => {
     const body = req.body as { id_produk: string; jumlah: number; total_harga: number; catatan: string; alamat: string;};
     try {
-        const verify = verifyToken(req);
+        const verify = await verifyToken(req);
         const data = verify as { nis: string };
         if(verify){
             const timestamp = luxon.DateTime.now().toFormat('yyyyLLddHHmmss');
@@ -653,7 +655,7 @@ export const createPesanan = async (req: FastifyRequest, res: FastifyReply) => {
 export const updateStatusPesanan = async (req: FastifyRequest, res: FastifyReply) => {
     const body = req.body as { id_transaksi: string; status: string; };
     try {
-        if(verifyToken(req)){
+        if(await verifyToken(req)){
             await models.updateStatusPesanan(body.id_transaksi, body.status);
             return res.status(200).send({
                 message: 'Success!'
@@ -670,7 +672,7 @@ export const updateStatusPesanan = async (req: FastifyRequest, res: FastifyReply
 export const getNotifikasi = async (req: FastifyRequest, res: FastifyReply) => {
     const body = req.body as { type: string };
     try {
-        const verify = verifyToken(req);
+        const verify = await verifyToken(req);
         const data = verify as { nis: string };
         if(verify){
             const dataNotifikasi = await models.getNotifikasi(data.nis, body.type);
@@ -689,7 +691,7 @@ export const getNotifikasi = async (req: FastifyRequest, res: FastifyReply) => {
 export const addNotifikasi = async (req: FastifyRequest, res: FastifyReply) => {
     const body = req.body as { type: string; title: string; description: string; };
     try {
-        const verify = verifyToken(req);
+        const verify = await verifyToken(req);
         const data = verify as { nis: string };
         if(verify){
             await models.addNotifikasi(data.nis, body.type, body.title, body.description);
@@ -708,7 +710,7 @@ export const addNotifikasi = async (req: FastifyRequest, res: FastifyReply) => {
 export const getNotifikasiToko = async (req: FastifyRequest, res: FastifyReply) => {
     const body = req.body as { id_toko: string; type: string };
     try {
-        if(verifyToken(req)){
+        if(await verifyToken(req)){
             const dataNotifikasi = await models.getNotifikasiToko(body.id_toko, body.type);
             return res.status(200).send({
                 data: dataNotifikasi
@@ -725,7 +727,7 @@ export const getNotifikasiToko = async (req: FastifyRequest, res: FastifyReply) 
 export const addNotifikasiToko = async (req: FastifyRequest, res: FastifyReply) => {
     const body = req.body as { id_toko: string; type: string; title: string; description: string; };
     try {
-        if(verifyToken(req)){
+        if(await verifyToken(req)){
             await models.addNotifikasiToko(body.id_toko, body.type, body.title, body.description);
             return res.status(200).send({
                 message: 'Success!'
@@ -741,7 +743,7 @@ export const addNotifikasiToko = async (req: FastifyRequest, res: FastifyReply) 
 
 export const getUlasan = async (req: FastifyRequest, res: FastifyReply) => {
     try {
-        const verify = verifyToken(req);
+        const verify = await verifyToken(req);
         const data = verify as { nis: string };
         if(verify){
             const dataRating = await models.getUlasan(data.nis);
@@ -760,7 +762,7 @@ export const getUlasan = async (req: FastifyRequest, res: FastifyReply) => {
 export const getUlasanByToko = async (req: FastifyRequest, res: FastifyReply) => {
     const body = req.body as { id_toko: string; };
     try {
-        if(verifyToken(req)){
+        if(await verifyToken(req)){
             const dataRating = await models.getUlasanByToko(body.id_toko);
             return res.status(200).send({
                 data: dataRating
@@ -777,7 +779,7 @@ export const getUlasanByToko = async (req: FastifyRequest, res: FastifyReply) =>
 export const addUlasan = async (req: FastifyRequest, res: FastifyReply) => {
     const body = req.body as { id_produk: string; id_transaksi: string; ulasan: string; rating: string; id_toko: string };
     try {
-        const verify = verifyToken(req);
+        const verify = await verifyToken(req);
         const data = verify as { nis: string };
         if(verify){
             await models.addUlasan(data.nis, body.id_produk, body.id_transaksi, body.ulasan, body.rating)
@@ -796,7 +798,7 @@ export const addUlasan = async (req: FastifyRequest, res: FastifyReply) => {
 
 export const getFavorit = async (req: FastifyRequest, res: FastifyReply) => {
     try {
-        const verify = verifyToken(req);
+        const verify = await verifyToken(req);
         const data = verify as { nis: string };
         if(verify){
             const dataFavorit = await models.getFavorit(data.nis);
@@ -815,7 +817,7 @@ export const getFavorit = async (req: FastifyRequest, res: FastifyReply) => {
 export const addToFavorit = async (req: FastifyRequest, res: FastifyReply) => {
     const body = req.body as { id_toko: string; };
     try {
-        const verify = verifyToken(req);
+        const verify = await verifyToken(req);
         const data = verify as { nis: string };
         if(verify){
             await models.addToFavorit(body.id_toko, data.nis);
@@ -834,7 +836,7 @@ export const addToFavorit = async (req: FastifyRequest, res: FastifyReply) => {
 export const deleteFromFavorite = async (req: FastifyRequest, res: FastifyReply) => {
     const body = req.body as { id_toko: string; };
     try {
-        const verify = verifyToken(req);
+        const verify = await verifyToken(req);
         const data = verify as { nis: string };
         if(verify){
             await models.removeFromFavorit(body.id_toko, data.nis);
@@ -853,7 +855,7 @@ export const deleteFromFavorite = async (req: FastifyRequest, res: FastifyReply)
 export const updateTelepon = async (req: FastifyRequest, res: FastifyReply) => {
     const body = req.body as { telepon: string };
     try {
-        const verify = verifyToken(req);
+        const verify = await verifyToken(req);
         const data = verify as { nis: string };
         if(verify){
             await models.updateTelepon(data.nis, body.telepon);
@@ -872,7 +874,7 @@ export const updateTelepon = async (req: FastifyRequest, res: FastifyReply) => {
 export const changePassword = async (req: FastifyRequest, res: FastifyReply) => {
     const body = req.body as { password: string };
     try {
-        const verify = verifyToken(req);
+        const verify = await verifyToken(req);
         const data = verify as { nis: string };
         if(verify){
             await models.updatePassword(data.nis, body.password);
@@ -891,7 +893,7 @@ export const changePassword = async (req: FastifyRequest, res: FastifyReply) => 
 export const updateFotoProfilSiswa = async (req: FastifyRequest, res: FastifyReply) => {
     const file = await req.file();
     try {
-        const verify = verifyToken(req);
+        const verify = await verifyToken(req);
         const data = verify as { nis: string };
         if(verify){
             if(file){
@@ -918,7 +920,7 @@ export const updateFotoProfilSiswa = async (req: FastifyRequest, res: FastifyRep
 
 export const getAlamat = async (req: FastifyRequest, res: FastifyReply) => {
     try {
-        const verify = verifyToken(req);
+        const verify = await verifyToken(req);
         const data = verify as { nis: string };
         if(verify){
             const dataAlamat = await models.getAlamat(data.nis);
@@ -937,7 +939,7 @@ export const getAlamat = async (req: FastifyRequest, res: FastifyReply) => {
 export const addAlamat = async (req: FastifyRequest, res: FastifyReply) => {
     const body = req.body as { address: string };
     try {
-        const verify = verifyToken(req);
+        const verify = await verifyToken(req);
         const data = verify as { nis: string };
         if(verify){
             await models.addAlamat(data.nis, body.address);
@@ -957,7 +959,7 @@ export const updateAlamat = async (req: FastifyRequest, res: FastifyReply) => {
     const query = req.query as { id: number };
     const body = req.body as { address: string };
     try {
-        if(verifyToken(req)){
+        if(await verifyToken(req)){
             await models.updateAlamat(query.id, body.address);
             return res.status(200).send({
                 message: 'Success!'
@@ -974,7 +976,7 @@ export const updateAlamat = async (req: FastifyRequest, res: FastifyReply) => {
 export const deleteAlamat = async (req: FastifyRequest, res: FastifyReply) => {
     const body = req.body as { id_address: number };
     try {
-        if(verifyToken(req)){
+        if(await verifyToken(req)){
             await models.removeAlamat(body.id_address);
             return res.status(200).send({
                 message: 'Success!'
@@ -1015,7 +1017,7 @@ export const signinGuru = async (req: FastifyRequest, res: FastifyReply) => {
 
 export const getAllDataSiswaByGuru = async (req: FastifyRequest, res: FastifyReply) => {
     try {
-        const verify = verifyToken(req);
+        const verify = await verifyToken(req);
         const data = verify as { nip: string }
         if(verify){
             const datas = await models.getSiswaByGuru(data.nip);
@@ -1033,7 +1035,7 @@ export const getAllDataSiswaByGuru = async (req: FastifyRequest, res: FastifyRep
 
 export const getAllDataKelasByGuru = async (req: FastifyRequest, res: FastifyReply) => {
     try {
-        const verify = verifyToken(req);
+        const verify = await verifyToken(req);
         const data = verify as { nip: string }
         if(verify){
             const datas = await models.getKelasByGuru(data.nip);
@@ -1051,7 +1053,7 @@ export const getAllDataKelasByGuru = async (req: FastifyRequest, res: FastifyRep
 
 export const getAllDataKelompokByGuru = async (req: FastifyRequest, res: FastifyReply) => {
     try {
-        const verify = verifyToken(req);
+        const verify = await verifyToken(req);
         const data = verify as { nip: string }
         if(verify){
             const datas = await models.getKelompokByGuru(data.nip);
@@ -1070,7 +1072,7 @@ export const getAllDataKelompokByGuru = async (req: FastifyRequest, res: Fastify
 export const getTokoByIdKelas = async (req: FastifyRequest, res: FastifyReply) => {
     const params = req.params as { id: string }
     try {
-        const verify = verifyToken(req);
+        const verify = await verifyToken(req);
         if(verify){
             const toko = await models.getTokoByIdKelas(params.id);
             return res.status(200).send({

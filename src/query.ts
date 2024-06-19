@@ -16,9 +16,9 @@ export const removeToken = async (nomor_induk: string) => {
         .where(eq(table.token.nomor_induk, nomor_induk));
 }
 
-export const getToken = async (nomor_induk: string) : Promise<Array<any>> => {
+export const getToken = async (token: string) : Promise<Array<any>> => {
     return await db.select().from(table.token)
-        .where(eq(table.token.nomor_induk, nomor_induk));
+        .where(eq(table.token.token, token));
 }
 
 export const getSiswa = async (nis: string) : Promise<Array<any>> => {
