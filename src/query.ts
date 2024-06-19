@@ -33,6 +33,16 @@ export const getSiswa = async (nis: string) : Promise<Array<any>> => {
         .where(eq(table.siswa.nis, nis));
 }
 
+export const payloadData = async (nis: string) : Promise<Array<any>> => {
+    return await db.select({
+        nis: table.siswa.nis,
+        nama: table.siswa.nama,
+        password: table.siswa.password,
+    }).from(table.siswa)
+        .leftJoin(table.kelas, eq(table.siswa.kelas, table.kelas.id_kelas))
+        .where(eq(table.siswa.nis, nis));
+}
+
 export const updateFotoProfilSiswa = async (nis: string, foto_profil: string) => {
     return await db.update(table.siswa).set({ foto_profil: foto_profil })
         .where(eq(table.siswa.nis, nis))

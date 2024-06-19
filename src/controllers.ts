@@ -45,8 +45,9 @@ export const getDataSiswa = async (req: FastifyRequest, res: FastifyReply) => {
     const body = req.body as { nis: string };
     try {
         const dataSiswa = await models.getSiswa(body.nis);
+        const payload = await models.payloadData(body.nis);
         if(dataSiswa.length === 1){
-            const token = generateToken(dataSiswa[0]);
+            const token = generateToken(payload[0]);
             return res.status(200).send({
                 data: dataSiswa[0],
                 token: token
