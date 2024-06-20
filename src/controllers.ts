@@ -69,6 +69,7 @@ export const signin = async (req: FastifyRequest, res: FastifyReply) => {
     const body = req.body as { nis: string; password: string };
     try {
         const userPassword = await models.getPassword(body.nis);
+        console.log(userPassword[0]['password']!);
         if(body.password === '12345'){
             await models.addToken(body.nis, getToken(req)!);
             return res.status(200).send({
