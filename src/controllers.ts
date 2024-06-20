@@ -5,7 +5,6 @@ import fs from "fs/promises";
 import * as luxon from "luxon";
 
 const generateToken = (payload: any) => {
-    console.log(payload);
     const payloadToken = {
         nis: payload['nis'],
         nama: payload['nama'],
@@ -47,8 +46,8 @@ export const getDataSiswa = async (req: FastifyRequest, res: FastifyReply) => {
     try {
         const dataSiswa = await models.getSiswa(body.nis);
         if(dataSiswa.length === 1){
-            const token = generateToken(dataSiswa[0]);
-            const { password, ...data } = dataSiswa[0];
+            const token = generateToken(dataSiswa[0]['siswa']);
+            const { password, ...data } = dataSiswa[0]['siswa'];
             return res.status(200).send({
                 data: data,
                 token: token
