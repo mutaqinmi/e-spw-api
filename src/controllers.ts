@@ -50,7 +50,8 @@ export const getDataSiswa = async (req: FastifyRequest, res: FastifyReply) => {
             const { password, ...data } = dataSiswa[0]['siswa'];
             return res.status(200).send({
                 data: data,
-                token: token
+                token: token,
+                isDefaultPassword: password === '12345' ? true : false,
             })
         }
 
@@ -69,8 +70,7 @@ export const signin = async (req: FastifyRequest, res: FastifyReply) => {
     const body = req.body as { nis: string; password: string };
     try {
         const userPassword = await models.getPassword(body.nis);
-        console.log(userPassword[0]['password']!);
-        if(body.password === '12345'){
+        if(body.password === ''){
             await models.addToken(body.nis, getToken(req)!);
             return res.status(200).send({
                 message: 'success'
