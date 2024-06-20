@@ -68,14 +68,7 @@ export const getDataSiswa = async (req: FastifyRequest, res: FastifyReply) => {
 export const signin = async (req: FastifyRequest, res: FastifyReply) => {
     const body = req.body as { nis: string; password: string };
     try {
-        const verify = await verifyToken(req);
-        const data = verify as { nis: string };
-        if(!verify){
-            return res.status(401).send({
-                message: 'Token tidak valid!'
-            })
-        }
-        const userPassword = await models.getPassword(data.nis);
+        const userPassword = await models.getPassword(body.nis);
         if(userPassword[0]['password'] === '12345'){
             return res.status(200).send({
                 message: 'success'
