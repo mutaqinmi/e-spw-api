@@ -22,23 +22,7 @@ export const getToken = async (token: string) : Promise<Array<any>> => {
 }
 
 export const getSiswa = async (nis: string) : Promise<Array<any>> => {
-    return await db.select({
-        nis: table.siswa.nis,
-        nama: table.siswa.nama,
-        kelas: table.kelas.kelas,
-        telepon: table.siswa.telepon,
-        foto_profil: table.siswa.foto_profil
-    }).from(table.siswa)
-        .leftJoin(table.kelas, eq(table.siswa.kelas, table.kelas.id_kelas))
-        .where(eq(table.siswa.nis, nis));
-}
-
-export const payloadData = async (nis: string) : Promise<Array<any>> => {
-    return await db.select({
-        nis: table.siswa.nis,
-        nama: table.siswa.nama,
-        password: table.siswa.password,
-    }).from(table.siswa)
+    return await db.select().from(table.siswa)
         .leftJoin(table.kelas, eq(table.siswa.kelas, table.kelas.id_kelas))
         .where(eq(table.siswa.nis, nis));
 }

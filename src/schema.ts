@@ -44,7 +44,7 @@ export const toko = pgTable('toko', {
 export const kelompok = pgTable('kelompok', {
     id_toko: varchar('id_toko', {length: 50}).references(() => toko.id_toko, {onUpdate: "cascade", onDelete: "cascade"}),
     nis: varchar('nis').references(() => siswa.nis),
-    tanggal_gabung: date('tanggal_gabung').default('now()'),
+    tanggal_gabung: date('tanggal_gabung').default('CURRENT_TIMESTAMP'),
 })
 
 export const produk = pgTable('produk', {
@@ -70,7 +70,7 @@ export const keranjang = pgTable('keranjang', {
 export const banner = pgTable('banner', {
     id_banner: serial('id_banner').primaryKey(),
     foto_banner: varchar('foto_banner', {length: 50}),
-    tanggal: timestamp('tanggal').default(sql`now()`),
+    tanggal: timestamp('tanggal').default(sql`CURRENT_TIMESTAMP`),
     id_toko: varchar('id_toko', {length: 50}).references(() => toko.id_toko, {onUpdate: "cascade", onDelete: "cascade"}),
 })
 
@@ -91,7 +91,7 @@ export const notifikasi = pgTable('notifikasi', {
     id_notifikasi: serial('id_notifikasi').primaryKey(),
     nis: varchar('nis').references(() => siswa.nis, {onUpdate: "cascade", onDelete: "cascade"}),
     jenis_notifikasi: varchar('jenis_notifikasi', {length: 50}),
-    waktu: timestamp('waktu', {withTimezone: true}).default(sql`now()`),
+    waktu: timestamp('waktu', {withTimezone: true}).default(sql`CURRENT_TIMESTAMP`),
     judul_notifikasi: varchar('judul_notifikasi', {length: 255}),
     detail_notifikasi: varchar('detail_notifikasi', {length: 255}),
 })
@@ -100,7 +100,7 @@ export const notifikasi_toko = pgTable('notifikasi_toko', {
     id_notifikasi: serial('id_notifikasi').primaryKey(),
     id_toko: varchar('id_toko', {length: 50}).references(() => toko.id_toko, {onUpdate: "cascade", onDelete: "cascade"}),
     jenis_notifikasi: varchar('jenis_notifikasi', {length: 50}),
-    waktu: timestamp('waktu', {withTimezone: true}).default(sql`now()`),
+    waktu: timestamp('waktu', {withTimezone: true}).default(sql`CURRENT_TIMESTAMP`),
     judul_notifikasi: varchar('judul_notifikasi', {length: 255}),
     detail_notifikasi: varchar('detail_notifikasi', {length: 255}),
 })
@@ -114,7 +114,7 @@ export const transaksi = pgTable('transaksi', {
     status: varchar('status', {length: 20}),
     catatan: varchar('catatan', {length: 50}),
     alamat: varchar('alamat', {length: 255}),
-    waktu: timestamp('waktu', {withTimezone: true}).default(sql`now()`),
+    waktu: timestamp('waktu', {withTimezone: true}).default(sql`CURRENT_TIMESTAMP`),
 })
 
 export const ulasan = pgTable('ulasan', {
@@ -124,5 +124,5 @@ export const ulasan = pgTable('ulasan', {
     id_transaksi: varchar('id_transaksi', {length: 50}).references(() => transaksi.id_transaksi, {onUpdate: "cascade", onDelete: "cascade"}),
     deskripsi_ulasan: varchar('deskripsi_ulasan', {length: 255}),
     jumlah_rating: numeric('jumlah_rating'),
-    waktu: timestamp('waktu', {withTimezone: true}).default(sql`now()`),
+    waktu: timestamp('waktu', {withTimezone: true}).default(sql`CURRENT_TIMESTAMP`),
 })
