@@ -16,14 +16,19 @@ export const removeToken = async (nomor_induk: string) => {
         .where(eq(table.token.nomor_induk, nomor_induk));
 }
 
-export const getToken = async (token: string) : Promise<Array<any>> => {
+export const getToken = async (token: string) => {
     return await db.select().from(table.token)
         .where(eq(table.token.token, token));
 }
 
-export const getSiswa = async (nis: string) : Promise<Array<any>> => {
+export const getSiswa = async (nis: string) => {
     return await db.select().from(table.siswa)
         .leftJoin(table.kelas, eq(table.siswa.kelas, table.kelas.id_kelas))
+        .where(eq(table.siswa.nis, nis));
+}
+
+export const getPassword = async (nis: string) => {
+    return await db.select({ password: table.siswa.password }).from(table.siswa)
         .where(eq(table.siswa.nis, nis));
 }
 
@@ -33,27 +38,27 @@ export const updateFotoProfilSiswa = async (nis: string, foto_profil: string) =>
         .returning();
 }
 
-export const getKelas = async () : Promise<Array<any>> => {
+export const getKelas = async () => {
     return await db.select().from(table.kelas);
 }
 
-export const getKelasByNamaKelas = async (nama_kelas: string) : Promise<Array<any>> => {
+export const getKelasByNamaKelas = async (nama_kelas: string) => {
     return await db.select().from(table.kelas)
         .where(eq(table.kelas.kelas, nama_kelas));
 }
 
-export const getToko = async () : Promise<Array<any>> => {
+export const getToko = async () => {
     return await db.select().from(table.toko)
         .leftJoin(table.kelas, eq(table.toko.id_kelas, table.kelas.id_kelas))
         .orderBy(desc(table.toko.is_open));
 }
 
-export const getTokoByNamaToko = async (nama_toko: string) : Promise<Array<any>> => {
+export const getTokoByNamaToko = async (nama_toko: string) => {
     return await db.select().from(table.toko)
         .where(eq(table.toko.nama_toko, nama_toko));
 }
 
-export const getTokoByKodeUnik = async (kode_unik: string) : Promise<Array<any>> => {
+export const getTokoByKodeUnik = async (kode_unik: string) => {
     return await db.select().from(table.toko)
         .where(eq(table.toko.kode_unik, kode_unik));
 }
@@ -88,19 +93,19 @@ export const updateFotoProfilToko = async (id_toko: string, foto_profil: string)
         .where(eq(table.toko.id_toko, id_toko));
 }
 
-export const getProduk = async () : Promise<Array<any>> => {
+export const getProduk = async () => {
     return await db.select().from(table.produk)
         .leftJoin(table.toko, eq(table.produk.id_toko, table.toko.id_toko))
         .where(eq(table.toko.is_open, true));
 }
 
-export const getProdukByIdProduk = async (id_produk: string) : Promise<Array<any>> => {
+export const getProdukByIdProduk = async (id_produk: string) => {
     return await db.select().from(table.produk)
         .leftJoin(table.toko, eq(table.produk.id_toko, table.toko.id_toko))
         .where(eq(table.produk.id_produk, id_produk))
 }
 
-export const getProdukByKeywords = async (keywords: string) : Promise<Array<any>> => {
+export const getProdukByKeywords = async (keywords: string) => {
     return await db.select().from(table.produk)
         .leftJoin(table.toko, eq(table.produk.id_toko, table.toko.id_toko))
         .where(ilike(table.produk.nama_produk, `%${keywords}%`));
@@ -138,21 +143,21 @@ export const removeProduk = async (id_produk: string) => {
         .where(eq(table.produk.id_produk, id_produk));
 }
 
-export const getTokoByKeywords = async (keywords: string) : Promise<Array<any>> => {
+export const getTokoByKeywords = async (keywords: string) => {
     return await db.select().from(table.toko)
         .leftJoin(table.kelas, eq(table.toko.id_kelas, table.kelas.id_kelas))
         .leftJoin(table.produk, eq(table.produk.id_toko, table.toko.id_toko))
         .where(ilike(table.toko.nama_toko, `%${keywords}%`));
 }
 
-export const getTokoByIdToko = async (id_toko: string) : Promise<Array<any>> => {
+export const getTokoByIdToko = async (id_toko: string) => {
     return await db.select().from(table.produk)
         .leftJoin(table.toko, eq(table.produk.id_toko, table.toko.id_toko))
         .leftJoin(table.kelas, eq(table.toko.id_kelas, table.kelas.id_kelas))
         .where(eq(table.toko.id_toko, id_toko));
 }
 
-export const getKelompok = async (id_toko: string) : Promise<Array<any>> => {
+export const getKelompok = async (id_toko: string) => {
     return await db.select().from(table.kelompok)
         .leftJoin(table.siswa, eq(table.kelompok.nis, table.siswa.nis))
         .leftJoin(table.toko, eq(table.kelompok.id_toko, table.toko.id_toko))
@@ -160,7 +165,7 @@ export const getKelompok = async (id_toko: string) : Promise<Array<any>> => {
         .where(eq(table.kelompok.id_toko, id_toko));
 }
 
-export const getSelfKelompok = async (nis: string) : Promise<Array<any>> => {
+export const getSelfKelompok = async (nis: string) => {
     return await db.select().from(table.kelompok)
         .leftJoin(table.siswa, eq(table.kelompok.nis, table.siswa.nis))
         .leftJoin(table.toko, eq(table.kelompok.id_toko, table.toko.id_toko))
@@ -189,7 +194,7 @@ export const addToKeranjang = async (id_produk: string, nis: string, jumlah: num
     });
 }
 
-export const getKeranjang = async (nis: string) : Promise<Array<any>> => {
+export const getKeranjang = async (nis: string) => {
     return await db.select().from(table.keranjang)
         .leftJoin(table.produk, eq(table.keranjang.id_produk, table.produk.id_produk))
         .leftJoin(table.toko, eq(table.produk.id_toko, table.toko.id_toko))
@@ -211,7 +216,7 @@ export const updateJumlahKeranjang = async (jumlah: number, id_keranjang: number
         .where(and(eq(table.keranjang.id_keranjang, id_keranjang), eq(table.keranjang.nis, nis)));
 }
 
-export const getPesanan = async (nis: string, status_pesanan: string) : Promise<Array<any>> => {
+export const getPesanan = async (nis: string, status_pesanan: string) => {
     return await db.select().from(table.transaksi)
         .leftJoin(table.produk, eq(table.transaksi.id_produk, table.produk.id_produk))
         .leftJoin(table.toko, eq(table.produk.id_toko, table.toko.id_toko))
@@ -220,7 +225,7 @@ export const getPesanan = async (nis: string, status_pesanan: string) : Promise<
         .orderBy(desc(table.transaksi.waktu))
 }
 
-export const getPesananByToko = async (id_toko: string, status_pesanan: string) : Promise<Array<any>> => {
+export const getPesananByToko = async (id_toko: string, status_pesanan: string) => {
     return await db.select().from(table.transaksi)
         .leftJoin(table.produk, eq(table.transaksi.id_produk, table.produk.id_produk))
         .leftJoin(table.toko, eq(table.produk.id_toko, table.toko.id_toko))
@@ -253,7 +258,7 @@ export const updateStatusPesanan = async (id_transaksi: string, status: string) 
         .where(eq(table.transaksi.id_transaksi, id_transaksi));
 }
 
-export const getNotifikasi = async (nis: string, type: string) : Promise<Array<any>> => {
+export const getNotifikasi = async (nis: string, type: string) => {
     return await db.select().from(table.notifikasi)
         .where(and(eq(table.notifikasi.nis, nis), eq(table.notifikasi.jenis_notifikasi, type)))
         .orderBy(desc(table.notifikasi.waktu));
@@ -268,7 +273,7 @@ export const addNotifikasi = async (nis: string, jenis_notifikasi: string, judul
     });
 }
 
-export const getNotifikasiToko = async (id_toko: string, type: string) : Promise<Array<any>> => {
+export const getNotifikasiToko = async (id_toko: string, type: string) => {
     return await db.select().from(table.notifikasi_toko)
         .where(and(eq(table.notifikasi_toko.id_toko, id_toko), eq(table.notifikasi.jenis_notifikasi, type)))
         .orderBy(desc(table.notifikasi.waktu));
@@ -283,7 +288,7 @@ export const addNotifikasiToko = async (id_toko: string, jenis_notifikasi: strin
     });
 }
 
-export const getUlasan = async (nis: string) : Promise<Array<any>> => {
+export const getUlasan = async (nis: string) => {
     return await db.select().from(table.ulasan)
         .leftJoin(table.transaksi, eq(table.ulasan.id_transaksi, table.transaksi.id_transaksi))
         .leftJoin(table.produk, eq(table.ulasan.id_produk, table.produk.id_produk))
@@ -292,7 +297,7 @@ export const getUlasan = async (nis: string) : Promise<Array<any>> => {
         .orderBy(desc(table.transaksi.waktu));
 }
 
-export const getUlasanByToko = async (id_toko: string) : Promise<Array<any>> => {
+export const getUlasanByToko = async (id_toko: string) => {
     return await db.select().from(table.ulasan)
         .leftJoin(table.transaksi, eq(table.ulasan.id_transaksi, table.transaksi.id_transaksi))
         .leftJoin(table.produk, eq(table.ulasan.id_produk, table.produk.id_produk))
@@ -318,7 +323,7 @@ export const addUlasan = async (nis: string, id_produk: string, id_transaksi: st
     }).returning();
 }
 
-export const getFavorit = async (nis: string) : Promise<Array<any>> => {
+export const getFavorit = async (nis: string) => {
     return await db.select().from(table.favorit)
         .leftJoin(table.toko, eq(table.favorit.toko, table.toko.id_toko))
         .leftJoin(table.kelas, eq(table.toko.id_kelas, table.kelas.id_kelas))
@@ -347,7 +352,7 @@ export const updatePassword = async (nis: string, password: string) => {
         .where(eq(table.siswa.nis, nis));
 }
 
-export const getAlamat = async (nis: string) : Promise<Array<any>> => {
+export const getAlamat = async (nis: string) => {
     return await db.select().from(table.alamat)
         .where(eq(table.alamat.nis, nis));
 }
@@ -369,29 +374,29 @@ export const removeAlamat = async (id_alamat: number) => {
         .where(eq(table.alamat.id_alamat, id_alamat));
 }
 
-export const getGuru = async (nip: string) : Promise<Array<any>> => {
+export const getGuru = async (nip: string) => {
     return await db.select().from(table.guru)
         .where(eq(table.guru.nip, nip));
 }
 
-export const getSiswaByGuru = async (nip: string) : Promise<Array<any>> => {
+export const getSiswaByGuru = async (nip: string) => {
     return await db.select().from(table.siswa)
         .leftJoin(table.kelas, eq(table.siswa.kelas, table.kelas.id_kelas))
         .where(eq(table.kelas.guru, nip));
 }
 
-export const getKelasByGuru = async (nip: string) : Promise<Array<any>> => {
+export const getKelasByGuru = async (nip: string) => {
     return await db.select().from(table.kelas)
         .where(eq(table.kelas.guru, nip));
 }
 
-export const getKelompokByGuru = async (nip: string) : Promise<Array<any>> => {
+export const getKelompokByGuru = async (nip: string) => {
     return await db.select().from(table.toko)
         .leftJoin(table.kelas, eq(table.toko.id_kelas, table.kelas.id_kelas))
         .where(eq(table.kelas.guru, nip));
 }
 
-export const getTokoByIdKelas = async (id_kelas: string) : Promise<Array<any>> => {
+export const getTokoByIdKelas = async (id_kelas: string) => {
     return await db.select().from(table.toko)
         .leftJoin(table.kelas, eq(table.toko.id_kelas, table.kelas.id_kelas))
         .where(eq(table.kelas.id_kelas, id_kelas));

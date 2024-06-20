@@ -3,12 +3,12 @@ import * as models from "./query";
 import * as jwt from "jsonwebtoken";
 import fs from "fs/promises";
 import * as luxon from "luxon";
+import * as argon from "argon2";
 
 const generateToken = (payload: any) => {
     const payloadToken = {
         nis: payload['nis'],
         nama: payload['nama'],
-        password: payload['password'],
     }
     return jwt.sign(payloadToken, process.env.SECRET_KEY!);
 }
@@ -35,7 +35,7 @@ const updateUlasanToko = async (id_toko: string) => {
     const allUlasan = await models.getUlasanByToko(id_toko);
     let jumlahRating = 0;
     for(let i = 0; i < allUlasan.length; i++){
-        jumlahRating += parseInt(allUlasan[i]['ulasan']['jumlah_rating']);
+        jumlahRating += parseInt(allUlasan[i]['ulasan']['jumlah_rating']!);
     }
     
     await models.updateUlasan(id_toko, (jumlahRating / allUlasan.length).toString().slice(0, 3));
@@ -66,12 +66,31 @@ export const getDataSiswa = async (req: FastifyRequest, res: FastifyReply) => {
 }
 
 export const signin = async (req: FastifyRequest, res: FastifyReply) => {
-    const body = req.body as { nis: string };
+    const body = req.body as { nis: string; password: string };
     try {
-        await models.addToken(body.nis, getToken(req)!);
-        return res.status(200).send({
-            message: 'Success!'
-        });
+        const verify = await verifyToken(req);
+        const data = verify as { nis: string };
+        if(!verify){
+            return res.status(401).send({
+                message: 'Token tidak valid!'
+            })
+        }
+        const userPassword = await models.getPassword(data.nis);
+        if(userPassword[0]['password'] === '12345'){
+            return res.status(200).send({
+                message: 'success'
+            })
+        }
+        if(await argon.verify(userPassword[0]['password']!, body.password)){
+            await models.addToken(body.nis, getToken(req)!);
+            return res.status(200).send({
+                message: 'success'
+            })
+        }
+
+        return res.status(401).send({
+            message: 'Password salah!',
+        })
     } catch (error) {
         console.log(error);
         return res.status(400).send({
@@ -91,7 +110,7 @@ export const signout = async (req: FastifyRequest, res: FastifyReply) => {
         }
         await models.removeToken(data.nis);
         return res.status(200).send({
-            message: 'Success!'
+            message: 'success'
         });
     } catch (error) {
         console.log(error);
@@ -167,7 +186,7 @@ export const createToko = async (req: FastifyRequest, res: FastifyReply) => {
         }
 
         return res.status(200).send({
-            message: 'Success!',
+            message: 'success',
             toko: toko
         })
     } catch (error) {
@@ -201,7 +220,7 @@ export const updateFotoProfilToko = async (req: FastifyRequest, res: FastifyRepl
                 await models.updateFotoProfilToko(id_toko, `${filename}`);
             }
             return res.status(200).send({
-                message: 'Success!'
+                message: 'success'
             });
         }
         return res.status(401).send({
@@ -221,7 +240,7 @@ export const updateDeskripsiToko = async (req: FastifyRequest, res: FastifyReply
         if(await verifyToken(req)){
             await models.updateDeskripsiToko(body.id_toko, body.deskripsi_toko);
             return res.status(200).send({
-                message: 'Success!'
+                message: 'success'
             });
         }
         return res.status(401).send({
@@ -249,10 +268,10 @@ export const gabungToko = async (req: FastifyRequest, res: FastifyReply) => {
         const kelompok = await models.getKelompok(data.nis);
         if(kelompok.length > 0){
             for(let i = 0; i < kelompok.length; i++){
-                if(kelompok[i]?.['toko']?.['id_toko'] === toko[0]['id_toko']){
+                if(kelompok[i]['toko']?.['id_toko'] === toko[0]['id_toko']){
                     return res.status(400).send({
-                        message: `Anda sudah bergabung dengan ${kelompok[0]['toko']['nama_toko']}`,
-                        nama_toko: kelompok[0]['toko']['nama_toko']
+                        message: `Anda sudah bergabung dengan ${kelompok[0]['toko']?.['nama_toko']}`,
+                        nama_toko: kelompok[0]['toko']?.['nama_toko']
                     })
                 }
             }
@@ -264,7 +283,7 @@ export const gabungToko = async (req: FastifyRequest, res: FastifyReply) => {
         }
         await models.addToKelompok(toko[0]['id_toko'], data.nis);
         return res.status(200).send({
-            message: 'Success!',
+            message: 'success',
             id_toko: toko[0]['id_toko'],
             nama_toko: toko[0]['nama_toko']
         })
@@ -308,7 +327,7 @@ export const removeFromKelompok = async (req: FastifyRequest, res: FastifyReply)
         }
         await models.removeFromKelompok(body.id_toko, data.nis);
         return res.status(200).send({
-            message: 'Success!'
+            message: 'success'
         });
     } catch (error) {
         console.log(error);
@@ -324,7 +343,7 @@ export const deleteToko = async (req: FastifyRequest, res: FastifyReply) => {
         if(await verifyToken(req)){
             await models.removeToko(body.id_toko);
             return res.status(200).send({
-                message: 'Success!'
+                message: 'success'
             });
         }
         return res.status(401).send({
@@ -344,7 +363,7 @@ export const updateJadwalToko = async (req: FastifyRequest, res: FastifyReply) =
         if(await verifyToken(req)){
             await models.updateJadwalToko(body.id_toko, body.is_open);
             return res.status(200).send({
-                message: 'Success!'
+                message: 'success'
             });
         }
         return res.status(401).send({
@@ -440,7 +459,7 @@ export const addProduk = async (req: FastifyRequest, res: FastifyReply) => {
             }
 
             return res.status(200).send({
-                message: 'Success!',
+                message: 'success',
             })
         }
         return res.status(401).send({
@@ -476,7 +495,7 @@ export const updateFotoProduk = async (req: FastifyRequest, res: FastifyReply) =
                 await models.updateFotoProduk(id_produk, `${filename}`);
             }
             return res.status(200).send({
-                message: 'Success!'
+                message: 'success'
             });
         }
         return res.status(401).send({
@@ -497,7 +516,7 @@ export const updateProduk = async (req: FastifyRequest, res: FastifyReply) => {
         if(await verifyToken(req)){
             await models.updateProduk(body.id_produk, body.nama_produk, body.harga, body.stok, body.deskripsi_produk);
             return res.status(200).send({
-                message: 'Success!'
+                message: 'success'
             });
         }
         return res.status(401).send({
@@ -517,7 +536,7 @@ export const deleteProduk = async (req: FastifyRequest, res: FastifyReply) => {
         if(await verifyToken(req)){
             await models.removeProduk(body.id_produk);
             return res.status(200).send({
-                message: 'Success!'
+                message: 'success'
             });
         }
         return res.status(401).send({
@@ -585,7 +604,7 @@ export const addToKeranjang = async (req: FastifyRequest, res: FastifyReply) => 
         }
         await models.addToKeranjang(body.id, data.nis, body.qty, body.catatan);
         return res.status(200).send({
-            message: 'Success!'
+            message: 'success'
         })
     } catch (error) {
         console.log(error);
@@ -628,7 +647,7 @@ export const deleteFromKeranjang = async (req: FastifyRequest, res: FastifyReply
         }
         await models.removeFromKeranjang(body.id, data.nis);
         return res.status(200).send({
-            message: 'Success!'
+            message: 'success'
         })
     } catch (error) {
         console.log(error);
@@ -650,7 +669,7 @@ export const updateKeranjang = async (req: FastifyRequest, res: FastifyReply) =>
         }
         await models.updateJumlahKeranjang(body.qty, body.id, data.nis);
         return res.status(200).send({
-            message: 'Success!'
+            message: 'success'
         })
     } catch (error) {
         console.log(error);
@@ -718,7 +737,7 @@ export const createPesanan = async (req: FastifyRequest, res: FastifyReply) => {
         await models.updateJumlahTerjual(body.id_produk, body.jumlah);
         await models.clearKeranjang(data.nis);
         return res.status(200).send({
-            message: 'Success!',
+            message: 'success',
             pesanan: pesanan,
         })
     } catch (error) {
@@ -735,7 +754,7 @@ export const updateStatusPesanan = async (req: FastifyRequest, res: FastifyReply
         if(await verifyToken(req)){
             await models.updateStatusPesanan(body.id_transaksi, body.status);
             return res.status(200).send({
-                message: 'Success!'
+                message: 'success'
             });
         }
         return res.status(401).send({
@@ -783,7 +802,7 @@ export const addNotifikasi = async (req: FastifyRequest, res: FastifyReply) => {
         }
         await models.addNotifikasi(data.nis, body.type, body.title, body.description);
         return res.status(200).send({
-            message: 'Success!'
+            message: 'success'
         });
     } catch (error) {
         console.log(error);
@@ -819,7 +838,7 @@ export const addNotifikasiToko = async (req: FastifyRequest, res: FastifyReply) 
         if(await verifyToken(req)){
             await models.addNotifikasiToko(body.id_toko, body.type, body.title, body.description);
             return res.status(200).send({
-                message: 'Success!'
+                message: 'success'
             });
         }
         return res.status(401).send({
@@ -887,7 +906,7 @@ export const addUlasan = async (req: FastifyRequest, res: FastifyReply) => {
         await models.addUlasan(data.nis, body.id_produk, body.id_transaksi, body.ulasan, body.rating)
         await updateUlasanToko(body.id_toko);
         return res.status(200).send({
-            message: 'Success!'
+            message: 'success'
         })
     } catch (error) {
         console.log(error);
@@ -930,7 +949,7 @@ export const addToFavorit = async (req: FastifyRequest, res: FastifyReply) => {
         }
         await models.addToFavorit(body.id_toko, data.nis);
         return res.status(200).send({
-            message: 'Success!'
+            message: 'success'
         })
     } catch (error) {
         console.log(error);
@@ -952,7 +971,7 @@ export const deleteFromFavorite = async (req: FastifyRequest, res: FastifyReply)
         }
         await models.removeFromFavorit(body.id_toko, data.nis);
         return res.status(200).send({
-            message: 'Success!'
+            message: 'success'
         })
     } catch (error) {
         console.log(error);
@@ -974,7 +993,7 @@ export const updateTelepon = async (req: FastifyRequest, res: FastifyReply) => {
         }
         await models.updateTelepon(data.nis, body.telepon);
         return res.status(200).send({
-            message: 'Success!'
+            message: 'success'
         })
     } catch (error) {
         console.log(error);
@@ -994,9 +1013,9 @@ export const changePassword = async (req: FastifyRequest, res: FastifyReply) => 
                 message: 'Token tidak valid!'
             })
         }
-        await models.updatePassword(data.nis, body.password);
+        await models.updatePassword(data.nis, await argon.hash(body.password));
         return res.status(200).send({
-            message: 'Success!'
+            message: 'success'
         })
     } catch (error) {
         console.log(error);
@@ -1023,7 +1042,7 @@ export const updateFotoProfilSiswa = async (req: FastifyRequest, res: FastifyRep
             await fs.writeFile(`./public/${filename}`, foto_profil);
             const siswa = await models.updateFotoProfilSiswa(data.nis, `${filename}`);
             return res.status(200).send({
-                message: 'Success!',
+                message: 'success',
                 siswa: siswa,
             })
         }
@@ -1070,7 +1089,7 @@ export const addAlamat = async (req: FastifyRequest, res: FastifyReply) => {
         }
         await models.addAlamat(data.nis, body.address);
         return res.status(200).send({
-            message: 'Success!'
+            message: 'success'
         })
     } catch (error) {
         console.log(error);
@@ -1087,7 +1106,7 @@ export const updateAlamat = async (req: FastifyRequest, res: FastifyReply) => {
         if(await verifyToken(req)){
             await models.updateAlamat(query.id, body.address);
             return res.status(200).send({
-                message: 'Success!'
+                message: 'success'
             })
         }
         return res.status(401).send({
@@ -1107,7 +1126,7 @@ export const deleteAlamat = async (req: FastifyRequest, res: FastifyReply) => {
         if(await verifyToken(req)){
             await models.removeAlamat(body.id_address);
             return res.status(200).send({
-                message: 'Success!'
+                message: 'success'
             })
         }
         return res.status(401).send({
@@ -1129,7 +1148,7 @@ export const signinGuru = async (req: FastifyRequest, res: FastifyReply) => {
             if(guru[0]['password'] === body.password){
                 const token = generateToken(guru[0]);
                 return res.status(200).send({
-                    message: 'Success!',
+                    message: 'success',
                     token: token
                 })
             }
