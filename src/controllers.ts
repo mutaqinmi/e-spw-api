@@ -5,6 +5,7 @@ import fs from "fs/promises";
 import * as luxon from "luxon";
 
 const generateToken = (payload: any) => {
+    console.log(payload);
     const payloadToken = {
         nis: payload['nis'],
         nama: payload['nama'],
