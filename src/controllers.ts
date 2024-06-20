@@ -51,7 +51,7 @@ export const getDataSiswa = async (req: FastifyRequest, res: FastifyReply) => {
             return res.status(200).send({
                 data: data,
                 token: token,
-                isDefaultPassword: password === '12345' ? true : false,
+                isDefaultPassword: password === '' ? true : false,
             })
         }
 
