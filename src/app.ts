@@ -21,6 +21,7 @@ app.register(require("@fastify/static"), {
 app.post('/v3/user', controller.getDataSiswa);
 app.post('/v3/user/auth/signin', controller.signin);
 app.post('/v3/user/auth/signout', controller.signout);
+app.post('/v3/user/auth/verify', controller.verify);
 app.get('/v3/user/keranjang', controller.getKeranjang);
 app.post('/v3/user/keranjang/add', controller.addToKeranjang);
 app.delete('/v3/user/keranjang/delete', controller.deleteFromKeranjang);

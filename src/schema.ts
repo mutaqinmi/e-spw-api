@@ -10,7 +10,7 @@ export const siswa = pgTable('siswa', {
     nis: varchar('nis').primaryKey(),
     nama: varchar('nama', {length: 50}),
     kelas: varchar('id_kelas', {length: 10}).references(() => kelas.id_kelas, {onUpdate: "cascade", onDelete: "cascade"}),
-    password: varchar('password', {length: 50}),
+    password: varchar('password'),
     telepon: varchar('telepon', {length: 20}).default(""),
     foto_profil: varchar('foto_profil', {length: 50}).default(""),
 })

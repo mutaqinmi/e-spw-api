@@ -20,6 +20,22 @@ const getToken = (req: FastifyRequest) => {
     }
 }
 
+const verifyPassword = async (nis: string, password: string) : Promise<boolean> => {
+    try {
+        const userPassword = await models.getPassword(nis);
+        if(password === ''){
+            return true;
+        }
+        if(await argon.verify(userPassword[0]['password']!, password)){
+            return true;
+        }
+
+        return false;
+    } catch (error) {
+        return false;
+    }
+}
+
 const verifyToken = async (req: FastifyRequest) : Promise<any> => {
     try {
         const token = await models.getToken(getToken(req)!);
@@ -69,14 +85,7 @@ export const getDataSiswa = async (req: FastifyRequest, res: FastifyReply) => {
 export const signin = async (req: FastifyRequest, res: FastifyReply) => {
     const body = req.body as { nis: string; password: string };
     try {
-        const userPassword = await models.getPassword(body.nis);
-        if(body.password === ''){
-            await models.addToken(body.nis, getToken(req)!);
-            return res.status(200).send({
-                message: 'success'
-            })
-        }
-        if(await argon.verify(userPassword[0]['password']!, body.password)){
+        if(await verifyPassword(body.nis, body.password)){
             await models.addToken(body.nis, getToken(req)!);
             return res.status(200).send({
                 message: 'success'
@@ -107,6 +116,34 @@ export const signout = async (req: FastifyRequest, res: FastifyReply) => {
         return res.status(200).send({
             message: 'success'
         });
+    } catch (error) {
+        console.log(error);
+        return res.status(400).send({
+            message: error
+        })
+    }
+}
+
+export const verify = async (req: FastifyRequest, res: FastifyReply) => {
+    const body = req.body as { password: string };
+    try {
+        const verify = await verifyToken(req);
+        const data = verify as { nis: string };
+        if(!verify){
+            return res.status(401).send({
+                message: 'Token tidak valid!'
+            })
+        }
+        
+        if(await verifyPassword(data.nis, body.password)){
+            return res.status(200).send({
+                message: 'success'
+            })
+        }
+
+        return res.status(401).send({
+            message: 'Password salah!',
+        })
     } catch (error) {
         console.log(error);
         return res.status(400).send({
