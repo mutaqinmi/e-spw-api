@@ -18,7 +18,8 @@ app.register(require("@fastify/static"), {
 })
 
 //* -------------------------------------------- Mobile ---------------------------------------------
-app.post('/v3/user', controller.getDataSiswa);
+app.post('/v3/user', controller.checkDataSiswa);
+app.get('/v3/user/detail', controller.getDataSiswa);
 app.post('/v3/user/auth/signin', controller.signin);
 app.post('/v3/user/auth/signout', controller.signout);
 app.post('/v3/user/auth/verify', controller.verify);

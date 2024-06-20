@@ -57,7 +57,7 @@ const updateUlasanToko = async (id_toko: string) => {
     await models.updateUlasan(id_toko, (jumlahRating / allUlasan.length).toString().slice(0, 3));
 }
 
-export const getDataSiswa = async (req: FastifyRequest, res: FastifyReply) => {
+export const checkDataSiswa = async (req: FastifyRequest, res: FastifyReply) => {
     const body = req.body as { nis: string };
     try {
         const dataSiswa = await models.getSiswa(body.nis);
@@ -74,6 +74,29 @@ export const getDataSiswa = async (req: FastifyRequest, res: FastifyReply) => {
         return res.status(400).send({
             message: 'NIS tidak ditemukan!'
         })
+    } catch (error) {
+        console.log(error);
+        return res.status(400).send({
+            message: error
+        })
+    }
+}
+
+export const getDataSiswa = async (req: FastifyRequest, res: FastifyReply) => {
+    try {
+        const verify = await verifyToken(req);
+        const data = verify as { nis: string };
+        if(!verify){
+            return res.status(401).send({
+                message: 'Token tidak valid!'
+            })
+        }
+        const dataSiswa = await models.getSiswa(data.nis);
+        const { password, ...siswa } = dataSiswa[0]['siswa'];
+        return res.status(200).send({
+            message: 'success',
+            data: siswa
+        });
     } catch (error) {
         console.log(error);
         return res.status(400).send({
@@ -134,7 +157,7 @@ export const verify = async (req: FastifyRequest, res: FastifyReply) => {
                 message: 'Token tidak valid!'
             })
         }
-        
+
         if(await verifyPassword(data.nis, body.password)){
             return res.status(200).send({
                 message: 'success'
