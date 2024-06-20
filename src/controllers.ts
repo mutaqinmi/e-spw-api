@@ -92,10 +92,12 @@ export const getDataSiswa = async (req: FastifyRequest, res: FastifyReply) => {
             })
         }
         const dataSiswa = await models.getSiswa(data.nis);
-        const { password, ...siswa } = dataSiswa[0]['siswa'];
+        const { kelas, siswa } = dataSiswa[0];
+        const { password, ...datas } = siswa;
         return res.status(200).send({
             message: 'success',
-            data: siswa
+            siswa: datas,
+            kelas: kelas
         });
     } catch (error) {
         console.log(error);
