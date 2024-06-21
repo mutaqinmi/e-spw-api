@@ -544,6 +544,7 @@ export const addProduk = async (req: FastifyRequest, res: FastifyReply) => {
 
     try {
         if(await verifyToken(req)){
+            console.log(body[0]['nama_produk'], body[1]['harga'], body[2]['stok'], body[3]['deskripsi_produk'], body[5]['id_toko']);
             const produk: {[key: string]: any} = await models.addProduk(body[0]['nama_produk'], body[1]['harga'], body[2]['stok'], body[3]['deskripsi_produk'], body[5]['id_toko']);
             if(file){
                 const timestamp = luxon.DateTime.now().toFormat('yyyyLLddHHmmss');
