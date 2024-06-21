@@ -134,6 +134,7 @@ export const getProdukByKeywords = async (keywords: string) => {
 
 export const addProduk = async (nama_produk: string, harga: string, stok: number, deskripsi_produk: string, id_toko: string) => {
     const product = await db.select().from(table.produk).where(eq(table.produk.id_toko, id_toko));
+    console.log(product);
     let increment: number = 1;
     if(product.length > 0){
         increment = product?.length + parseInt(product[0]?.['id_produk'].split('-')[2]) ?? 0 + 1;
