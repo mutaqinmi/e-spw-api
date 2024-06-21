@@ -1,4 +1,4 @@
-import { and, desc, eq, ilike, sql } from 'drizzle-orm';
+import { and, desc, eq, ilike, max, sql } from 'drizzle-orm';
 import { client, db } from './connection';
 import * as table from './schema';
 
@@ -50,7 +50,21 @@ export const getKelasByNamaKelas = async (nama_kelas: string) => {
 export const getToko = async () => {
     return await db.select().from(table.toko)
         .leftJoin(table.kelas, eq(table.toko.id_kelas, table.kelas.id_kelas))
-        .orderBy(desc(table.toko.is_open));
+        .orderBy(desc(table.toko.is_open))
+        .limit(10);
+}
+
+export const getAllToko = async () => {
+    return await db.select().from(table.toko)
+    .leftJoin(table.kelas, eq(table.toko.id_kelas, table.kelas.id_kelas))
+    .orderBy(desc(table.toko.is_open));
+}
+
+export const getTopToko = async () => {
+    return await db.select().from(table.toko)
+        .leftJoin(table.kelas, eq(table.toko.id_kelas, table.kelas.id_kelas))
+        .orderBy(desc(table.toko.rating_toko))
+        .limit(3);
 }
 
 export const getTokoByNamaToko = async (nama_toko: string) => {
@@ -99,6 +113,13 @@ export const getProduk = async () => {
         .where(eq(table.toko.is_open, true));
 }
 
+export const getTopProduk = async () => {
+    return await db.select({ produk: max(table.produk.jumlah_terjual) }).from(table.produk)
+        .leftJoin(table.toko, eq(table.produk.id_toko, table.toko.id_toko))
+        .orderBy(desc(table.produk.jumlah_terjual))
+        .limit(5);
+}
+
 export const getProdukByIdProduk = async (id_produk: string) => {
     return await db.select().from(table.produk)
         .leftJoin(table.toko, eq(table.produk.id_toko, table.toko.id_toko))
@@ -144,7 +165,7 @@ export const removeProduk = async (id_produk: string) => {
 }
 
 export const getTokoByKeywords = async (keywords: string) => {
-    return await db.select().from(table.toko)
+    return await db.selectDistinct({ toko: table.toko.nama_toko }).from(table.toko)
         .leftJoin(table.kelas, eq(table.toko.id_kelas, table.kelas.id_kelas))
         .leftJoin(table.produk, eq(table.produk.id_toko, table.toko.id_toko))
         .where(ilike(table.toko.nama_toko, `%${keywords}%`));

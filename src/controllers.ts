@@ -211,6 +211,25 @@ export const getDataToko = async (req: FastifyRequest, res: FastifyReply) => {
     }
 }
 
+export const getDataTopToko = async (req: FastifyRequest, res: FastifyReply) => {
+    try {
+        if(await verifyToken(req)){
+            const dataToko = await models.getTopToko();
+            return res.status(200).send({
+                data: dataToko
+            })
+        }
+        return res.status(401).send({
+            message: 'Token tidak valid!'
+        })
+    } catch (error) {
+        console.log(error);
+        return res.status(400).send({
+            message: error
+        })
+    }
+}
+
 export const createToko = async (req: FastifyRequest, res: FastifyReply) => {
     const file = await req.file();
     const field = file as { fields: any };
@@ -459,6 +478,25 @@ export const getDataProduk = async (req: FastifyRequest, res: FastifyReply) => {
     try {
         if(await verifyToken(req)){
             const dataProduk = await models.getProduk();
+            return res.status(200).send({
+                data: dataProduk
+            })
+        }
+        return res.status(401).send({
+            message: 'Token tidak valid!'
+        })
+    } catch (error) {
+        console.log(error);
+        return res.status(400).send({
+            message: error
+        })
+    }
+}
+
+export const getDataTopProduk = async (req: FastifyRequest, res: FastifyReply) => {
+    try {
+        if(await verifyToken(req)){
+            const dataProduk = await models.getTopProduk();
             return res.status(200).send({
                 data: dataProduk
             })
