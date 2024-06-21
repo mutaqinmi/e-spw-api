@@ -114,7 +114,7 @@ export const getProduk = async () => {
 }
 
 export const getTopProduk = async () => {
-    return await db.select({ produk: max(table.produk.jumlah_terjual) }).from(table.produk)
+    return await db.select().from(table.produk)
         .leftJoin(table.toko, eq(table.produk.id_toko, table.toko.id_toko))
         .orderBy(desc(table.produk.jumlah_terjual))
         .limit(5);
