@@ -137,7 +137,7 @@ export const addProduk = async (nama_produk: string, harga: string, stok: number
     let increment: number = 1;
     if(product){
         if(product.length != 0){
-            console.log(product[0]['id_produk']);
+            console.log(product);
             increment = product.length + parseInt(product[0]['id_produk'].split('-')[2]) ?? 0 + 1;
         }
     }
