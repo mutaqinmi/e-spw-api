@@ -167,7 +167,7 @@ export const removeProduk = async (id_produk: string) => {
 }
 
 export const getTokoByKeywords = async (keywords: string) => {
-    return await db.selectDistinct({ toko: table.toko.nama_toko }).from(table.toko)
+    return await db.selectDistinct().from(table.toko)
         .leftJoin(table.kelas, eq(table.toko.id_kelas, table.kelas.id_kelas))
         .leftJoin(table.produk, eq(table.produk.id_toko, table.toko.id_toko))
         .where(ilike(table.toko.nama_toko, `%${keywords}%`));
