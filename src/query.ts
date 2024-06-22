@@ -120,6 +120,14 @@ export const getTopProduk = async () => {
         .limit(5);
 }
 
+export const getTopProdukByIdToko = async (id_toko: string) => {
+    return await db.select().from(table.produk)
+        .leftJoin(table.toko, eq(table.produk.id_toko, table.toko.id_toko))
+        .where(eq(table.toko.id_toko, id_toko))
+        .orderBy(desc(table.produk.jumlah_terjual))
+        .limit(1);
+}
+
 export const getProdukByIdProduk = async (id_produk: string) => {
     return await db.select().from(table.produk)
         .leftJoin(table.toko, eq(table.produk.id_toko, table.toko.id_toko))

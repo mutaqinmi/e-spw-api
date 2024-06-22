@@ -512,6 +512,26 @@ export const getDataTopProduk = async (req: FastifyRequest, res: FastifyReply) =
     }
 }
 
+export const getDataTopProdukByToko = async (req: FastifyRequest, res: FastifyReply) => {
+    const params = req.params as { id: string };
+    try {
+        if(await verifyToken(req)){
+            const dataProduk = await models.getTopProdukByIdToko(params.id);
+            return res.status(200).send({
+                data: dataProduk
+            })
+        }
+        return res.status(401).send({
+            message: 'Token tidak valid!'
+        })
+    } catch (error) {
+        console.log(error);
+        return res.status(400).send({
+            message: error
+        })
+    }
+}
+
 export const getProdukByIdProduk = async (req: FastifyRequest, res: FastifyReply) => {
     const params = req.params as { id: string };
     try {

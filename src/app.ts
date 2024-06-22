@@ -60,6 +60,7 @@ app.post('/v3/kelompok/join', controller.gabungToko);
 app.post('/v3/kelompok/delete', controller.removeFromKelompok);
 app.get('/v3/produk', controller.getDataProduk);
 app.get('/v3/produk/top', controller.getDataTopProduk);
+app.get('/v3/produk/top/:id', controller.getDataTopProdukByToko);
 app.get('/v3/produk/:id', controller.getProdukByIdProduk);
 app.post('/v3/produk/add', controller.addProduk);
 app.post('/v3/produk/delete', controller.deleteProduk);
