@@ -1193,6 +1193,50 @@ export const getAlamat = async (req: FastifyRequest, res: FastifyReply) => {
     }
 }
 
+export const getAlamatByDefault = async (req: FastifyRequest, res: FastifyReply) => {
+    try {
+        const verify = await verifyToken(req);
+        const data = verify as { nis: string };
+        if(!verify){
+            return res.status(401).send({
+                message: 'Token tidak valid!'
+            })
+        }
+        const dataAlamat = await models.getAlamatByDefault(data.nis);
+        return res.status(200).send({
+            data: dataAlamat
+        })
+    } catch (error) {
+        console.log(error);
+        return res.status(400).send({
+            message: error
+        })
+    }
+}
+
+export const setDefaultAlamat = async (req: FastifyRequest, res: FastifyReply) => {
+    const body = req.body as { id_alamat: number };
+    try {
+        const verify = await verifyToken(req);
+        const data = verify as { nis: string };
+        if(!verify){
+            return res.status(401).send({
+                message: 'Token tidak valid!'
+            })
+        }
+        await models.setAlamatToFalse(data.nis);
+        const dataAlamat = await models.setDefaultAlamat(body.id_alamat);
+        return res.status(200).send({
+            data: dataAlamat
+        })
+    } catch (error) {
+        console.log(error);
+        return res.status(400).send({
+            message: error
+        })
+    }
+}
+
 export const addAlamat = async (req: FastifyRequest, res: FastifyReply) => {
     const body = req.body as { address: string };
     try {

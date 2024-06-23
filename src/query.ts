@@ -388,6 +388,21 @@ export const getAlamat = async (nis: string) => {
         .where(eq(table.alamat.nis, nis));
 }
 
+export const getAlamatByDefault = async (nis: string) => {
+    return await db.select().from(table.alamat)
+        .where(and(eq(table.alamat.nis, nis), eq(table.alamat.default, true)));
+}
+
+export const setAlamatToFalse = async (nis: string) => {
+    return await db.update(table.alamat).set({ default: false })
+        .where(eq(table.alamat.nis, nis));
+}
+
+export const setDefaultAlamat = async (id_alamat: number) => {
+    return await db.update(table.alamat).set({ default: true })
+        .where(eq(table.alamat.id_alamat, id_alamat));
+}
+
 export const addAlamat = async (nis: string, alamat: string) => {    
     return await db.insert(table.alamat).values({
         nis: nis,
