@@ -1247,6 +1247,7 @@ export const addAlamat = async (req: FastifyRequest, res: FastifyReply) => {
                 message: 'Token tidak valid!'
             })
         }
+        await models.setAlamatToFalse(data.nis);
         await models.addAlamat(data.nis, body.address);
         return res.status(200).send({
             message: 'success'

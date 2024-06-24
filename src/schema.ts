@@ -78,7 +78,7 @@ export const alamat = pgTable('alamat', {
     id_alamat: serial('id_alamat').primaryKey(),
     nis: varchar('nis').references(() => siswa.nis, {onUpdate: "cascade", onDelete: "cascade"}),
     alamat: varchar('alamat', {length: 255}),
-    default: boolean('default').default(false),
+    default: boolean('default').default(true),
 })
 
 export const favorit = pgTable('favorit', {
