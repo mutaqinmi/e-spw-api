@@ -38,7 +38,7 @@ app.patch('/v3/user/update/telepon', controller.updateTelepon);
 app.patch('/v3/user/update/password', controller.changePassword);
 app.post('/v3/user/update/profile-picture', controller.updateFotoProfilSiswa);
 app.get('/v3/user/alamat', controller.getAlamat);
-app.get('/v3/user/alamat/:id', controller.getAlamat);
+app.get('/v3/user/alamat/:id', controller.getAlamatByIdAlamat);
 app.get('/v3/user/alamat/default', controller.getAlamatByDefault);
 app.post('/v3/user/alamat/add', controller.addAlamat);
 app.patch('/v3/user/alamat/update', controller.updateAlamat);
