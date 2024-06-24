@@ -1193,6 +1193,26 @@ export const getAlamat = async (req: FastifyRequest, res: FastifyReply) => {
     }
 }
 
+export const getAlamatByIdAlamat = async (req: FastifyRequest, res: FastifyReply) => {
+    const params = req.params as { id: number };
+    try {
+        if(await verifyToken(req)){
+            const dataAlamat = await models.getAlamatByIdAlamat(params.id);
+            return res.status(200).send({
+                data: dataAlamat
+            })   
+        }
+        return res.status(401).send({
+            message: 'Token tidak valid!'
+        })
+    } catch (error) {
+        console.log(error);
+        return res.status(400).send({
+            message: error
+        })
+    }
+}
+
 export const getAlamatByDefault = async (req: FastifyRequest, res: FastifyReply) => {
     try {
         const verify = await verifyToken(req);

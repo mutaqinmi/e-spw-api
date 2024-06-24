@@ -388,6 +388,11 @@ export const getAlamat = async (nis: string) => {
         .where(eq(table.alamat.nis, nis));
 }
 
+export const getAlamatByIdAlamat = async (id_alamat: number) => {
+    return await db.select().from(table.alamat)
+        .where(eq(table.alamat.id_alamat, id_alamat));
+}
+
 export const getAlamatByDefault = async (nis: string) => {
     return await db.select().from(table.alamat)
         .where(and(eq(table.alamat.nis, nis), eq(table.alamat.default, true)));
