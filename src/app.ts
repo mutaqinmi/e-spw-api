@@ -72,7 +72,7 @@ app.patch('/v3/produk/update', controller.updateProduk);
 app.post('/v3/produk/update/foto/:id', controller.updateFotoProduk);
 app.post('/v3/search', controller.search);
 app.post('/v3/order', controller.getPesanan);
-app.post('/v3/order/all', controller.getAllPesanan);
+app.get('/v3/order/all', controller.getAllPesanan);
 app.post('/v3/order/new', controller.createPesanan);
 app.patch('/v3/order/update', controller.updateStatusPesanan);
 
