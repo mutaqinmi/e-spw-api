@@ -400,7 +400,8 @@ export const setAlamatToFalse = async (nis: string) => {
 
 export const setDefaultAlamat = async (id_alamat: number) => {
     return await db.update(table.alamat).set({ default: true })
-        .where(eq(table.alamat.id_alamat, id_alamat));
+        .where(eq(table.alamat.id_alamat, id_alamat))
+        .returning();
 }
 
 export const addAlamat = async (nis: string, alamat: string) => {    
