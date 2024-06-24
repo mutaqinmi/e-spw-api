@@ -1261,11 +1261,10 @@ export const addAlamat = async (req: FastifyRequest, res: FastifyReply) => {
 }
 
 export const updateAlamat = async (req: FastifyRequest, res: FastifyReply) => {
-    const query = req.query as { id: number };
-    const body = req.body as { address: string };
+    const body = req.body as { id_alamat: number; alamat: string };
     try {
         if(await verifyToken(req)){
-            await models.updateAlamat(query.id, body.address);
+            await models.updateAlamat(body.id_alamat, body.alamat);
             return res.status(200).send({
                 message: 'success'
             })
