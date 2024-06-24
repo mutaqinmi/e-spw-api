@@ -1283,14 +1283,18 @@ export const updateAlamat = async (req: FastifyRequest, res: FastifyReply) => {
 export const deleteAlamat = async (req: FastifyRequest, res: FastifyReply) => {
     const body = req.body as { id_address: number };
     try {
-        if(await verifyToken(req)){
-            await models.removeAlamat(body.id_address);
-            return res.status(200).send({
-                message: 'success'
+        const verify = await verifyToken(req);
+        const data = verify as { nis: string };
+        if(!verify){
+            return res.status(401).send({
+                message: 'Token tidak valid!'
             })
         }
-        return res.status(401).send({
-            message: 'Token tidak valid!'
+        const alamat = await models.getAlamat(data.nis);
+        await models.setDefaultAlamat(alamat[0]['id_alamat']);
+        await models.removeAlamat(body.id_address);
+        return res.status(200).send({
+            message: 'success'
         })
     } catch (error) {
         console.log(error);
