@@ -817,11 +817,52 @@ export const getPesanan = async (req: FastifyRequest, res: FastifyReply) => {
     }
 }
 
+export const getAllPesanan = async (req: FastifyRequest, res: FastifyReply) => {
+    try {
+        const verify = await verifyToken(req);
+        const data = verify as { nis: string };
+        if(!verify){
+            return res.status(401).send({
+                message: 'Token tidak valid!'
+            })
+        }
+        const dataPesanan = await models.getAllPesanan(data.nis);
+        return res.status(200).send({
+            data: dataPesanan
+        })
+    } catch (error) {
+        console.log(error);
+        return res.status(400).send({
+            message: error
+        })
+    }
+}
+
 export const getPesananByToko = async (req: FastifyRequest, res: FastifyReply) => {
     const body = req.body as { id_toko: string; status: string };
     try {
         if(await verifyToken(req)){
             const dataPesanan = await models.getPesananByToko(body.id_toko, body.status);
+            return res.status(200).send({
+                data: dataPesanan
+            })
+        }
+        return res.status(401).send({
+            message: 'Token tidak valid!'
+        })
+    } catch (error) {
+        console.log(error);
+        return res.status(400).send({
+            message: error
+        })
+    }
+}
+
+export const getAllPesananByToko = async (req: FastifyRequest, res: FastifyReply) => {
+    const body = req.body as { id_toko: string };
+    try {
+        if(await verifyToken(req)){
+            const dataPesanan = await models.getAllPesananByToko(body.id_toko);
             return res.status(200).send({
                 data: dataPesanan
             })

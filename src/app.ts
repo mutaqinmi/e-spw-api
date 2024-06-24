@@ -54,6 +54,7 @@ app.post('/v3/toko/update/banner/:id', controller.updateFotoProfilToko);
 app.post('/v3/toko/update/jadwal', controller.updateJadwalToko);
 app.get('/v3/toko/:id', controller.getTokoByIdToko);
 app.post('/v3/toko/orders', controller.getPesananByToko);
+app.post('/v3/toko/orders/all', controller.getAllPesananByToko);
 app.post('/v3/toko/rate', controller.getUlasanByToko);
 app.post('/v3/toko/notifikasi', controller.getNotifikasiToko);
 app.post('/v3/toko/notifikasi/add', controller.addNotifikasiToko);
@@ -71,6 +72,7 @@ app.patch('/v3/produk/update', controller.updateProduk);
 app.post('/v3/produk/update/foto/:id', controller.updateFotoProduk);
 app.post('/v3/search', controller.search);
 app.post('/v3/order', controller.getPesanan);
+app.post('/v3/order/all', controller.getAllPesanan);
 app.post('/v3/order/new', controller.createPesanan);
 app.patch('/v3/order/update', controller.updateStatusPesanan);
 
