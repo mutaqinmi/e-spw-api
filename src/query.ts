@@ -308,10 +308,16 @@ export const updateStatusPesanan = async (id_transaksi: string, status: string) 
         .where(eq(table.transaksi.id_transaksi, id_transaksi));
 }
 
-export const getNotifikasi = async (nis: string, type: string) => {
+export const updateStok = async (id_produk: string, stok: number) => {
+    return await db.update(table.produk).set({ stok: stok })
+        .where(eq(table.produk.id_produk, id_produk));
+}
+
+export const getNotifikasi = async (nis: string, type: string, limit: number) => {
     return await db.select().from(table.notifikasi)
         .where(and(eq(table.notifikasi.nis, nis), eq(table.notifikasi.jenis_notifikasi, type)))
-        .orderBy(desc(table.notifikasi.waktu));
+        .orderBy(desc(table.notifikasi.waktu))
+        .limit(limit);
 }
 
 export const addNotifikasi = async (nis: string, jenis_notifikasi: string, judul_notifikasi: string, detail_notifikasi: string) => {
@@ -323,10 +329,11 @@ export const addNotifikasi = async (nis: string, jenis_notifikasi: string, judul
     });
 }
 
-export const getNotifikasiToko = async (id_toko: string, type: string) => {
+export const getNotifikasiToko = async (id_toko: string, type: string, limit: number) => {
     return await db.select().from(table.notifikasi_toko)
         .where(and(eq(table.notifikasi_toko.id_toko, id_toko), eq(table.notifikasi.jenis_notifikasi, type)))
-        .orderBy(desc(table.notifikasi.waktu));
+        .orderBy(desc(table.notifikasi.waktu))
+        .limit(limit);
 }
 
 export const addNotifikasiToko = async (id_toko: string, jenis_notifikasi: string, judul_notifikasi: string, detail_notifikasi: string) => {

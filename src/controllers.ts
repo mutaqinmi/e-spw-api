@@ -888,15 +888,19 @@ export const createPesanan = async (req: FastifyRequest, res: FastifyReply) => {
                 message: 'Token tidak valid!'
             })
         }
-        const timestamp = luxon.DateTime.now().toFormat('yyyyLLddHHmmss');
-        const kode_unik = Math.random().toString(36).substring(7).slice(0, 4);
-        const pesanan = await models.addPesanan(`transaction-${data.nis}-${timestamp}${kode_unik}`, data.nis, body.id_produk, body.jumlah, body.total_harga, body.catatan, body.alamat);
-        await models.updateJumlahTerjual(body.id_produk, body.jumlah);
-        await models.clearKeranjang(data.nis);
-        return res.status(200).send({
-            message: 'success',
-            pesanan: pesanan,
-        })
+        const produk = await models.getProdukByIdProduk(body.id_produk);
+        if(produk){
+            const timestamp = luxon.DateTime.now().toFormat('yyyyLLddHHmmss');
+            const kode_unik = Math.random().toString(36).substring(7).slice(0, 4);
+            const pesanan = await models.addPesanan(`transaction-${data.nis}-${timestamp}${kode_unik}`, data.nis, body.id_produk, body.jumlah, body.total_harga, body.catatan, body.alamat);
+            await models.updateStok(body.id_produk, produk[0]['produk']['stok']! - body.jumlah);
+            await models.updateJumlahTerjual(body.id_produk, body.jumlah);
+            await models.clearKeranjang(data.nis);
+            return res.status(200).send({
+                message: 'success',
+                pesanan: pesanan,
+            })
+        }
     } catch (error) {
         console.log(error);
         return res.status(400).send({
@@ -926,7 +930,7 @@ export const updateStatusPesanan = async (req: FastifyRequest, res: FastifyReply
 }
 
 export const getNotifikasi = async (req: FastifyRequest, res: FastifyReply) => {
-    const body = req.body as { type: string };
+    const body = req.body as { type: string; limit: number };
     try {
         const verify = await verifyToken(req);
         const data = verify as { nis: string };
@@ -935,7 +939,7 @@ export const getNotifikasi = async (req: FastifyRequest, res: FastifyReply) => {
                 message: 'Token tidak valid!'
             })
         }
-        const dataNotifikasi = await models.getNotifikasi(data.nis, body.type);
+        const dataNotifikasi = await models.getNotifikasi(data.nis, body.type, body.limit);
         return res.status(200).send({
             data: dataNotifikasi
         })
@@ -970,10 +974,10 @@ export const addNotifikasi = async (req: FastifyRequest, res: FastifyReply) => {
 }
 
 export const getNotifikasiToko = async (req: FastifyRequest, res: FastifyReply) => {
-    const body = req.body as { id_toko: string; type: string };
+    const body = req.body as { id_toko: string; type: string; limit: number };
     try {
         if(await verifyToken(req)){
-            const dataNotifikasi = await models.getNotifikasiToko(body.id_toko, body.type);
+            const dataNotifikasi = await models.getNotifikasiToko(body.id_toko, body.type, body.limit);
             return res.status(200).send({
                 data: dataNotifikasi
             })
