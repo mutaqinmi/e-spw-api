@@ -37,6 +37,7 @@ app.post('/v3/user/favorit/delete', controller.deleteFromFavorite);
 app.patch('/v3/user/update/telepon', controller.updateTelepon);
 app.patch('/v3/user/update/password', controller.changePassword);
 app.post('/v3/user/update/profile-picture', controller.updateFotoProfilSiswa);
+app.delete('/v3/user/delete/profile-picture', controller.removeFotoProfilSiswa);
 app.get('/v3/user/alamat', controller.getAlamat);
 app.get('/v3/user/alamat/:id', controller.getAlamatByIdAlamat);
 app.get('/v3/user/alamat/default', controller.getAlamatByDefault);

@@ -38,6 +38,12 @@ export const updateFotoProfilSiswa = async (nis: string, foto_profil: string) =>
         .returning();
 }
 
+export const removeFotoProfilSiswa = async (nis: string) => {
+    return await db.update(table.siswa)
+        .set({ foto_profil: null })
+        .where(eq(table.siswa.nis, nis));
+}
+
 export const getKelas = async () => {
     return await db.select().from(table.kelas);
 }

@@ -111,7 +111,7 @@ export const transaksi = pgTable('transaksi', {
     id_produk: varchar('id_produk', {length: 50}).references(() => produk.id_produk, {onUpdate: "cascade", onDelete: "cascade"}),
     jumlah: integer('jumlah'),
     total_harga: integer('total_harga'),
-    status: varchar('status', {length: 20}),
+    status: varchar('status', {length: 50}),
     catatan: varchar('catatan', {length: 50}),
     alamat: varchar('alamat', {length: 255}),
     waktu: timestamp('waktu', {withTimezone: true}).default(sql`CURRENT_TIMESTAMP`),

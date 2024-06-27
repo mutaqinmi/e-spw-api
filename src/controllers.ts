@@ -1213,8 +1213,27 @@ export const updateFotoProfilSiswa = async (req: FastifyRequest, res: FastifyRep
             message: error
         })
     }
+}
 
-
+export const removeFotoProfilSiswa = async (req: FastifyRequest, res: FastifyReply) => {
+    try {
+        const verify = await verifyToken(req);
+        const data = verify as { nis: string };
+        if(!verify){
+            return res.status(401).send({
+                message: 'Token tidak valid!'
+            })
+        }
+        await models.removeFotoProfilSiswa(data.nis);
+        return res.status(200).send({
+            message: 'success'
+        })
+    } catch (error) {
+        console.log(error);
+        return res.status(400).send({
+            message: error
+        })
+    }
 }
 
 export const getAlamat = async (req: FastifyRequest, res: FastifyReply) => {
