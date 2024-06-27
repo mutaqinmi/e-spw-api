@@ -40,7 +40,7 @@ export const updateFotoProfilSiswa = async (nis: string, foto_profil: string) =>
 
 export const removeFotoProfilSiswa = async (nis: string) => {
     return await db.update(table.siswa)
-        .set({ foto_profil: null })
+        .set({ foto_profil: '' })
         .where(eq(table.siswa.nis, nis));
 }
 
